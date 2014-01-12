@@ -50,7 +50,8 @@ The variables used are:
 Samples for these variables are present in the script itself.
 
 Installation:
-sudo make install
+(as root)
+make install
 
 Usage:
 slacker <option> [package]

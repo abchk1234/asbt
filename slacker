@@ -2,7 +2,6 @@
 # slacker : A package manager for slackbuilds repository.
 ##
 # Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
-  ver="0.2"
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
+
+ver="0.2" # Version
 
 # Variables
 repo="/home/aaditya/git/slackbuilds/" # Repository for slackbuilds
@@ -180,7 +181,7 @@ query|-q)
         echo -e "slacker, a package manager for slackbuilds repository. ver-$ver" ;;
 --help|-h|*)
 	echo -e "Usage: slacker <option> [package]\nOptions-"
-	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version|-v]\n"
+	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
        echo "For more info, see the README." ;;
 esac
 
