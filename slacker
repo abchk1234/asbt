@@ -1,0 +1,144 @@
+#!/bin/bash
+# slacker : A package manager for slackbuilds repository
+##
+# Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed WITHOUT ANY WARRANTY;
+# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+# Variables
+repo="/home/aaditya/slackbuilds/slackbuilds/" # Repository for slackbuilds"
+package="$2" # Name of package input by the user
+terminal="xfce4-terminal"
+srcpath="/home/aaditya/src" # Where the downloaded source packages are to be placed. Leave it blank for saving in the same directory as the slackbuild.
+outpath="/home/aaditya/packages" # Where the build package will be placed. Leave it blank for putting them in /tmp.
+gitdir="/home/aaditya/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
+
+# Functions
+get-path() {
+	path=`find "$repo" -type d -maxdepth 2 -name "$package"`
+	# Check path (if directory exists)
+	if [ ! -d "$path" ]; then
+		echo "N/A"
+		exit 1
+	fi
+}
+get-content () {
+	cat "$1"
+}
+get-package () {
+	# Check if srcpath is specified (if yes, download is saved there)
+	if [ -z "$srcpath" ]; then
+		# Check for architecture in package
+		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] ; then
+			wget --directory-prefix="$path" -N "$linkx64"
+		else
+			wget --directory-prefix="$path" -N "$link"
+		fi
+	else
+		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] ; then
+			wget --directory-prefix="$srcpath" -N "$linkx64"
+			pkgname=`basename "$linkx64"`
+			ln -s "$srcpath/$pkgname" "$path"
+		else
+			pkgname=`basename "$link"`
+			wget --directory-prefix="$srcpath" -N "$link"
+			ln -s "$srcpath/$pkgname" "$path"
+		fi
+	fi
+}
+
+# Options
+case "$1" in
+--search|-s)
+	find "$repo" -type d -maxdepth 2 -iname "$package" ;;
+--info|-i)
+	get-path
+	get-content "$path/$package.info" ;;
+--readme|-r)
+	get-path
+	get-content "$path/README" ;;
+--goto|-g)
+	get-path
+	$terminal --working-directory="$path" ;;
+--slackbuild|-sl)
+	get-path
+	less "$path/$package.SlackBuild" ;;
+--list|-l)
+	get-path
+	ls $path ;;
+--desc|-d)
+	get-path
+	get-content "$path/slack-desc" ;;
+--get|-G)
+	get-path
+	link=`cat "$path/$package.info" | grep -w "DOWNLOAD"| cut -f 2 -d '"'`
+	linkx64=`cat "$path/$package.info" | grep -w "DOWNLOAD_x86_64"| cut -f 2 -d '"'`
+	get-package ;;
+
+--build|-B)
+	get-path
+	chmod +x "$path/$package.SlackBuild"
+	# Fix CWD to include path to package
+	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
+	# Check if outpath is present (if yes, built package is saved there)
+	if [ -z "$outpath" ]; then
+		sudo CWD="$path" "$path/$package.SlackBuild"
+	else
+		sudo OUTPUT="$outpath" CWD="$path" "$path/$package.SlackBuild" 
+	fi 
+	# After building revert the slackbuild to original state
+	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild" ;;
+
+--install|-I)
+	if [ -z "$outpath" ]; then
+		# Find path of built package
+		pkgpath=`ls "/tmp/$package"*`
+		sudo /sbin/installpkg "$pkgpath"
+	else
+		pkgpath=`ls "$outpath/$package"*`
+		sudo /sbin/installpkg "$pkgpath"
+	fi ;;
+
+--upgrade|-U)
+	if [ -z "$outpath" ]; then
+		pkgpath=`ls "/tmp/$package"*`
+		sudo /sbin/upgradepkg "$pkgpath"
+	else
+		pkgpath=`ls "$outpath/$package"*`
+		sudo /sbin/upgradepkg "$pkgpath"
+	fi ;; 
+
+--remove|-R)
+	sudo /sbin/removepkg "$package" ;;
+--query|-q)
+	sudo /usr/sbin/slackpkg search "$package" ;;
+--update|-u)
+	git --git-dir="$gitdir" pull ;;
+*)
+	echo "Unknown option" ;;
+esac
+
+# Cleanup
+unset repo
+unset package
+unset terminal
+unset path
+unset srcpath
+unset outpath
+unset pkgname
+unset pkgpath
+unset link
+unset linkx64
+exit 0
