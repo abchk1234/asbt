@@ -18,11 +18,11 @@
 ##
 
 # Variables
-repo="/home/aaditya/slackbuilds/slackbuilds/" # Repository for slackbuilds"
+repo="/home/aaditya/git/slackbuilds/" # Repository for slackbuilds
 package="$2" # Name of package input by the user
 terminal="xfce4-terminal"
-srcpath="/home/aaditya/src" # Where the downloaded source packages are to be placed. Leave it blank for saving in the same directory as the slackbuild.
-outpath="/home/aaditya/packages" # Where the build package will be placed. Leave it blank for putting them in /tmp.
+srcpath="/home/aaditya/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
+outpath="/home/aaditya/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/aaditya/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
 
 # Functions
@@ -60,7 +60,7 @@ get-package () {
 }
 check-option () {
 	if [ ! "$1" ]; then
-		echo "Package name required for this option. Type slacker -h for more info."
+		echo "Additional parameter required for this option. Type slacker -h for more info."
 	fi
 }
 
@@ -68,7 +68,7 @@ check-option () {
 case "$1" in
 search|-s)
 	check-option "$2"
-	find "$repo" -depth -maxdepth 2 -iname "$package"* ;;
+	find "$repo" -maxdepth 2 -iname "$package"* ;;
 info|-i)
 	check-option "$2"
 	get-path
@@ -117,28 +117,49 @@ build|-B)
 
 install|-I)
 	check-option "$2"
-	if [ -z "$outpath" ]; then
-		# Find path of built package
-		pkgpath=`ls "/tmp/$package"*`
-		sudo /sbin/installpkg "$pkgpath"
-	else
-		pkgpath=`ls "$outpath/$package"*`
-		sudo /sbin/installpkg "$pkgpath"
+	# Check if package present
+	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
+		# Install the package
+		if [ -z "$outpath" ]; then
+			# Find path of built package
+			pkgpath=`ls "/tmp/$package"*`
+			sudo /sbin/installpkg "$pkgpath"
+		else
+			pkgpath=`ls "$outpath/$package"*`
+			sudo /sbin/installpkg "$pkgpath"
+   		fi
+        else
+		echo "N/A"
+		exit 1
 	fi ;;
 
 upgrade|-U)
 	check-option "$2"
-	if [ -z "$outpath" ]; then
-		pkgpath=`ls "/tmp/$package"*`
-		sudo /sbin/upgradepkg "$pkgpath"
+	# Check if package present
+	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
+		# Upgrade the package
+		if [ -z "$outpath" ]; then
+			pkgpath=`ls "/tmp/$package"*`
+			sudo /sbin/upgradepkg "$pkgpath"
+		else
+			pkgpath=`ls "$outpath/$package"*`
+			sudo /sbin/upgradepkg "$pkgpath"
+		fi
 	else
-		pkgpath=`ls "$outpath/$package"*`
-		sudo /sbin/upgradepkg "$pkgpath"
+		echo "N/A"
+		exit 1
+
 	fi ;; 
 
 remove|-R)
 	check-option "$2"
-	sudo /sbin/removepkg "$package" ;;
+	# Check if package present
+	if [ -f "/var/log/packages/$package"* ]; then
+		sudo /sbin/removepkg "$package"
+	else
+		echo "N/A"
+		exit 1
+	fi ;;
 query|-q)
 	check-option "$2"
 	find "/var/log/packages" -name "$package"* -printf "%f\n";;
