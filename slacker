@@ -43,21 +43,20 @@ get-package () {
 	# Check if srcpath is specified (if yes, download is saved there)
 	if [ -z "$srcpath" ]; then
 		# Check for architecture in package
-		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
-			wget --directory-prefix="$path" -N "$linkx64"
-		else
+		#if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
+		#	wget --directory-prefix="$path" -N "$linkx64"
+		#else
 			wget --directory-prefix="$path" -N "$link"
-		fi
+		#fi
 	else
-		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
-			wget --directory-prefix="$srcpath" -N "$linkx64"
-			pkgname=`basename "$linkx64"`
-			ln -s "$srcpath/$pkgname" "$path"
-		else
+		#if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
+		#	wget --directory-prefix="$srcpath" -N "$linkx64"
+		#	pkgname=`basename "$linkx64"`
+		#	ln -s "$srcpath/$pkgname" "$path"
+		#else
 			pkgname=`basename "$link"`
-			wget --directory-prefix="$srcpath" -N "$link"
-			ln -s "$srcpath/$pkgname" "$path"
-		fi
+			wget --directory-prefix="$srcpath" -N "$link" && ln -s "$srcpath/$pkgname" "$path"
+		#fi
 	fi
 }
 check-option () {
