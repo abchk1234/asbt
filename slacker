@@ -141,14 +141,15 @@ case "$1" in
 	sudo /sbin/removepkg "$package" ;;
 --query|-q)
 	check-option "$2"
-	sudo /usr/sbin/slackpkg search "$package" ;;
+	find "/var/log/packages" -name "$package"* -printf "%f\n";;
+
 --update|-u)
-	git --git-dir="$gitdir" pull ;;
+	git --git-dir="$gitdir" pull origin master ;;
 --all|-a)
 	find "$repo" -type d -maxdepth 2 -mindepth 1 | less ;;
 --help|-h|*)
 	echo -e "Usage: slacker <option> [package]\nOptions-"
-	echo -e "[--search,-s]\t[--info,-i]\t[--readme,-r]\n[--goto,-g]\t[--slackbuild,-sl]\t[--list,-l]\n[--desc,-d]\t[--get,-G]\t[--build,-B]\n[--install,-I]\t[--upgrade,-U]\t[--remove,-R]\n[--query,-Q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\n"
+	echo -e "[--search,-s]\t[--info,-i]\t[--readme,-r]\n[--goto,-g]\t[--view,-v]\t[--list,-l]\n[--desc,-d]\t[--get,-G]\t[--build,-B]\n[--install,-I]\t[--upgrade,-U]\t[--remove,-R]\n[--query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\n"
        echo "For more info, see the README." ;;
 esac
 

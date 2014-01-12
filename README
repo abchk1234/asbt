@@ -27,7 +27,6 @@ It uses the following (Slackware) tools:
 1) installpkg
 2) removepkg
 3) upgradepkg
-4) slackpkg
 
 The variables used are:
 
