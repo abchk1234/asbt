@@ -54,4 +54,12 @@ sudo make install
 
 Usage:
 slacker <option> [package]
+
+Examples:
+slacker -s dosbox (search for package dosbox)
+slacker -i dosbox (read the info file for dosbox)
+slacker -v dosbox (view slackbuild)
+slacker -G dosbox (get(download) dosbox(source))
+slacker -B dosbox (build dosbox)
+slacker -I dosbox (install dosbox)
 -------------------------------------------------------------------------------
