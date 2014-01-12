@@ -1,7 +1,7 @@
 Version- 0.1
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
 -------------------------------------------------------------------------------
-slacker acts as a sort of package manager for your local copy of slackbuilds
+slacker acts like a package manager for your local copy of slackbuilds
 (usually obtained from slackbuilds.org).
 
 It supports following functions/options:
