@@ -68,7 +68,7 @@ check-option () {
 case "$1" in
 search|-s)
 	check-option "$2"
-	find "$repo" -type d -maxdepth 2 -mindepth 1 -iname "$package" ;;
+	find "$repo" -depth -maxdepth 2 -iname "$package"* ;;
 info|-i)
 	check-option "$2"
 	get-path
