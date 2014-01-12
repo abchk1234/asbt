@@ -1,5 +1,5 @@
 #!/bin/bash
-# slack : A package manager for slackbuilds repository.
+# slack : A package manager for a local slackbuilds repository.
 ##
 # Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
@@ -17,15 +17,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.2" # Version
+ver="0.2.1" # Version
 
 # Variables
-repo="/home/aaditya/git/slackbuilds/" # Repository for slackbuilds
+repo="/home/$USER/git/slackbuilds/" # Repository for slackbuilds
 package="$2" # Name of package input by the user
 terminal="xfce4-terminal"
-srcpath="/home/aaditya/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
-outpath="/home/aaditya/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
-gitdir="/home/aaditya/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
+srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
+outpath="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
+gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
 
 # Functions
 get-path() {
@@ -177,7 +177,7 @@ query|-q)
 --all|-a)
 	find "$repo" -type d -maxdepth 2 -mindepth 1 | less ;;
 --version)
-        echo -e "slack, a package manager for slackbuilds repository. ver-$ver" ;;
+        echo -e "slack, a package manager for your local slackbuilds repository. ver-$ver" ;;
 --help|-h|*)
 	echo -e "Usage: slack <option> [package]\nOptions-"
 	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"

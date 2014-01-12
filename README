@@ -1,4 +1,4 @@
-Version- 0.2
+Version- 0.2.1
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
 URL- https://github.com/aadityabagga/slack
 -------------------------------------------------------------------------------
@@ -32,10 +32,10 @@ It uses the following (Slackware) tools:
 The variables used are:
 
 1) repo=""
- # Repository for slackbuilds"
+ # Repository for slackbuilds
 
 2) terminal="" 
- # Terminal used for going to the package
+ # Terminal used for going to the package directory (goto option)
 
 3) srcpath=""
  # Where the downloaded source packages are to be placed.
@@ -46,7 +46,7 @@ The variables used are:
  # Leave it blank for putting them in /tmp.
 
 5) gitdir=""
- # Directory where slackbuilds git repository is stored
+ # Directory where slackbuilds git repository is present.
 
 Samples for these variables are present in the script itself.
 
