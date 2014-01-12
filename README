@@ -1,8 +1,8 @@
 Version- 0.1
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
 -------------------------------------------------------------------------------
-slacker acts like a package manager for your local copy of slackbuilds
-(usually obtained from slackbuilds.org).
+slacker acts like a package manager for your local copy of slackbuilds.
+(usually obtained from slackbuilds.org)
 
 It supports following functions/options:
 
@@ -60,6 +60,6 @@ slacker -s dosbox (search for package dosbox)
 slacker -i dosbox (read the info file for dosbox)
 slacker -v dosbox (view slackbuild)
 slacker -G dosbox (get(download) dosbox(source))
-slacker -B dosbox (build dosbox)
-slacker -I dosbox (install dosbox)
+slacker -B dosbox (build package for dosbox)
+slacker -I dosbox (install built package)
 -------------------------------------------------------------------------------
