@@ -1,5 +1,5 @@
-NAME=slacker
-VER=0.1
+NAME=slack
+VER=0.2
 install=/usr/bin/install
 SHELL=/bin/bash
 DESTDIR=
@@ -9,12 +9,12 @@ APPDIR=/usr/share/$(NAME)-$(VER)
 install: 
 	$(install) -d $(DESTDIR)$(BINDIR)
 	$(install) -d $(DESTDIR)$(APPDIR)
-	$(install) -m755 slacker $(DESTDIR)$(BINDIR)
+	$(install) -m755 slack $(DESTDIR)$(BINDIR)
 	$(install) -m644 README $(DESTDIR)$(APPDIR)
 	$(install) -m644 COPYING $(DESTDIR)$(APPDIR)
 	$(install) -m644 makefile $(DESTDIR)$(APPDIR)
 
-remove: slacker README COPYING makefile
+remove: 
 	rm $(DESTDIR)$(BINDIR)/$(NAME)
 	rm -r $(DESTDIR)$(APPDIR)
 

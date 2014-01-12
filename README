@@ -1,21 +1,21 @@
 Version- 0.2
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
-URL- https://github.com/aadityabagga/slacker
+URL- https://github.com/aadityabagga/slack
 -------------------------------------------------------------------------------
-slacker acts like a package manager for your local copy of slackbuilds.
+slack acts like a package manager for your local copy of slackbuilds.
 (usually obtained from slackbuilds.org)
 
 It supports following functions/options:
 
-1) search the repository (-s)
-2) info about specified package (-i)
-3) readme about specified package (-r)
-4) goto the package directory (-g)
-5) view slackbuild (-v)
-6) list files contained in specified package directory (-l)
-7) description about specified package (-d)
-8) get/download the package (-G)
-9) build the package (-B)
+1)  search the repository (-s)
+2)  info about specified package (-i)
+3)  readme about specified package (-r)
+4)  goto the package directory (-g)
+5)  view slackbuild (-v)
+6)  list files contained in specified package directory (-l)
+7)  description about specified package (-d)
+8)  get/download the package (-G)
+9)  build the package (-B)
 10) install the built package (-I)
 11) upgrade installed package with built package (-U)
 12) remove installed package (-R)
@@ -55,13 +55,13 @@ Installation:
 make install
 
 Usage:
-slacker <option> [package]
+slack <option> [package]
 
 Examples:
-slacker -s dosbox (search for package dosbox)
-slacker -i dosbox (read the info file for dosbox)
-slacker -v dosbox (view slackbuild)
-slacker -G dosbox (get(download) dosbox(source))
-slacker -B dosbox (build package for dosbox)
-slacker -I dosbox (install built package)
+slack -s dosbox (search for package dosbox)
+slack -i dosbox (read the info file for dosbox)
+slack -v dosbox (view slackbuild)
+slack -G dosbox (get(download) dosbox(source))
+slack -B dosbox (build package for dosbox)
+slack -I dosbox (install built package)
 -------------------------------------------------------------------------------

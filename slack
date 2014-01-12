@@ -1,5 +1,5 @@
 #!/bin/bash
-# slacker : A package manager for slackbuilds repository.
+# slack : A package manager for slackbuilds repository.
 ##
 # Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
@@ -61,14 +61,14 @@ get-package () {
 }
 check-option () {
 	if [ ! "$1" ]; then
-		echo "Additional parameter(s) required for this option. Type slacker -h for more info."
+		echo "Additional parameter(s) required for this option. Type slack -h for more info."
 		exit 1
 	fi
 }
 
 # Check no of input parameters
 if [ $# -gt 3 ] ; then
-	echo "Invalid Syntax. Type slacker -h for more info."
+	echo "Invalid Syntax. Type slack -h for more info."
 	exit 1
 fi
 
@@ -177,9 +177,9 @@ query|-q)
 --all|-a)
 	find "$repo" -type d -maxdepth 2 -mindepth 1 | less ;;
 --version)
-        echo -e "slacker, a package manager for slackbuilds repository. ver-$ver" ;;
+        echo -e "slack, a package manager for slackbuilds repository. ver-$ver" ;;
 --help|-h|*)
-	echo -e "Usage: slacker <option> [package]\nOptions-"
+	echo -e "Usage: slack <option> [package]\nOptions-"
 	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
        echo "For more info, see the README." ;;
 esac
