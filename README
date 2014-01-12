@@ -1,5 +1,6 @@
-Version- 0.1
+Version- 0.2
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
+URL- https://github.com/aadityabagga/slacker
 -------------------------------------------------------------------------------
 slacker acts like a package manager for your local copy of slackbuilds.
 (usually obtained from slackbuilds.org)
