@@ -58,36 +58,50 @@ get-package () {
 		fi
 	fi
 }
+check-option () {
+	if [ ! "$1" ]; then
+		echo "Package name required for this option. Type slacker -h for more info."
+	fi
+}
 
 # Options
 case "$1" in
 --search|-s)
-	find "$repo" -type d -maxdepth 2 -iname "$package" ;;
+	check-option "$2"
+	find "$repo" -type d -maxdepth 2 -mindepth 1 -iname "$package" ;;
 --info|-i)
+	check-option "$2"
 	get-path
 	get-content "$path/$package.info" ;;
 --readme|-r)
+	check-option "$2"
 	get-path
 	get-content "$path/README" ;;
 --goto|-g)
+	check-option "$2"
 	get-path
 	$terminal --working-directory="$path" ;;
---slackbuild|-sl)
+--view|-v)
+	check-option "$2"
 	get-path
 	less "$path/$package.SlackBuild" ;;
 --list|-l)
+	check-option "$2"
 	get-path
 	ls $path ;;
 --desc|-d)
+	check-option "$2"
 	get-path
 	get-content "$path/slack-desc" ;;
 --get|-G)
+	check-option "$2"
 	get-path
 	link=`cat "$path/$package.info" | grep -w "DOWNLOAD"| cut -f 2 -d '"'`
 	linkx64=`cat "$path/$package.info" | grep -w "DOWNLOAD_x86_64"| cut -f 2 -d '"'`
 	get-package ;;
 
 --build|-B)
+	check-option "$2"
 	get-path
 	chmod +x "$path/$package.SlackBuild"
 	# Fix CWD to include path to package
@@ -102,6 +116,7 @@ case "$1" in
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild" ;;
 
 --install|-I)
+	check-option "$2"
 	if [ -z "$outpath" ]; then
 		# Find path of built package
 		pkgpath=`ls "/tmp/$package"*`
@@ -112,6 +127,7 @@ case "$1" in
 	fi ;;
 
 --upgrade|-U)
+	check-option "$2"
 	if [ -z "$outpath" ]; then
 		pkgpath=`ls "/tmp/$package"*`
 		sudo /sbin/upgradepkg "$pkgpath"
@@ -121,13 +137,19 @@ case "$1" in
 	fi ;; 
 
 --remove|-R)
+	check-option "$2"
 	sudo /sbin/removepkg "$package" ;;
 --query|-q)
+	check-option "$2"
 	sudo /usr/sbin/slackpkg search "$package" ;;
 --update|-u)
 	git --git-dir="$gitdir" pull ;;
-*)
-	echo "Unknown option" ;;
+--all|-a)
+	find "$repo" -type d -maxdepth 2 -mindepth 1 | less ;;
+--help|-h|*)
+	echo -e "Usage: slacker <option> [package]\nOptions-"
+	echo -e "[--search,-s]\t[--info,-i]\t[--readme,-r]\n[--goto,-g]\t[--slackbuild,-sl]\t[--list,-l]\n[--desc,-d]\t[--get,-G]\t[--build,-B]\n[--install,-I]\t[--upgrade,-U]\t[--remove,-R]\n[--query,-Q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\n"
+       echo "For more info, see the README." ;;
 esac
 
 # Cleanup

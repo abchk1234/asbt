@@ -1,0 +1,59 @@
+README for slacker, a package manager for slackbuilds repository.
+Version- 0.1
+Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
+-------------------------------------------------------------------------------
+slacker acts as a sort of package manager for your local copy of slackbuilds
+(usually obtained from slackbuilds.org).
+
+It supports following functions/options:
+
+1) search the repository (-s)
+2) info about specified package (-i)
+3) readme about specified package (-r)
+4) goto the package directory (-g)
+5) view slackbuild (-v)
+6) list files contained in specified package directory (-l)
+7) description about specified package (-d)
+8) get/download the package (-G)
+9) build the package (-B)
+10) install the built package (-I)
+11) upgrade installed package with built package (-U)
+12) remove installed package (-R)
+13) query installed packages (-q)
+14) view all packages in the slackbuilds repo (-a)
+15) update git repo of slackbuilds (-u)
+
+It uses the following (Slackware) tools:
+
+1) installpkg
+2) removepkg
+3) upgradepkg
+4) slackpkg
+
+The variables used are:
+
+1) repo=""
+ # Repository for slackbuilds"
+
+2) terminal="" 
+ # Terminal used for going to the package
+
+3) srcpath=""
+ # Where the downloaded source packages are to be placed.
+ # Leave it blank for saving in the same directory as the slackbuild.
+
+4) outpath=""
+ # Where the build package will be placed. 
+ # Leave it blank for putting them in /tmp.
+
+5) gitdir=""
+ # Directory where slackbuilds git repository is stored
+
+Samples for these variables are present in the script itself.
+
+Installation:
+sudo make install
+
+Usage:
+slacker <option> [package]
+-------------------------------------------------------------------------------
