@@ -20,16 +20,16 @@
 ver="0.2.1" # Version
 
 # Variables
-repo="/home/$USER/git/slackbuilds/" # Repository for slackbuilds
+repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds
 package="$2" # Name of package input by the user
-terminal="xfce4-terminal"
 srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
 outpath="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
+terminal="xfce4-terminal" # Terminal used for going to the package directory (goto option)
 
 # Functions
 get-path() {
-	path=`find "$repo" -type d -maxdepth 2 -name "$package"`
+	path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
 		echo "N/A"
@@ -37,26 +37,25 @@ get-path() {
 	fi
 }
 get-content () {
-	cat "$1"
+	cat "$1" # Return the content of the argument passed.
 }
 get-package () {
 	# Check if srcpath is specified (if yes, download is saved there)
 	if [ -z "$srcpath" ]; then
 		# Check for architecture in package
-		#if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
-		#	wget --directory-prefix="$path" -N "$linkx64"
-		#else
+		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ `echo "$linkx64" | grep -e "http" -e "ftp"` ]] ; then
+			wget --directory-prefix="$path" -N "$linkx64"
+		else
 			wget --directory-prefix="$path" -N "$link"
-		#fi
+		fi
 	else
-		#if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ ! "$linkx64" == "UNSUPPORTED" ]] ; then
-		#	wget --directory-prefix="$srcpath" -N "$linkx64"
-		#	pkgname=`basename "$linkx64"`
-		#	ln -s "$srcpath/$pkgname" "$path"
-		#else
+		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ `echo "$linkx64" | grep -e "http" -e "ftp"` ]] ; then
+			pkgname=`basename "$linkx64"`
+			wget --directory-prefix="$srcpath" -N "$linkx64" && ln -s "$srcpath/$pkgname" "$path"
+		else
 			pkgname=`basename "$link"`
 			wget --directory-prefix="$srcpath" -N "$link" && ln -s "$srcpath/$pkgname" "$path"
-		#fi
+		fi
 	fi
 }
 check-option () {
@@ -72,11 +71,17 @@ if [ $# -gt 3 ] ; then
 	exit 1
 fi
 
+# Check directories (variables)
+if [ ! -d "$repodir" ]; then
+	echo "Slackbuilds repository $repodir doesnt exist.."
+	exit 1 
+fi
+
 # Options
 case "$1" in
 search|-s)
 	check-option "$2"
-	find "$repo" -maxdepth 2 -iname "$package"* ;;
+	find "$repodir" -maxdepth 2 -iname "$package*" ;;
 info|-i)
 	check-option "$2"
 	get-path
@@ -88,7 +93,7 @@ readme|-r)
 goto|-g)
 	check-option "$2"
 	get-path
-	$terminal --working-directory="$path" ;;
+        $terminal --working-directory="$path" ;;
 view|-v)
 	check-option "$2"
 	get-path
@@ -131,10 +136,10 @@ install|-I)
 		if [ -z "$outpath" ]; then
 			# Find path of built package
 			pkgpath=`ls "/tmp/$package"*`
-			sudo /sbin/installpkg "$pkgpath"
+			sudo -k /sbin/installpkg "$pkgpath"
 		else
 			pkgpath=`ls "$outpath/$package"*`
-			sudo /sbin/installpkg "$pkgpath"
+			sudo -k /sbin/installpkg "$pkgpath"
    		fi
         else
 		echo "N/A"
@@ -148,10 +153,10 @@ upgrade|-U)
 		# Upgrade the package
 		if [ -z "$outpath" ]; then
 			pkgpath=`ls "/tmp/$package"*`
-			sudo /sbin/upgradepkg "$pkgpath"
+			sudo -k /sbin/upgradepkg "$pkgpath"
 		else
 			pkgpath=`ls "$outpath/$package"*`
-			sudo /sbin/upgradepkg "$pkgpath"
+			sudo -k /sbin/upgradepkg "$pkgpath"
 		fi
 	else
 		echo "N/A"
@@ -163,29 +168,29 @@ remove|-R)
 	check-option "$2"
 	# Check if package present
 	if [ -f "/var/log/packages/$package"* ]; then
-		sudo /sbin/removepkg "$package"
+		sudo -k /sbin/removepkg "$package"
 	else
 		echo "N/A"
 		exit 1
 	fi ;;
 query|-q)
 	check-option "$2"
-	find "/var/log/packages" -name "$package"* -printf "%f\n";;
+	find "/var/log/packages" -name "$package*" -printf "%f\n";;
 
 --update|-u)
 	git --git-dir="$gitdir" pull origin master ;;
 --all|-a)
-	find "$repo" -type d -maxdepth 2 -mindepth 1 | less ;;
+	find "$repodir" -type d -maxdepth 2 -mindepth 1 | less ;;
 --version)
         echo -e "slack, a package manager for your local slackbuilds repository. ver-$ver" ;;
 --help|-h|*)
 	echo -e "Usage: slack <option> [package]\nOptions-"
 	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
-       echo "For more info, see the README." ;;
+       echo "For more info, see the man page and/or the README." ;;
 esac
 
 # Cleanup
-unset repo
+unset repodir
 unset package
 unset terminal
 unset path
