@@ -17,14 +17,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.2.2" # Version
+ver="0.3" # Version
 
 # Variables
-repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds
-package="$2" # Name of package input by the user
+repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds.
+package="$2" # Name of package input by the user.
 srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
 outdir="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
-gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
+gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored.
+conf="/etc/slack/slack.conf" # Configuration file for slack which will override above defaults.
+
+# Check for configuration file 
+if [ -e "$conf" ]; then
+	. "$conf"
+fi
 
 # Functions
 get-path() {
@@ -77,7 +83,7 @@ fi
 
 # Check directories (variables)
 if [ ! -d "$repodir" ]; then
-	echo "Slackbuilds repository $repodir doesnt exist.."
+	echo "slackbuilds repository $repodir doesnt exist.."
 	exit 1 
 fi
 
@@ -191,7 +197,12 @@ query|-q)
 	find "/var/log/packages" -name "$package*" -printf "%f\n";;
 
 --update|-u)
-	git --git-dir="$gitdir" pull origin master ;;
+	if [ -d "$gitdir" ]; then
+		git --git-dir="$gitdir" pull origin master
+	else
+		echo "N/A"
+		exit 1
+	fi ;;
 --all|-a)
 	find "$repodir" -type d -maxdepth 2 -mindepth 1 | less ;;
 --version)
