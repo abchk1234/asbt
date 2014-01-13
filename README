@@ -65,10 +65,11 @@ slack -B dosbox (build package for dosbox)
 slack -I dosbox (install built package)
 
 Note:
+
 For searching, when using wildcards like *, try quoting the search pattern, for example-
 slack search 'sbo*'
 
-Also, *(wildcard) at the end is implied.
+Also, a *(wildcard) at the end is implied.
 
 For example, if you want to search for all packages starting with xfce, you can use-
 slack search xfce
