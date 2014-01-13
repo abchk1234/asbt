@@ -23,7 +23,7 @@ ver="0.2.2" # Version
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds
 package="$2" # Name of package input by the user
 srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
-outpath="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
+outdir="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
 
 # Functions
@@ -132,11 +132,11 @@ build|-B)
 	chmod +x "$path/$package.SlackBuild"
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
-	# Check if outpath is present (if yes, built package is saved there)
-	if [ -z "$outpath" ]; then
+	# Check if outdir is present (if yes, built package is saved there)
+	if [ -z "$outdir" ]; then
 		sudo CWD="$path" "$path/$package.SlackBuild"
 	else
-		sudo OUTPUT="$outpath" CWD="$path" "$path/$package.SlackBuild" 
+		sudo OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" 
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild" ;;
@@ -146,12 +146,12 @@ install|-I)
 	# Check if package present
 	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
 		# Install the package
-		if [ -z "$outpath" ]; then
+		if [ -z "$outdir" ]; then
 			# Find path of built package
 			pkgpath=`ls "/tmp/$package"*`
 			sudo -k /sbin/installpkg "$pkgpath"
 		else
-			pkgpath=`ls "$outpath/$package"*`
+			pkgpath=`ls "$outdir/$package"*`
 			sudo -k /sbin/installpkg "$pkgpath"
    		fi
         else
@@ -164,11 +164,11 @@ upgrade|-U)
 	# Check if package present
 	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
 		# Upgrade the package
-		if [ -z "$outpath" ]; then
+		if [ -z "$outdir" ]; then
 			pkgpath=`ls "/tmp/$package"*`
 			sudo -k /sbin/upgradepkg "$pkgpath"
 		else
-			pkgpath=`ls "$outpath/$package"*`
+			pkgpath=`ls "$outdir/$package"*`
 			sudo -k /sbin/upgradepkg "$pkgpath"
 		fi
 	else
@@ -208,7 +208,7 @@ unset package
 unset terminal
 unset path
 unset srcpath
-unset outpath
+unset outdir
 unset pkgname
 unset pkgpath
 unset link

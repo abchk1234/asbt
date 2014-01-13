@@ -32,18 +32,18 @@ It uses the following (Slackware) tools:
 The variables used are:
 
 1) repodir=""
- # Repository for slackbuilds
+ # Repository for slackbuilds.
 
 2) srcpath=""
  # Where the downloaded source packages are to be placed.
- # Leave it blank for saving in the same directory as the slackbuild.
+ # Leave it blank for saving it in the same directory as the slackbuild.
 
-3) outpath=""
+3) outdir=""
  # Where the build package will be placed. 
- # Leave it blank for putting them in /tmp.
+ # Leave it blank for putting it in /tmp.
 
 4) gitdir=""
- # Directory where slackbuilds git repository is present.
+ # Directory where the slackbuilds git repository is present.
 
 Samples for these variables are present in the script itself.
 
@@ -61,4 +61,16 @@ slack -v dosbox (view slackbuild)
 slack -G dosbox (get(download) dosbox(source))
 slack -B dosbox (build package for dosbox)
 slack -I dosbox (install built package)
+
+Note:
+For searching, when using wildcards like *, try quoting the search pattern, for example-
+slack search 'sbo*'
+
+Also, *(wildcard) at the end is implied.
+
+For example, if you want to search for all packages starting with xfce, you can use-
+slack search xfce
+
+Instead of-
+slack search 'xfce*'
 -------------------------------------------------------------------------------
