@@ -1,0 +1,104 @@
+.\" Manpage for slack.
+.\" Contact aaditya_gnulinux@zoho.com.
+.TH SLACK 1 "13 Jan 2014" "0.2.1" "slack man page"
+.SH NAME
+slack \- a package manager for your local slackbuilds repository
+.SH SYNOPSIS
+slack <option> [package]
+.SH DESCRIPTION
+slack acts like a package manager for your local copy of slackbuilds.
+(usually obtained from slackbuilds.org).
+
+It supports searching a package in your repository, viewing details about that package, and installing or removing it.
+
+For full list of functions see the README.
+.SH OPTIONS
+.nf
+[search,-s] 
+	Search the repository for given package.
+
+[info,-i] 
+	Read the info page for given package.
+
+[readme,-r] 
+	Read the README for given package.
+
+[goto,-g] 
+	Goto the given package directory.
+
+[view,-v] 
+	View the SlackBuild for given package.
+
+[list,-l] 
+	List files inside the folder of given package.
+
+[desc,-d] 
+	View the description of the package.
+
+[get,-G] 
+	Download the package.
+
+[build,-B] 
+	Build the package.
+
+[install,-I] 
+	Install the package.
+
+[upgrade,-U] 
+	Upgrade the package.
+
+[remove,-R] 
+	Remove the package.
+
+[query,-q]
+	Query whether given package is installed.
+.fi
+.PP
+.nf
+[--update,-u] 
+	Update the local slackbuilds git repository.
+
+[--all,-a] 
+	View all packages present in the repository.
+
+[--help,-h]
+	Read the help.
+
+[--version]
+	Echo program version.
+.fi
+.SH VARIABLES
+The following variables are used (in the script) :
+.PP
+.nf
+1) repodir=""
+ # Repository for slackbuilds
+
+2) srcpath=""
+ # Where the downloaded source packages are to be placed.
+ # Leave it blank for saving in the same directory as the slackbuild.
+
+3) outpath=""
+ # Where the build package will be placed. 
+ # Leave it blank for putting them in /tmp.
+
+4) gitdir=""
+ # Directory where slackbuilds git repository is present.
+.fi
+.SH RETURN VALUES
+.nf
+0 : Performed intended operation. 
+1 : Failed to perform intended operation.
+.fi
+.SH EXAMPLES
+.nf
+slack search dosbox (search for package dosbox)
+slack info dosbox (read the info page for package dosbox)
+slack get dosbox (get or download the dosbox source code)
+slack view dosbox (view the dosbox slackbuild)
+slack build dosbox (build the dosbox package)
+slack install dosbox (install the built dosbox package)
+slack update (update git repository of slackbuilds)
+.fi
+.SH SEE ALSO
+installpkg(8),upgradepkg(8),removepkg(8),sudo(8)

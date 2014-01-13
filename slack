@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.2.1" # Version
+ver="0.2.2" # Version
 
 # Variables
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds
@@ -25,7 +25,6 @@ package="$2" # Name of package input by the user
 srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
 outpath="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored
-terminal="xfce4-terminal" # Terminal used for going to the package directory (goto option)
 
 # Functions
 get-path() {
@@ -98,7 +97,16 @@ readme|-r)
 goto|-g)
 	check-option "$2"
 	get-path
-        $terminal --working-directory="$path" ;;
+	if [ -e /usr/bin/xfce4-terminal ]; then
+        	xfce4-terminal --working-directory="$path"
+	elif [ -e /usr/bin/konsole ]; then
+		konsole --workdir "$path"
+	elif [ -e /usr/bin/xterm ]; then
+		xterm -e 'cd "$path" && /bin/bash'
+	else
+		echo "N/A"
+		exit 1
+	fi ;;
 view|-v)
 	check-option "$2"
 	get-path
