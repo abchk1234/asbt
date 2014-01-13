@@ -1,4 +1,3 @@
--------------------------------------------------------------------------------
 slack acts like a package manager for your local copy of slackbuilds.
 (usually obtained from slackbuilds.org)
 
@@ -69,4 +68,3 @@ slack search xfce
 
 Instead of-
 slack search '*xfce*'
--------------------------------------------------------------------------------
