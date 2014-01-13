@@ -37,7 +37,12 @@ get-path() {
 	fi
 }
 get-content () {
-	cat "$1" # Return the content of the argument passed.
+	if [ -f "$1" ]; then
+		cat "$1" # Return the content of the argument passed.
+	else
+		echo "N/A"
+		exit 1
+	fi
 }
 get-package () {
 	# Check if srcpath is specified (if yes, download is saved there)
