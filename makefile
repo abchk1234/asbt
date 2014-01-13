@@ -18,8 +18,8 @@ install:
 	$(install) -m644 COPYING $(DESTDIR)$(APPDIR)
 	$(install) -m644 AUTHORS $(DESTDIR)$(APPDIR)
 	$(install) -m644 makefile $(DESTDIR)$(APPDIR)
-	$(install) -m644 src/man/slack.1.gz $(DESTDIR)$(MANDIR)
-	$(install) -m644 src/etc/slack.conf $(DESTDIR)$(CONDIR)
+	$(install) -m644 man/slack.1.gz $(DESTDIR)$(MANDIR)
+	$(install) -m644 etc/slack.conf $(DESTDIR)$(CONDIR)
 
 uninstall: 
 	rm $(DESTDIR)$(BINDIR)/$(NAME)
