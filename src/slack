@@ -186,7 +186,7 @@ upgrade|-U)
 remove|-R)
 	check-option "$2"
 	# Check if package present
-	if [ -f "/var/log/packages/$package"* ]; then
+	if [[ -f "/var/log/packages/$package"* ]]; then
 		sudo -k /sbin/removepkg "$package"
 	else
 		echo "N/A"
@@ -194,7 +194,7 @@ remove|-R)
 	fi ;;
 query|-q)
 	check-option "$2"
-	find "/var/log/packages" -name "$package*" -printf "%f\n";;
+	find "/var/log/packages" -name "*$package*" -printf "%f\n" ;;
 
 --update|-u)
 	if [ -d "$gitdir" ]; then

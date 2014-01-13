@@ -1,5 +1,5 @@
 slack acts like a package manager for your local copy of slackbuilds.
-(usually obtained from slackbuilds.org)
+(usually obtained from http://slackbuilds.org/)
 
 It supports following functions/options:
 
@@ -61,10 +61,13 @@ slack -B dosbox (build package for dosbox)
 slack -I dosbox (install built package)
 
 Note:
-When searching, a *(wildcard) at both ends is implied.
+1) When searching, a *(wildcard) at both ends is implied.
 
 For example, if one wants to search for all packages which have the word "xfce", one can use-
 slack search xfce
 
 Instead of-
 slack search '*xfce*'
+
+2) When querying, if the package(s) is/are installed, they will they displayed,
+else no output. A *(wildcard) at both ends is also implied when querying.
