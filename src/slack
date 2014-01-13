@@ -216,7 +216,6 @@ esac
 # Cleanup
 unset repodir
 unset package
-unset terminal
 unset path
 unset srcpath
 unset outdir
@@ -224,4 +223,5 @@ unset pkgname
 unset pkgpath
 unset link
 unset linkx64
+unset conf
 exit 0

@@ -23,7 +23,6 @@ install:
 uninstall: 
 	rm $(DESTDIR)$(BINDIR)/$(NAME)
 	rm $(DESTDIR)$(MANDIR)/$(NAME).1.gz
-	rm $(DESTDIR)$(CONDIR)/$(NAME).conf
-	rmdir $(DESTDIR)$(CONDIR)
+	rm -r $(DESTDIR)$(CONDIR)
 	rm -r $(DESTDIR)$(APPDIR)
 	
