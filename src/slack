@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.3" # Version
+ver="0.3.1" # Version
 
 # Variables
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds.
@@ -76,8 +76,8 @@ check-option () {
 }
 
 # Check no of input parameters
-if [ $# -gt 3 ] ; then
-	echo "Invalid Syntax. Type slack -h for more info."
+if [ $# -gt 2 ] ; then
+	echo "Invalid syntax. Type slack -h for more info."
 	exit 1
 fi
 
@@ -91,7 +91,7 @@ fi
 case "$1" in
 search|-s)
 	check-option "$2"
-	find "$repodir" -maxdepth 2 -iname "$package*" ;;
+	find "$repodir" -maxdepth 2 -iname "*$package*" ;;
 info|-i)
 	check-option "$2"
 	get-path

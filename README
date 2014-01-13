@@ -1,4 +1,4 @@
-Version- 0.3
+Version- 0.3.1
 Author- Aaditya Bagga <aaditya_gnulinux@zoho.com>
 URL- https://github.com/aadityabagga/slack
 -------------------------------------------------------------------------------
@@ -69,11 +69,11 @@ Note:
 For searching, when using wildcards like *, try quoting the search pattern, for example-
 slack search 'sbo*'
 
-Also, a *(wildcard) at the end is implied.
+Also, a *(wildcard) at both ends is implied.
 
-For example, if you want to search for all packages starting with xfce, you can use-
+For example, if you want to search for all packages which have the word "xfce", you can use-
 slack search xfce
 
 Instead of-
-slack search 'xfce*'
+slack search '*xfce*'
 -------------------------------------------------------------------------------
