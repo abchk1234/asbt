@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.3.1" # Version
+ver="0.3.2" # Version
 
 # Variables
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds.
@@ -204,7 +204,7 @@ query|-q)
 		exit 1
 	fi ;;
 --all|-a)
-	find "$repodir" -type d -maxdepth 2 -mindepth 1 | less ;;
+	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
 --version)
         echo -e "slack, a package manager for your local slackbuilds repository. ver-$ver" ;;
 --help|-h|*)

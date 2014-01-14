@@ -16,8 +16,8 @@ It supports following functions/options:
 11) upgrade installed package with built package (-U)
 12) remove installed package (-R)
 13) query installed packages (-q)
-14) view all packages in the slackbuilds repo (-a)
-15) update git repo of slackbuilds (-u)
+14) view all packages installed from the slackbuilds repo (-a)
+15) update the local git repo of slackbuilds (-u)
 
 It uses the following (Slackware) tools:
 
@@ -59,6 +59,7 @@ slack -v dosbox (view slackbuild)
 slack -G dosbox (get(download) dosbox(source))
 slack -B dosbox (build package for dosbox)
 slack -I dosbox (install built package)
+slack -a (list all packages installed from the slackbuilds repository)
 
 Note:
 1) When searching, a *(wildcard) at both ends is implied.
