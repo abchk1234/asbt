@@ -17,6 +17,7 @@ install:
 	$(install) -m644 README $(DESTDIR)$(APPDIR)
 	$(install) -m644 COPYING $(DESTDIR)$(APPDIR)
 	$(install) -m644 AUTHORS $(DESTDIR)$(APPDIR)
+	$(install) -m644 Changelog $(DESTDIR)$(APPDIR)
 	$(install) -m644 makefile $(DESTDIR)$(APPDIR)
 	$(install) -m644 man/slack.1.gz $(DESTDIR)$(MANDIR)
 	$(install) -m644 etc/slack.conf $(DESTDIR)$(CONDIR)
