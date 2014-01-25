@@ -17,29 +17,58 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.3.2" # Version
+ver="0.4" # Version
 
-# Variables
-repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds.
+# Variables used:
+#repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
+repodir="/home/$USER/git/slackbuilds" # Alternate repositort for slackbuilds.
+#srcpath="/home/$USER/src" # Where the downloaded source is to be placed.
+srcpath="" # Leave blank for saving it in the same directory as the slackbuild.
+#outdir="/home/$USER/packages" # Where the build package will be placed.
+outdir="" # Leave it blank for putting built package(s) in /tmp.
+gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
+#gitdir="" # Leave it blank if you dont want to use the --update option.
+config="/etc/slack/slack.conf" # Config file which over-rides above defaults.
+#config="" # Leave it blank for using above defaults
 package="$2" # Name of package input by the user.
-srcpath="/home/$USER/src" # Where the downloaded source packages are to be placed. Leave it blank for saving it in the same directory as the slackbuild.
-outdir="/home/$USER/packages" # Where the build package will be placed. Leave it blank for putting built package(s) in /tmp.
-gitdir="/home/$USER/git/slackbuilds/.git" # Directory where slackbuilds git repository is stored.
-conf="/etc/slack/slack.conf" # Configuration file for slack which will override above defaults.
 
-# Check for configuration file 
-if [ -e "$conf" ]; then
-	. "$conf"
+# Check for the configuration file 
+#if [ -e "$conf" ]; then
+#	. "$conf"
+#fi
+
+# Check the no of input parameters
+if [ $# -gt 2 ] ; then
+	echo "Invalid syntax. Type slack -h for more info."
+	exit 1
+fi
+
+# Check directories (variables)
+if [ ! -d "$repodir" ]; then
+	echo "slackbuilds repository $repodir doesnt exist.."
+	exit 1 
 fi
 
 # Functions
+check-option () {
+	if [ ! "$1" ]; then
+		echo "Additional parameter(s) required for this option. Type slack -h for more info."
+		exit 1
+	fi
+}
 get-path() {
 	path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
-		echo "N/A"
+		echo "$path N/A"
 		exit 1
 	fi
+}
+search-package () {
+	find "$repodir" -maxdepth 2 -iname "*$package*"
+}
+query-package () {
+	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
 }
 get-content () {
 	if [ -f "$1" ]; then
@@ -50,6 +79,9 @@ get-content () {
 	fi
 }
 get-package () {
+	get-path
+	link=`cat "$path/$package.info" | grep -w "DOWNLOAD"| cut -f 2 -d '"'`
+	linkx64=`cat "$path/$package.info" | grep -w "DOWNLOAD_x86_64"| cut -f 2 -d '"'`
 	# Check if srcpath is specified (if yes, download is saved there)
 	if [ -z "$srcpath" ]; then
 		# Check for architecture in package
@@ -68,73 +100,7 @@ get-package () {
 		fi
 	fi
 }
-check-option () {
-	if [ ! "$1" ]; then
-		echo "Additional parameter(s) required for this option. Type slack -h for more info."
-		exit 1
-	fi
-}
-
-# Check no of input parameters
-if [ $# -gt 2 ] ; then
-	echo "Invalid syntax. Type slack -h for more info."
-	exit 1
-fi
-
-# Check directories (variables)
-if [ ! -d "$repodir" ]; then
-	echo "slackbuilds repository $repodir doesnt exist.."
-	exit 1 
-fi
-
-# Options
-case "$1" in
-search|-s)
-	check-option "$2"
-	find "$repodir" -maxdepth 2 -iname "*$package*" ;;
-info|-i)
-	check-option "$2"
-	get-path
-	get-content "$path/$package.info" ;;
-readme|-r)
-	check-option "$2"
-	get-path
-	get-content "$path/README" ;;
-goto|-g)
-	check-option "$2"
-	get-path
-	if [ -e /usr/bin/xfce4-terminal ]; then
-        	xfce4-terminal --working-directory="$path"
-	elif [ -e /usr/bin/konsole ]; then
-		konsole --workdir "$path"
-	elif [ -e /usr/bin/xterm ]; then
-		xterm -e 'cd "$path" && /bin/bash'
-	else
-		echo "N/A"
-		exit 1
-	fi ;;
-view|-v)
-	check-option "$2"
-	get-path
-	less "$path/$package.SlackBuild" ;;
-list|-l)
-	check-option "$2"
-	get-path
-	ls $path ;;
-desc|-d)
-	check-option "$2"
-	get-path
-	get-content "$path/slack-desc" ;;
-get|-G)
-	check-option "$2"
-	get-path
-	link=`cat "$path/$package.info" | grep -w "DOWNLOAD"| cut -f 2 -d '"'`
-	linkx64=`cat "$path/$package.info" | grep -w "DOWNLOAD_x86_64"| cut -f 2 -d '"'`
-	get-package ;;
-
-build|-B)
-	check-option "$2"
-	get-path
+build-package () {
 	chmod +x "$path/$package.SlackBuild"
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
@@ -145,10 +111,9 @@ build|-B)
 		sudo OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" 
 	fi 
 	# After building revert the slackbuild to original state
-	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild" ;;
-
-install|-I)
-	check-option "$2"
+	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
+}
+install-package () {
 	# Check if package present
 	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
 		# Install the package
@@ -163,10 +128,9 @@ install|-I)
         else
 		echo "N/A"
 		exit 1
-	fi ;;
-
-upgrade|-U)
-	check-option "$2"
+	fi 
+}
+upgrade-package () {
 	# Check if package present
 	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
 		# Upgrade the package
@@ -181,36 +145,132 @@ upgrade|-U)
 		echo "N/A"
 		exit 1
 
-	fi ;; 
+	fi 
+}
 
+# Options
+case "$1" in
+search|-s)
+	check-option "$2"
+	search-package
+	;;
+query|-q)
+	check-option "$2"
+	query-package
+	;;
+find|-f)
+	check-option "$2"
+	echo "Present in slackbuilds repository:"
+	search-package
+	echo -e "\nInstalled:"
+	query-package
+	;;
+info|-i)
+	check-option "$2"
+	get-path
+	get-content "$path/$package.info"
+	;;
+readme|-r)
+	check-option "$2"
+	get-path
+	get-content "$path/README"
+	;;
+view|-v)
+	check-option "$2"
+	get-path
+	less "$path/$package.SlackBuild"
+	;;
+desc|-d)
+	check-option "$2"
+	get-path
+	get-content "$path/slack-desc"
+	;;
+list|-l)
+	check-option "$2"
+	get-path
+	ls $path
+	;;
+goto|-g)
+	check-option "$2"
+	get-path
+	if [ "$TERM" == "linux" ]; then
+		echo "N/A"
+		exit 1
+	fi
+	if [ -e /usr/bin/xfce4-terminal ]; then
+        	xfce4-terminal --working-directory="$path"
+	elif [ -e /usr/bin/konsole ]; then
+		konsole --workdir "$path"
+	elif [ -e /usr/bin/xterm ]; then
+		xterm -e 'cd "$path" && /bin/bash'
+	else
+		echo "N/A"
+		exit 1
+	fi
+	;;
+get|-G)
+	check-option "$2"
+	get-package
+	;;
+build|-B)
+	check-option "$2"
+	get-path
+	echo "Building $package"
+	build-package
+	;;
+install|-I)
+	check-option "$2"
+	echo "Installing $package"
+	install-package
+	;;
+upgrade|-U)
+	check-option "$2"
+	echo "Upgrading $package"
+	upgrade-package
+	;; 
 remove|-R)
 	check-option "$2"
-	# Check if package present
-	if [[ -f "/var/log/packages/$package"* ]]; then
+	echo "Removing $package"
+	# Check if package is installed 
+	if [ -f "/var/log/packages/$package"* ]; then
 		sudo -k /sbin/removepkg "$package"
 	else
 		echo "N/A"
 		exit 1
-	fi ;;
-query|-q)
+	fi
+	;;
+process|-P)
 	check-option "$2"
-	find "/var/log/packages" -name "*$package*" -printf "%f\n" ;;
-
+	get-package
+	build-package
+	# Check if package is already installed
+	if [ -f "/var/log/packages/$package"* ]; then
+		upgrade-package
+	else
+		install-package
+	fi
+	;;
 --update|-u)
+	if [ -z "$gitdir" ]; then
+		echo "Git directory not specified."
+		exit 1
+	fi
 	if [ -d "$gitdir" ]; then
 		git --git-dir="$gitdir" pull origin master
 	else
-		echo "N/A"
+		echo "Git directory $gitdir doesnt exist.."
 		exit 1
-	fi ;;
+	fi
+	;;
 --all|-a)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
 --version)
         echo -e "slack, a package manager for your local slackbuilds repository. ver-$ver" ;;
 --help|-h|*)
 	echo -e "Usage: slack <option> [package]\nOptions-"
-	echo -e "[search,-s]\t[info,-i]\t[readme,-r]\n[goto,-g]\t[view,-v]\t[list,-l]\n[desc,-d]\t[get,-G]\t[build,-B]\n[install,-I]\t[upgrade,-U]\t[remove,-R]\n[query,-q]\t[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
-       echo "For more info, see the man page and/or the README." ;;
+	echo -e "[search,-s]\t[query,-q]\t[find,-f]\n[info,-i]\t[readme,-r]\t[desc,-d]\n[view,-v]\t[goto,-g]\t[list,-l]\n[get,-G]\t[build,-B]\t[install,-I]\n[upgrade,-U]\t[remove,-R]\t[process,-P]\n[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
+       echo "For more info, see the man page and/or the README."
+       ;;
 esac
 
 # Cleanup
