@@ -17,15 +17,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.4" # Version
+ver="0.4.0" # Version
 
 # Variables used:
-#repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
-repodir="/home/$USER/git/slackbuilds" # Alternate repositort for slackbuilds.
-#srcpath="/home/$USER/src" # Where the downloaded source is to be placed.
-srcpath="" # Leave blank for saving it in the same directory as the slackbuild.
-#outdir="/home/$USER/packages" # Where the build package will be placed.
-outdir="" # Leave it blank for putting built package(s) in /tmp.
+repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
+#repodir="/home/$USER/git/slackbuilds" # Alternate repositort for slackbuilds.
+srcpath="/home/$USER/src" # Where the downloaded source is to be placed.
+#srcpath="" # Leave blank for saving it in the same directory as the slackbuild.
+outdir="/home/$USER/packages" # Where the build package will be placed.
+#outdir="" # Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir="" # Leave it blank if you dont want to use the --update option.
 config="/etc/slack/slack.conf" # Config file which over-rides above defaults.
@@ -33,9 +33,9 @@ config="/etc/slack/slack.conf" # Config file which over-rides above defaults.
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
-#if [ -e "$conf" ]; then
-#	. "$conf"
-#fi
+if [ -e "$conf" ]; then
+	. "$conf"
+fi
 
 # Check the no of input parameters
 if [ $# -gt 2 ] ; then
@@ -264,11 +264,11 @@ process|-P)
 	;;
 --all|-a)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
---version)
-        echo -e "slack, a package manager for your local slackbuilds repository. ver-$ver" ;;
+--version|-V)
+        echo -e "Version-$ver" ;;
 --help|-h|*)
 	echo -e "Usage: slack <option> [package]\nOptions-"
-	echo -e "[search,-s]\t[query,-q]\t[find,-f]\n[info,-i]\t[readme,-r]\t[desc,-d]\n[view,-v]\t[goto,-g]\t[list,-l]\n[get,-G]\t[build,-B]\t[install,-I]\n[upgrade,-U]\t[remove,-R]\t[process,-P]\n[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version]\n"
+	echo -e "[search,-s]\t[query,-q]\t[find,-f]\n[info,-i]\t[readme,-r]\t[desc,-d]\n[view,-v]\t[goto,-g]\t[list,-l]\n[get,-G]\t[build,-B]\t[install,-I]\n[upgrade,-U]\t[remove,-R]\t[process,-P]\n[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version,-V]\n"
        echo "For more info, see the man page and/or the README."
        ;;
 esac
