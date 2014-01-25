@@ -267,9 +267,19 @@ process|-P)
 --version|-V)
         echo -e "Version-$ver" ;;
 --help|-h|*)
-	echo -e "Usage: slack <option> [package]\nOptions-"
-	echo -e "[search,-s]\t[query,-q]\t[find,-f]\n[info,-i]\t[readme,-r]\t[desc,-d]\n[view,-v]\t[goto,-g]\t[list,-l]\n[get,-G]\t[build,-B]\t[install,-I]\n[upgrade,-U]\t[remove,-R]\t[process,-P]\n[--update,-u]\t[--all,-a]\n[--help,-h]\t[--version,-V]\n"
-       echo "For more info, see the man page and/or the README."
+	cat << EOF 
+Usage: slack <option> [package]
+Options-
+	[search,-s]	[query,-q]	[find,-f]
+	[info,-i]	[readme,-r]	[desc,-d]
+	[view,-v]	[goto,-g]	[list,-l]
+	[get,-G]	[build,-B]	[install,-I]
+	[upgrade,-U]	[remove,-R]	[process,-P]
+	[--update,-u]	[--all,-a]
+	[--help,-h]	[--version,-V]
+
+For more info, see the man page and/or the README.
+EOF
        ;;
 esac
 
