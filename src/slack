@@ -33,8 +33,8 @@ config="/etc/slack/slack.conf" # Config file which over-rides above defaults.
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
-if [ -e "$conf" ]; then
-	. "$conf"
+if [ -e "$config" ]; then
+	. "$config"
 fi
 
 # Check the no of input parameters
