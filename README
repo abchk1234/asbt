@@ -80,4 +80,5 @@ Upgrading virtualbox-kernel
 N/A
 
 This could be because there are 2 packages virtualbox-kernel, while it can process only one.
-In such a case, expand the name of package to install, for example, virtualbox-kernel-4.3.4_3.10.28, so that it can differentiate between the package versions, which on my system are virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo and virtualbox-kernel-4.3.4_3.10.28_custom-x86_64-1_SBo.
+In such a case, expand the name of package to install, like virtualbox-kernel-4.3.4_3.10.28, so that it can differentiate between the package versions, eg, 
+ slack upgrade virtualbox-kernel-4.3.4_3.10
