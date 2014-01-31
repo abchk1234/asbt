@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.4.0" # Version
+ver="0.4.1" # Version
 
 # Variables used:
 repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
@@ -60,12 +60,12 @@ get-path() {
 	path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
-		echo "$path N/A"
+		echo "$path  Not Available"
 		exit 1
 	fi
 }
 search-package () {
-	find "$repodir" -maxdepth 2 -iname "*$package*"
+	find "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 }
 query-package () {
 	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
@@ -74,7 +74,7 @@ get-content () {
 	if [ -f "$1" ]; then
 		cat "$1" # Return the content of the argument passed.
 	else
-		echo "N/A"
+		echo "$1 Not Available"
 		exit 1
 	fi
 }
@@ -161,9 +161,9 @@ query|-q)
 find|-f)
 	check-option "$2"
 	echo "Present in slackbuilds repository:"
-	search-package
+	find "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	echo -e "\nInstalled:"
-	query-package
+	find "/var/log/packages" -iname "*$package*_SBo" -printf "%f\n"
 	;;
 info|-i)
 	check-option "$2"
@@ -265,7 +265,7 @@ process|-P)
 --all|-a)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
 --version|-V)
-        echo -e "Version-$ver" ;;
+        echo -e "slack version-$ver" ;;
 --help|-h|*)
 	cat << EOF 
 Usage: slack <option> [package]
