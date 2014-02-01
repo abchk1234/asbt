@@ -82,3 +82,8 @@ N/A
 This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, like virtualbox-kernel-4.3.4_3.10.28, so that it can differentiate between the package versions, eg, 
  slack upgrade virtualbox-kernel-4.3.4_3.10
+
+4) Giving package path instead of package name also added to support installation of package from custom folder. For example,
+ slack -B ~/builds/thermald/thermal_daemon-1.1-rc
+(Without any trailing slash at the end of the path)
+Here the above path is the folder which contains the source and slackbuild and related files.

@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.4.1" # Version
+ver="0.5.1" # Version
 
 # Variables used:
 repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
@@ -57,7 +57,14 @@ check-option () {
 	fi
 }
 get-path() {
-	path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
+	# Check if path to package is specified instead of package name
+	#if [ `echo "$package" | grep '/'` ]; then
+	if [ -d "$package" ]; then
+		path=`readlink -f "$package"`
+		package=`basename "$path" | cut -f 1 -d "-"`
+	else
+		path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
+	fi
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
 		echo "$path  Not Available"
@@ -101,7 +108,12 @@ get-package () {
 	fi
 }
 build-package () {
-	chmod +x "$path/$package.SlackBuild"
+	if [ -f "$path/$package.SlackBuild" ]; then
+		chmod +x "$path/$package.SlackBuild"
+	else
+		echo "$path/$package.SlackBuild  Not Available"
+		exit 1
+	fi
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
 	# Check if outdir is present (if yes, built package is saved there)

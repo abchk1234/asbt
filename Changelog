@@ -3,3 +3,9 @@ Add 2 new options: find and process + re-organisation of code + bugfixes.
 
 0.4.1 (31/01/2014)
 Refine find option to include only SBo packages + simplify search result.
+
+0.5.0 (31/01/2014)
+Add giving path of slackbuild package instead of simply its name + bugfixes.
+
+0.5.1 (01/02/2014)
+Made using package path more robust.

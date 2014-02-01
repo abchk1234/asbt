@@ -1,10 +1,10 @@
 NAME=slack
-VER=0.4.1
+VER=0.5.1
 install=/usr/bin/install
 shell=/bin/bash
 DESTDIR=
 BINDIR=/usr/bin
-DOCDIR=/usr/share/doc/$(NAME)-$(VER)
+DOCDIR=/usr/doc/$(NAME)-$(VER)
 MANDIR=/usr/man/man1
 SETDIR=/etc/slack
 
