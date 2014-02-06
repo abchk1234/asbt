@@ -18,6 +18,7 @@ It supports following functions/options:
 13) query installed packages (-q)
 14) view all packages installed from the slackbuilds repo (-a)
 15) update the local git repo of slackbuilds (-u)
+16) check for upgrades to installed packages (-c)
 
 It uses the following (Slackware) tools:
 
@@ -30,7 +31,7 @@ The variables used are:
 1) repodir=""
  # Repository for slackbuilds.
 
-2) srcpath=""
+2) srcdir=""
  # Where the downloaded source packages are to be placed.
  # Leave it blank for saving it in the same directory as the slackbuild.
 
@@ -46,7 +47,10 @@ Samples for these variables are present in the script itself.
 These can be overrided by specifying the options provided in the configuration file "/etc/slack/slack.conf".
 
 Installation:
-(as root)
+Via SBo,
+http://slackbuilds.org/repository/14.1/system/slack/
+
+or, (as root)
 make install
 
 Usage:
@@ -59,6 +63,7 @@ slack -v dosbox (view slackbuild)
 slack -G dosbox (get(download) dosbox(source))
 slack -B dosbox (build package for dosbox)
 slack -I dosbox (install built package)
+slack -I dosbox-0.74 (install specified version of built package)
 slack -a (list all packages installed from the slackbuilds repository)
 
 Note:
@@ -75,15 +80,14 @@ else no output. A *(wildcard) at both ends is also implied when querying.
 
 3) Suppose that you want to install a built package virtualbox-kernel, and you get an error like: 
 
-Upgrading virtualbox-kernel
+Installing virtualbox-kernel
 /usr/bin/slack: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
 N/A
 
 This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, like virtualbox-kernel-4.3.4_3.10.28, so that it can differentiate between the package versions, eg, 
- slack upgrade virtualbox-kernel-4.3.4_3.10
+slack upgrade virtualbox-kernel-4.3.4_3.10.28
 
 4) Giving package path instead of package supports installation of package from custom folder. For example,
- slack -B ~/builds/thermald/thermal_daemon-1.1-rc
-(Without any trailing slash at the end of the path)
+slack -B ~/builds/thermald/thermal_daemon-1.1-rc
 Here the above path is the folder which contains the source and slackbuild and related files.

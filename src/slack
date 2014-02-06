@@ -17,13 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.5.1" # Version
+ver="0.7.1" # Version
 
 # Variables used:
-repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
-#repodir="/home/$USER/git/slackbuilds" # Alternate repositort for slackbuilds.
-srcpath="/home/$USER/src" # Where the downloaded source is to be placed.
-#srcpath="" # Leave blank for saving it in the same directory as the slackbuild.
+repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
+#repodir="/home/$USER/slackbuilds" # Alternate repository for slackbuilds.
+srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
+#srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
 outdir="/home/$USER/packages" # Where the build package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
@@ -52,111 +52,155 @@ fi
 # Functions
 check-option () {
 	if [ ! "$1" ]; then
-		echo "Additional parameter(s) required for this option. Type slack -h for more info."
+		echo "Additional parameter required for this option. Type slack -h for more info."
 		exit 1
 	fi
 }
 get-path() {
 	# Check if path to package is specified instead of package name
-	#if [ `echo "$package" | grep '/'` ]; then
 	if [ -d "$package" ]; then
 		path=`readlink -f "$package"`
-		package=`basename "$path" | cut -f 1 -d "-"`
+		# Source the .info file to get the name of the package
+		if [ -f "$path"/*.info ]; then
+			. "$path/"*.info
+		else
+			echo ".info file N/A in $path"
+		fi
+		package=$PRGNAM
 	else
 		path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
 	fi
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
-		echo "$path  Not Available"
+		echo "Directory: $repodir/$package N/A"
 		exit 1
 	fi
-}
-search-package () {
-	find "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
-}
-query-package () {
-	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
 }
 get-content () {
 	if [ -f "$1" ]; then
 		cat "$1" # Return the content of the argument passed.
 	else
-		echo "$1 Not Available"
+		echo "File: $1 N/A"
 		exit 1
 	fi
 }
-get-package () {
+get-source-data () {
 	get-path
-	link=`cat "$path/$package.info" | grep -w "DOWNLOAD"| cut -f 2 -d '"'`
-	linkx64=`cat "$path/$package.info" | grep -w "DOWNLOAD_x86_64"| cut -f 2 -d '"'`
-	# Check if srcpath is specified (if yes, download is saved there)
-	if [ -z "$srcpath" ]; then
-		# Check for architecture in package
-		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ `echo "$linkx64" | grep -e "http" -e "ftp"` ]] ; then
-			wget --directory-prefix="$path" -N "$linkx64"
+	if [ ! -f "$path/$package.info" ]; then
+		echo "slack: $path/$package.info N/A"
+		exit 1
+	else
+		. "$path/$package.info"
+		echo "slack: $path/$package.info sourced."
+	fi
+	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
+		link="$DOWNLOAD_x86_64"
+		arch="x86_64"
+	else
+		link="$DOWNLOAD"
+	fi
+	src=`basename "$link"`
+	if [ -e "$path/$src" ]; then
+		md5=`md5sum "$path/$src" | cut -f 1 -d " "`
+	elif [ -f "$srcdir/$src" ]; then
+		md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+	fi
+}
+check-source () {
+	get-source-data
+	# Check if source has already been downloaded
+	if [ -e "$path/$src" ]; then
+		# Check validity of downloaded source
+		if [ "$arch" == "x86_64" ]; then
+			# 64 bit source
+			if [ "$md5" == "$MD5SUM_x86_64" ]; then
+				# Source valid
+				valid=1
+			else
+				valid=0	
+			fi
 		else
-			wget --directory-prefix="$path" -N "$link"
+			if [ "$md5" == "$MD5SUM" ]; then
+				# Source valid
+				valid=1
+			else
+				valid=0
+			fi
+		fi
+	# Check if source present but not linked
+	elif [ -f "$srcdir/$src" ]; then
+		# Check validity of downloaded source
+		if [ "$arch" == "x86_64" ]; then
+			if [ "$md5" == "$MD5SUM_x86_64" ]; then
+				ln -s "$srcdir/$src" "$path"
+				valid=1
+			fi
+		else
+			if [ "$md5" == "$MD5SUM" ]; then
+				ln -s "$srcdir/$src" "$path"
+				valid=1
+			fi
 		fi
 	else
-		if [[ `uname -m` == "x86_64" ]] && [[ -n "$linkx64" ]] && [[ `echo "$linkx64" | grep -e "http" -e "ftp"` ]] ; then
-			pkgname=`basename "$linkx64"`
-			wget --directory-prefix="$srcpath" -N "$linkx64" && ln -s "$srcpath/$pkgname" "$path"
-		else
-			pkgname=`basename "$link"`
-			wget --directory-prefix="$srcpath" -N "$link" && ln -s "$srcpath/$pkgname" "$path"
-		fi
+		valid=0
+	fi
+}
+download-source () {
+	echo "Downloading $src"
+	# Check if srcdir is specified (if yes, download is saved there)
+	if [ -z "$srcdir" ]; then
+		wget --directory-prefix="$path" -N "$link"
+	else
+		pkgnam=`basename "$link"`
+		wget --directory-prefix="$srcdir" -N "$link" && ln -s "$srcdir/$pkgnam" "$path"
+	fi
+}
+get-package () {
+	check-source
+	if [ "$valid" -ne 1 ]; then
+		# Download the source
+		download-source
+	else
+		echo "Source: $src present."
 	fi
 }
 build-package () {
+	get-path
 	if [ -f "$path/$package.SlackBuild" ]; then
 		chmod +x "$path/$package.SlackBuild"
 	else
-		echo "$path/$package.SlackBuild  Not Available"
+		echo "File: $path/$package.SlackBuild N/A"
 		exit 1
 	fi
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo CWD="$path" "$path/$package.SlackBuild"
+		sudo -k CWD="$path" "$path/$package.SlackBuild"
 	else
-		sudo OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" 
+		sudo -k OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" 
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
 }
 install-package () {
 	# Check if package present
-	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
-		# Install the package
-		if [ -z "$outdir" ]; then
-			# Find path of built package
-			pkgpath=`ls "/tmp/$package"*`
-			sudo -k /sbin/installpkg "$pkgpath"
-		else
-			pkgpath=`ls "$outdir/$package"*`
-			sudo -k /sbin/installpkg "$pkgpath"
-   		fi
-        else
-		echo "N/A"
+	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
+		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
+		sudo -k /sbin/installpkg "$pkgpath"
+	else
+		echo "Package: $package N/A"
 		exit 1
 	fi 
 }
 upgrade-package () {
 	# Check if package present
-	if [ -f "$outdir/$package"* ] || [ -f "/tmp/$package"* ]; then
-		# Upgrade the package
-		if [ -z "$outdir" ]; then
-			pkgpath=`ls "/tmp/$package"*`
-			sudo -k /sbin/upgradepkg "$pkgpath"
-		else
-			pkgpath=`ls "$outdir/$package"*`
-			sudo -k /sbin/upgradepkg "$pkgpath"
-		fi
+	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
+		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
+		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
-		echo "N/A"
+		echo "Package: $package N/A"
 		exit 1
-
 	fi 
 }
 
@@ -164,11 +208,11 @@ upgrade-package () {
 case "$1" in
 search|-s)
 	check-option "$2"
-	search-package
+	find "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
 	check-option "$2"
-	query-package
+	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
 	;;
 find|-f)
 	check-option "$2"
@@ -206,7 +250,7 @@ goto|-g)
 	check-option "$2"
 	get-path
 	if [ "$TERM" == "linux" ]; then
-		echo "N/A"
+		echo "Goto: N/A"
 		exit 1
 	fi
 	if [ -e /usr/bin/xfce4-terminal ]; then
@@ -216,7 +260,7 @@ goto|-g)
 	elif [ -e /usr/bin/xterm ]; then
 		xterm -e 'cd "$path" && /bin/bash'
 	else
-		echo "N/A"
+		echo "Goto: N/A"
 		exit 1
 	fi
 	;;
@@ -226,7 +270,6 @@ get|-G)
 	;;
 build|-B)
 	check-option "$2"
-	get-path
 	echo "Building $package"
 	build-package
 	;;
@@ -245,21 +288,29 @@ remove|-R)
 	echo "Removing $package"
 	# Check if package is installed 
 	if [ -f "/var/log/packages/$package"* ]; then
-		sudo -k /sbin/removepkg "$package"
+		rpkg=`ls "/var/log/packages/$package"*`
+		sudo -k /sbin/removepkg "$rpkg"
 	else
-		echo "N/A"
+		echo "Package: $package N/A"
 		exit 1
 	fi
 	;;
 process|-P)
 	check-option "$2"
-	get-package
-	build-package
+	echo "Downloading $package"
+	get-package || exit 1
+       	echo "Building $package"	
+	build-package || exit 1
 	# Check if package is already installed
 	if [ -f "/var/log/packages/$package"* ]; then
+		echo "Upgrading $package"
 		upgrade-package
-	else
+	elif [ ! -f "/var/log/packages/$package"* ]; then
+		echo "Installing package"
 		install-package
+	else
+		echo "N/A"
+		exit 1
 	fi
 	;;
 --update|-u)
@@ -268,7 +319,7 @@ process|-P)
 		exit 1
 	fi
 	if [ -d "$gitdir" ]; then
-		git --git-dir="$gitdir" pull origin master
+		git --git-dir="$gitdir" --work-tree="$repodir" pull origin master
 	else
 		echo "Git directory $gitdir doesnt exist.."
 		exit 1
@@ -276,6 +327,19 @@ process|-P)
 	;;
 --all|-a)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
+--check|-c)
+	for i in /var/log/packages/*_SBo*; do
+		package=`basename $i | rev | cut -d "-" -f 4- | rev`
+		pkgver=`basename $i | rev | cut -d "-" -f 3 | rev`
+		path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
+		if [ -f "$path/$package.info" ]; then
+			. "$path/$package.info"
+		fi
+		if [[ ! "$pkgver" == "$VERSION" ]]; then
+			printf "$package:\t$pkgver -> $VERSION\n"
+		fi
+	done
+	;;
 --version|-V)
         echo -e "slack version-$ver" ;;
 --help|-h|*)
@@ -287,7 +351,7 @@ Options-
 	[view,-v]	[goto,-g]	[list,-l]
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
-	[--update,-u]	[--all,-a]
+	[--update,-u]	[--check,-c]	[--all,-a]	
 	[--help,-h]	[--version,-V]
 
 For more info, see the man page and/or the README.
@@ -299,11 +363,16 @@ esac
 unset repodir
 unset package
 unset path
-unset srcpath
+unset srcdir
 unset outdir
 unset pkgname
+unset pkgnam
 unset pkgpath
 unset link
-unset linkx64
+unset arch
 unset conf
+unset rpkg
+unset src
+unset md5
+unset valid
 exit 0

@@ -9,3 +9,21 @@ Add giving path of slackbuild package instead of simply its name + bugfixes.
 
 0.5.1 (01/02/2014)
 Made using package path more robust.
+
+0.5.2 (01/02/2014)
+Bugfixes and refinements.
+
+0.6.0 (01/02/2014)
+Add option (-c) to check for upgrades to installed packages.
+
+0.6.1 (01/02/2014)
+Made output more verbose + refinements and bugfixes.
+
+0.6.2 (01/02/2014)
+Fix regressions and bugs.
+
+0.7.0 (03/02/2014)
+Add checking if source is already present.
+
+0.7.1 (04/02/2014)
+Refinements + bugfixes + make output more verbose.
