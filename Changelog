@@ -27,3 +27,10 @@ Add checking if source is already present.
 
 0.7.1 (04/02/2014)
 Refinements + bugfixes + make output more verbose.
+
+0.7.2 (07/02/2014)
+Bugfix for case when slackbuilds repo dir is a symlink + 
+getting source option enhanced.
+
+0.7.3 (07/02/2014)
+More bugfixes on building and getting packages + make output more verbose.

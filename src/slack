@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.7.2" # Version
+ver="0.7.3" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
@@ -153,10 +153,10 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --directory-prefix="$path" -Nc "$link"
+		wget --directory-prefix="$path" --no-clobber -c "$link"
 	else
 		pkgnam=`basename "$link"`
-		wget --directory-prefix="$srcdir" -Nc "$link" && ln -s "$srcdir/$pkgnam" "$path"
+		wget --directory-prefix="$srcdir" --no-clobber -c "$link" && ln -sf "$srcdir/$pkgnam" "$path"
 	fi
 }
 get-package () {
@@ -180,9 +180,9 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -k CWD="$path" "$path/$package.SlackBuild"
+		sudo -k CWD="$path" "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -k OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" 
+		sudo -k OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
@@ -304,7 +304,7 @@ process|-P)
 	echo "Downloading $package"
 	get-package || exit 1
        	echo "Building $package"	
-	build-package || exit 1
+	build-package
 	# Check if package is already installed
 	if [ -f "/var/log/packages/$package"* ]; then
 		echo "Upgrading $package"
@@ -323,6 +323,7 @@ process|-P)
 		exit 1
 	fi
 	if [ -d "$gitdir" ]; then
+		echo "Updating git repo $gitdir"
 		git --git-dir="$gitdir" --work-tree="$repodir" pull origin master
 	else
 		echo "Git directory $gitdir doesnt exist.."
