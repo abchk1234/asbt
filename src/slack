@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.7.1" # Version
+ver="0.7.2" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.

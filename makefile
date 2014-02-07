@@ -1,5 +1,5 @@
 NAME=slack
-VER=0.7.1
+VER=0.7.2
 install=/usr/bin/install
 shell=/bin/bash
 DESTDIR=
