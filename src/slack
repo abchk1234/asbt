@@ -68,7 +68,7 @@ get-path() {
 		fi
 		package=$PRGNAM
 	else
-		path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
+		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
 	fi
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
@@ -134,11 +134,15 @@ check-source () {
 			if [ "$md5" == "$MD5SUM_x86_64" ]; then
 				ln -s "$srcdir/$src" "$path"
 				valid=1
+			else
+				valid=0
 			fi
 		else
 			if [ "$md5" == "$MD5SUM" ]; then
 				ln -s "$srcdir/$src" "$path"
 				valid=1
+			else
+				valid=0
 			fi
 		fi
 	else
@@ -149,15 +153,15 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --directory-prefix="$path" -N "$link"
+		wget --directory-prefix="$path" -Nc "$link"
 	else
 		pkgnam=`basename "$link"`
-		wget --directory-prefix="$srcdir" -N "$link" && ln -s "$srcdir/$pkgnam" "$path"
+		wget --directory-prefix="$srcdir" -Nc "$link" && ln -s "$srcdir/$pkgnam" "$path"
 	fi
 }
 get-package () {
 	check-source
-	if [ "$valid" -ne 1 ]; then
+	if [ $valid -ne 1 ]; then
 		# Download the source
 		download-source
 	else
@@ -208,7 +212,7 @@ upgrade-package () {
 case "$1" in
 search|-s)
 	check-option "$2"
-	find "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
+	find -L "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
 	check-option "$2"
@@ -217,7 +221,7 @@ query|-q)
 find|-f)
 	check-option "$2"
 	echo "Present in slackbuilds repository:"
-	find "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
+	find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	echo -e "\nInstalled:"
 	find "/var/log/packages" -iname "*$package*_SBo" -printf "%f\n"
 	;;
@@ -331,7 +335,7 @@ process|-P)
 	for i in /var/log/packages/*_SBo*; do
 		package=`basename $i | rev | cut -d "-" -f 4- | rev`
 		pkgver=`basename $i | rev | cut -d "-" -f 3 | rev`
-		path=`find "$repodir" -type d -maxdepth 2 -name "$package"`
+		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
 		fi
@@ -354,6 +358,7 @@ Options-
 	[--update,-u]	[--check,-c]	[--all,-a]	
 	[--help,-h]	[--version,-V]
 
+Using repository: $repodir
 For more info, see the man page and/or the README.
 EOF
        ;;
