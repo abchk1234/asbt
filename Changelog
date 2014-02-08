@@ -34,3 +34,6 @@ getting source option enhanced.
 
 0.7.3 (07/02/2014)
 More bugfixes on building and getting packages + make output more verbose.
+
+0.7.4 (08/02/2014)
+Name changed from slack to asbt.

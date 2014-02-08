@@ -1,5 +1,5 @@
 #!/bin/bash
-# slack : A package manager for a local slackbuilds repository.
+# asbt : A package manager for a local slackbuilds repository.
 ##
 # Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
@@ -28,7 +28,7 @@ outdir="/home/$USER/packages" # Where the build package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir="" # Leave it blank if you dont want to use the --update option.
-config="/etc/slack/slack.conf" # Config file which over-rides above defaults.
+config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="" # Leave it blank for using above defaults
 package="$2" # Name of package input by the user.
 
@@ -39,7 +39,7 @@ fi
 
 # Check the no of input parameters
 if [ $# -gt 2 ] ; then
-	echo "Invalid syntax. Type slack -h for more info."
+	echo "Invalid syntax. Type asbt -h for more info."
 	exit 1
 fi
 
@@ -52,7 +52,7 @@ fi
 # Functions
 check-option () {
 	if [ ! "$1" ]; then
-		echo "Additional parameter required for this option. Type slack -h for more info."
+		echo "Additional parameter required for this option. Type asbt -h for more info."
 		exit 1
 	fi
 }
@@ -87,11 +87,11 @@ get-content () {
 get-source-data () {
 	get-path
 	if [ ! -f "$path/$package.info" ]; then
-		echo "slack: $path/$package.info N/A"
+		echo "asbt: $path/$package.info N/A"
 		exit 1
 	else
 		. "$path/$package.info"
-		echo "slack: $path/$package.info sourced."
+		echo "asbt: $path/$package.info sourced."
 	fi
 	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
@@ -346,10 +346,10 @@ process|-P)
 	done
 	;;
 --version|-V)
-        echo -e "slack version-$ver" ;;
+        echo -e "asbt version-$ver" ;;
 --help|-h|*)
 	cat << EOF 
-Usage: slack <option> [package]
+Usage: asbt <option> [package]
 Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]

@@ -1,4 +1,4 @@
-slack acts like a package manager for your local copy of slackbuilds.
+asbt acts like a package manager for your local copy of slackbuilds.
 (usually obtained from http://slackbuilds.org/)
 
 It supports following functions/options:
@@ -44,50 +44,52 @@ The variables used are:
 
 Samples for these variables are present in the script itself.
 
-These can be overrided by specifying the options provided in the configuration file "/etc/slack/slack.conf".
+These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf".
 
 Installation:
 Via SBo,
-http://slackbuilds.org/repository/14.1/system/slack/
+http://slackbuilds.org/repository/14.1/system/asbt/
 
 or, (as root)
 make install
 
 Usage:
-slack <option> [package]
+asbt <option> [package]
 
 Examples:
-slack -s dosbox (search for package dosbox)
-slack -i dosbox (read the info file for dosbox)
-slack -v dosbox (view slackbuild)
-slack -G dosbox (get(download) dosbox(source))
-slack -B dosbox (build package for dosbox)
-slack -I dosbox (install built package)
-slack -I dosbox-0.74 (install specified version of built package)
-slack -a (list all packages installed from the slackbuilds repository)
+asbt -s dosbox (search for package dosbox)
+asbt -i dosbox (read the info file for dosbox)
+asbt -v dosbox (view slackbuild)
+asbt -G dosbox (get(download) dosbox(source))
+asbt -B dosbox (build package for dosbox)
+asbt -I dosbox (install built package)
+asbt -I dosbox-0.74 (install specified version of built package)
+asbt -a (list all packages installed from the slackbuilds repository)
 
 Note:
 1) When searching, a *(wildcard) at both ends is implied.
 
 For example, if one wants to search for all packages which have the word "xfce", one can use-
-slack search xfce
+asbt search xfce
 
 Instead of-
-slack search '*xfce*'
+asbt search '*xfce*'
 
 2) When querying, if the package(s) is/are installed, they will they displayed,
 else no output. A *(wildcard) at both ends is also implied when querying.
 
-3) Suppose that you want to install a built package virtualbox-kernel, and you get an error like: 
+3) Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel),
+and you get something like:
 
 Installing virtualbox-kernel
-/usr/bin/slack: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
+/usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
 N/A
 
 This could be because there are 2 packages virtualbox-kernel, while it can process only one.
-In such a case, expand the name of package to install, like virtualbox-kernel-4.3.4_3.10.28, so that it can differentiate between the package versions, eg, 
-slack upgrade virtualbox-kernel-4.3.4_3.10.28
+In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
+asbt upgrade virtualbox-kernel-4.3.4_3.10.28
 
 4) Giving package path instead of package supports installation of package from custom folder. For example,
-slack -B ~/builds/thermald/thermal_daemon-1.1-rc
+asbt -B ~/builds/thermald/thermal_daemon-1.1:wq
+
 Here the above path is the folder which contains the source and slackbuild and related files.
