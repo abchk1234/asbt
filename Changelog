@@ -37,3 +37,8 @@ More bugfixes on building and getting packages + make output more verbose.
 
 0.7.4 (08/02/2014)
 Name changed from slack to asbt.
+
+0.8.0 (08/02/14)
+Check for built package before building + cleanup + bugfixes.
++ Use vim/nano as editor instead of just viewing the slackbuild using less.
++ Change wget options for getting source.

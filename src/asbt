@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.7.3" # Version
+ver="0.8.0" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
@@ -30,6 +30,8 @@ gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir="" # Leave it blank if you dont want to use the --update option.
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="" # Leave it blank for using above defaults
+editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
+#editor="/usr/bin/nano" # Alternate editor
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
@@ -65,6 +67,7 @@ get-path() {
 			. "$path/"*.info
 		else
 			echo ".info file N/A in $path"
+			exit 1
 		fi
 		package=$PRGNAM
 	else
@@ -73,6 +76,16 @@ get-path() {
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
 		echo "Directory: $repodir/$package N/A"
+		exit 1
+	fi
+}
+get-info () {
+	# Source the .info file to get the package details
+	if [ -f "$path/$package.info" ]; then
+		. "$path/$package.info"
+		echo "asbt: $path/$package.info sourced."
+	else
+		echo "asbt: $path/$package.info N/A"
 		exit 1
 	fi
 }
@@ -86,13 +99,7 @@ get-content () {
 }
 get-source-data () {
 	get-path
-	if [ ! -f "$path/$package.info" ]; then
-		echo "asbt: $path/$package.info N/A"
-		exit 1
-	else
-		. "$path/$package.info"
-		echo "asbt: $path/$package.info sourced."
-	fi
+	get-info
 	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
 		arch="x86_64"
@@ -153,10 +160,10 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --directory-prefix="$path" --no-clobber -c "$link"
+		wget --directory-prefix="$path" -N "$link"
 	else
 		pkgnam=`basename "$link"`
-		wget --directory-prefix="$srcdir" --no-clobber -c "$link" && ln -sf "$srcdir/$pkgnam" "$path"
+		wget --directory-prefix="$srcdir" -N "$link" && ln -sf "$srcdir/$pkgnam" "$path"
 	fi
 }
 get-package () {
@@ -168,8 +175,31 @@ get-package () {
 		echo "Source: $src present."
 	fi
 }
-build-package () {
+check-built-package () {
 	get-path
+	# Source the .info file to get the package version 
+	if [ -f "$path/$package.info" ]; then
+		. "$path/$package.info"
+	else
+		VERSION="UNKNOWN"
+	fi
+	# Check if package has already been built
+	if [ -f "/tmp/$package"*-"$VERSION"* ] 2>/dev/null || [ -f "/$outdir/$package"*-"$VERSION"* ] 2>/dev/null; then
+		built=1
+		echo "Package: $package-$VERSION already built."
+	else
+		built=0
+	fi
+}
+process-built-package () {
+	check-built-package
+	if [ $built -eq 0 ]; then
+		build-package
+	fi
+}
+build-package () {
+	check-built-package	
+	# Check for SlackBuild
 	if [ -f "$path/$package.SlackBuild" ]; then
 		chmod +x "$path/$package.SlackBuild"
 	else
@@ -178,6 +208,12 @@ build-package () {
 	fi
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
+	# Check for built package
+	if [ $built -eq 1 ]; then
+		echo "Re-building $package"
+	else	
+		echo "Building $package"
+	fi
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
 		sudo -k CWD="$path" "$path/$package.SlackBuild" || exit 1
@@ -191,6 +227,7 @@ install-package () {
 	# Check if package present
 	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
 		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
+		echo "Installing $package"
 		sudo -k /sbin/installpkg "$pkgpath"
 	else
 		echo "Package: $package N/A"
@@ -201,6 +238,7 @@ upgrade-package () {
 	# Check if package present
 	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
 		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
+		echo "Upgrading $package"
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
 		echo "Package: $package N/A"
@@ -238,7 +276,11 @@ readme|-r)
 view|-v)
 	check-option "$2"
 	get-path
-	less "$path/$package.SlackBuild"
+	if [ -e $editor ]; then
+		$editor "$path/$package.SlackBuild"
+	else
+		less "$path/$package.Slackbuild"
+	fi
 	;;
 desc|-d)
 	check-option "$2"
@@ -274,17 +316,14 @@ get|-G)
 	;;
 build|-B)
 	check-option "$2"
-	echo "Building $package"
 	build-package
 	;;
 install|-I)
 	check-option "$2"
-	echo "Installing $package"
 	install-package
 	;;
 upgrade|-U)
 	check-option "$2"
-	echo "Upgrading $package"
 	upgrade-package
 	;; 
 remove|-R)
@@ -301,16 +340,13 @@ remove|-R)
 	;;
 process|-P)
 	check-option "$2"
-	echo "Downloading $package"
+	echo "Processing $package..."
 	get-package || exit 1
-       	echo "Building $package"	
-	build-package
+	process-built-package || exit 1
 	# Check if package is already installed
 	if [ -f "/var/log/packages/$package"* ]; then
-		echo "Upgrading $package"
 		upgrade-package
 	elif [ ! -f "/var/log/packages/$package"* ]; then
-		echo "Installing package"
 		install-package
 	else
 		echo "N/A"
@@ -339,6 +375,9 @@ process|-P)
 		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
+		else
+			# For packages not present in slackbuilds repo
+			VERSION=$pkgver
 		fi
 		if [[ ! "$pkgver" == "$VERSION" ]]; then
 			printf "$package:\t$pkgver -> $VERSION\n"
@@ -381,4 +420,6 @@ unset rpkg
 unset src
 unset md5
 unset valid
+unset built
+unset editor
 exit 0

@@ -42,6 +42,9 @@ The variables used are:
 4) gitdir=""
  # Directory where the slackbuilds git repository is present.
 
+5) editor="" 
+ # Editor for viewing/editing slackbuilds.
+
 Samples for these variables are present in the script itself.
 
 These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf".
@@ -59,7 +62,7 @@ asbt <option> [package]
 Examples:
 asbt -s dosbox (search for package dosbox)
 asbt -i dosbox (read the info file for dosbox)
-asbt -v dosbox (view slackbuild)
+asbt -v dosbox (view/edit slackbuild)
 asbt -G dosbox (get(download) dosbox(source))
 asbt -B dosbox (build package for dosbox)
 asbt -I dosbox (install built package)
