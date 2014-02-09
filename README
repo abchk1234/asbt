@@ -1,5 +1,5 @@
-asbt acts like a package manager for your local copy of slackbuilds.
-(usually obtained from http://slackbuilds.org/)
+asbt is a tool for managing packages in your local copy of slackbuilds,
+usually obtained from http://slackbuilds.org/ (SBo), for Slackware linux.
 
 It supports following functions/options:
 
@@ -68,6 +68,7 @@ asbt -B dosbox (build package for dosbox)
 asbt -I dosbox (install built package)
 asbt -I dosbox-0.74 (install specified version of built package)
 asbt -a (list all packages installed from the slackbuilds repository)
+asbt -c (check for updates to packages installed from the slackbuilds repo)
 
 Note:
 1) When searching, a *(wildcard) at both ends is implied.
@@ -93,6 +94,6 @@ In such a case, expand the name of package to install, so that it can differenti
 asbt upgrade virtualbox-kernel-4.3.4_3.10.28
 
 4) Giving package path instead of package supports installation of package from custom folder. For example,
-asbt -B ~/builds/thermald/thermal_daemon-1.1:wq
+asbt -B ~/builds/thermald/thermal_daemon-1.1
 
 Here the above path is the folder which contains the source and slackbuild and related files.
