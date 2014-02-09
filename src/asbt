@@ -98,7 +98,6 @@ get-content () {
 	fi
 }
 get-source-data () {
-	get-path
 	get-info
 	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
@@ -176,7 +175,6 @@ get-package () {
 	fi
 }
 check-built-package () {
-	get-path
 	# Source the .info file to get the package version 
 	if [ -f "$path/$package.info" ]; then
 		. "$path/$package.info"
@@ -311,10 +309,12 @@ goto|-g)
 	fi
 	;;
 get|-G)
+	get-path
 	check-option "$2"
 	get-package
 	;;
 build|-B)
+	get-path
 	check-option "$2"
 	build-package
 	;;
@@ -340,6 +340,7 @@ remove|-R)
 	;;
 process|-P)
 	check-option "$2"
+	get-path
 	echo "Processing $package..."
 	get-package || exit 1
 	process-built-package || exit 1
