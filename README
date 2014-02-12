@@ -97,3 +97,8 @@ asbt upgrade virtualbox-kernel-4.3.4_3.10.28
 asbt -B ~/builds/thermald/thermal_daemon-1.1
 
 Here the above path is the folder which contains the source and slackbuild and related files.
+
+Bugs:
+1) asbt modifies the CWD=$(pwd) line in the slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
+	This change is reverted after building the package.
+But if someone interrupted the build process, then the slackbuild wont be reverted, and git may complain about this change when updating the git repo of slackbuilds.
