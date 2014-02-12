@@ -1,5 +1,5 @@
 asbt is a tool for managing packages in your local copy of slackbuilds,
-usually obtained from http://slackbuilds.org/ (SBo), for Slackware linux.
+usually obtained from http://slackbuilds.org/ (SBo), for Slackware Linux.
 
 It supports following functions/options:
 
@@ -68,7 +68,7 @@ asbt -B dosbox (build package for dosbox)
 asbt -I dosbox (install built package)
 asbt -I dosbox-0.74 (install specified version of built package)
 asbt -a (list all packages installed from the slackbuilds repository)
-asbt -c (check for updates to packages installed from the slackbuilds repo)
+asbt -c (check for updates to packages installed from the slackbuild repository)
 
 Note:
 1) When searching, a *(wildcard) at both ends is implied.

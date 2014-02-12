@@ -42,3 +42,7 @@ Name changed from slack to asbt.
 Check for built package before building + cleanup + bugfixes.
 + Use vim/nano as editor instead of just viewing the slackbuild using less.
 + Change wget options for getting source.
+
+0.8.1 (10/02/14)
+Refinements on getting package name if package directory was specified.
++ Update the documentation.

@@ -62,14 +62,13 @@ get-path() {
 	# Check if path to package is specified instead of package name
 	if [ -d "$package" ]; then
 		path=`readlink -f "$package"`
-		# Source the .info file to get the name of the package
-		if [ -f "$path"/*.info ]; then
-			. "$path/"*.info
+		# Get the name of the package
+		if [ -f "$path"/*.SlackBuild ]; then
+			package=`find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d "."`
 		else
-			echo ".info file N/A in $path"
+			echo "Unable to get info about $package"
 			exit 1
 		fi
-		package=$PRGNAM
 	else
 		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
 	fi
@@ -91,7 +90,8 @@ get-info () {
 }
 get-content () {
 	if [ -f "$1" ]; then
-		cat "$1" # Return the content of the argument passed.
+		# Return the content of the argument passed.
+		cat "$1"
 	else
 		echo "File: $1 N/A"
 		exit 1
@@ -122,6 +122,7 @@ check-source () {
 			if [ "$md5" == "$MD5SUM_x86_64" ]; then
 				# Source valid
 				valid=1
+				echo "asbt: md5sum matched."
 			else
 				valid=0	
 			fi
@@ -129,6 +130,7 @@ check-source () {
 			if [ "$md5" == "$MD5SUM" ]; then
 				# Source valid
 				valid=1
+				echo "asbt: md5sum matched."
 			else
 				valid=0
 			fi
@@ -138,14 +140,14 @@ check-source () {
 		# Check validity of downloaded source
 		if [ "$arch" == "x86_64" ]; then
 			if [ "$md5" == "$MD5SUM_x86_64" ]; then
-				ln -s "$srcdir/$src" "$path"
+				ln -sf "$srcdir/$src" "$path"
 				valid=1
 			else
 				valid=0
 			fi
 		else
 			if [ "$md5" == "$MD5SUM" ]; then
-				ln -s "$srcdir/$src" "$path"
+				ln -sf "$srcdir/$src" "$path"
 				valid=1
 			else
 				valid=0
@@ -184,7 +186,7 @@ check-built-package () {
 	# Check if package has already been built
 	if [ -f "/tmp/$package"*-"$VERSION"* ] 2>/dev/null || [ -f "/$outdir/$package"*-"$VERSION"* ] 2>/dev/null; then
 		built=1
-		echo "Package: $package-$VERSION already built."
+		echo "Package: $package($VERSION) already built."
 	else
 		built=0
 	fi
