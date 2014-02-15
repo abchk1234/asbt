@@ -46,3 +46,6 @@ Check for built package before building + cleanup + bugfixes.
 0.8.1 (10/02/14)
 Refinements on getting package name if package directory was specified.
 + Update the documentation + Make output more clear.
+
+0.8.2 (16/02/14)
+Small refinements + change the config file a little.

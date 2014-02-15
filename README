@@ -101,4 +101,4 @@ Here the above path is the folder which contains the source and slackbuild and r
 Bugs:
 1) asbt modifies the CWD=$(pwd) line in the slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
 	This change is reverted after building the package.
-But if someone interrupted the build process, then the slackbuild wont be reverted, and git may complain about this change when updating the git repo of slackbuilds.
+But if someone interrupted the build process, then the slackbuild wont be reverted, and git may complain about this change when updating the git repo, so you may have to revert/delete the offending slackbuild manually to allow git to update the slackbuilds repository.

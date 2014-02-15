@@ -1,5 +1,5 @@
 NAME=asbt
-VER=0.8.1
+VER=0.8.2
 install=/usr/bin/install
 shell=/bin/bash
 DESTDIR=
