@@ -54,4 +54,4 @@ Small refinements + change the config file a little.
 Add options (-C) for viewing ChangeLog.txt from the local slackbuilds repo
 (SBo) and (-t) for tracking source and built package for specified package.
 + refinement of getting package option to rename src with only version to
-name-version format.
+name-version format + Bugfixes.
