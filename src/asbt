@@ -278,7 +278,7 @@ upgrade-package () {
 case "$1" in
 search|-s)
 	check-option "$2"
-	find -L "$repodir" -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
+	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
 	check-option "$2"
