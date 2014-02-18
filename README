@@ -19,6 +19,8 @@ It supports following functions/options:
 14) view all packages installed from the slackbuilds repo (-a)
 15) update the local git repo of slackbuilds (-u)
 16) check for upgrades to installed packages (-c)
+17) View the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
+18) Track the source and built package for specified package (-t) 
 
 It uses the following (Slackware) tools:
 

@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.2" # Version
+ver="0.8.3" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
@@ -45,7 +45,7 @@ if [ $# -gt 2 ] ; then
 	exit 1
 fi
 
-# Check directories (variables)
+# Check the repository directory
 if [ ! -d "$repodir" ]; then
 	echo "slackbuilds repository $repodir doesnt exist.."
 	exit 1 
@@ -106,10 +106,30 @@ get-source-data () {
 		link="$DOWNLOAD"
 	fi
 	src=`basename "$link"`
-	if [ -e "$path/$src" ]; then
-		md5=`md5sum "$path/$src" | cut -f 1 -d " "`
-	elif [ -f "$srcdir/$src" ]; then
-		md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+	# Check if src contains PRGNAM in the name
+	if [ ! `echo "$src" | grep "$PRGNAM"` ]; then
+		# Append PRGNAM to the beginning and check
+		if [ -e "$path/$PRGNAM-$src" ]; then
+			md5=`md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " "`
+			pkgnam="$PRGNAM-$src"
+			src="$pkgnam"
+		elif [ -f "$srcdir/$PRGNAM-$src" ]; then
+			md5=`md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " "`
+			pkgnam="$PRGNAM-$src"
+			src="$pkgnam"
+		# Check src without PRGNAM also
+		elif [ -e "$path/$src" ]; then
+			md5=`md5sum "$path/$src" | cut -f 1 -d " "`
+		elif [ -f "$srcdir/$src" ]; then
+			md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+		fi
+	else
+		#src alrady contains PRGNAM in the name
+		if [ -e "$path/$src" ]; then
+			md5=`md5sum "$path/$src" | cut -f 1 -d " "`
+		elif [ -f "$srcdir/$src" ]; then
+			md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+		fi
 	fi
 }
 check-source () {
@@ -140,14 +160,14 @@ check-source () {
 		# Check validity of downloaded source
 		if [ "$arch" == "x86_64" ]; then
 			if [ "$md5" == "$MD5SUM_x86_64" ]; then
-				ln -sf "$srcdir/$src" "$path"
+				ln -svf "$srcdir/$src" "$path"
 				valid=1
 			else
 				valid=0
 			fi
 		else
 			if [ "$md5" == "$MD5SUM" ]; then
-				ln -sf "$srcdir/$src" "$path"
+				ln -svf "$srcdir/$src" "$path"
 				valid=1
 			else
 				valid=0
@@ -161,10 +181,18 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --directory-prefix="$path" -N "$link"
+		wget --directory-prefix="$path" -N "$link" || exit 1
 	else
-		pkgnam=`basename "$link"`
-		wget --directory-prefix="$srcdir" -N "$link" && ln -sf "$srcdir/$pkgnam" "$path"
+		wget --directory-prefix="$srcdir" -N "$link" || exit 1
+	fi
+	# Check if downloaded package contains the package name or not
+	if [ ! `echo "$src" | grep "$PRGNAM"` ]; then
+		# Rename it and link it
+		mv -v "$srcdir/$src" "$srcdir/$PRGNAM-$src"
+		ln -sf "$srcdir/$PRGNAM-$src" "$path" || exit 1
+	else
+		# Only linking required
+		ln -sf "$srcdir/$src" "$path" || exit 1
 	fi
 }
 get-package () {
@@ -292,6 +320,14 @@ list|-l)
 	get-path
 	ls $path
 	;;
+track|-t)
+	check-option "$2"
+	echo "Source:"
+	ls -1 "$srcdir/$package"* 2> /dev/null
+	echo -e "\nBuilt:"
+	ls -1 "$outdir/$package"* 2> /dev/null
+	find "/tmp" -name "$package*" -type f -maxdepth 1
+	;;
 goto|-g)
 	check-option "$2"
 	get-path
@@ -389,6 +425,14 @@ process|-P)
 	;;
 --version|-V)
         echo -e "asbt version-$ver" ;;
+--changelog|-C)
+	if [ -f "$repodir/ChangeLog.txt" ]; then
+		less "$repodir/ChangeLog.txt"
+	else
+		echo "$repodir/ChangeLog.txt N/A"
+		exit 1
+	fi
+	;;
 --help|-h|*)
 	cat << EOF 
 Usage: asbt <option> [package]
@@ -396,10 +440,11 @@ Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]
 	[view,-v]	[goto,-g]	[list,-l]
+	[track,-t]
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[--update,-u]	[--check,-c]	[--all,-a]	
-	[--help,-h]	[--version,-V]
+	[--help,-h]	[--version,-V]	[--changelog,-C]
 
 Using repository: $repodir
 For more info, see the man page and/or the README.
@@ -414,13 +459,13 @@ unset path
 unset srcdir
 unset outdir
 unset pkgname
-unset pkgnam
 unset pkgpath
 unset link
 unset arch
 unset conf
 unset rpkg
 unset src
+unset pkgnam
 unset md5
 unset valid
 unset built

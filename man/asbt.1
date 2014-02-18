@@ -41,16 +41,19 @@ Using the package path instead of the package name is also possible.
 [list,-l] 
 	List files inside the folder of given package.
 
-[get,-G] 
+[track,-t]
+	Track the source and built package for specified package.
+
+[get,-G]
 	Download the package.
 
-[build,-B] 
+[build,-B]
 	Build the package.
 
-[install,-I] 
+[install,-I]
 	Install the package.
 
-[upgrade,-U] 
+[upgrade,-U]
 	Upgrade the package.
 
 [remove,-R] 
@@ -75,6 +78,9 @@ Using the package path instead of the package name is also possible.
 
 [--version,-V]
 	Echo program version.
+
+[--changelog,-C]
+	View the ChangeLog.txt in the local copy of the slackbuilds repository (SBo).
 .fi
 .SH VARIABLES
 The following variables are used (in the script) :

@@ -49,3 +49,9 @@ Refinements on getting package name if package directory was specified.
 
 0.8.2 (16/02/14)
 Small refinements + change the config file a little.
+
+0.8.3 (17/02/14)
+Add options (-C) for viewing ChangeLog.txt from the local slackbuilds repo
+(SBo) and (-t) for tracking source and built package for specified package.
++ refinement of getting package option to rename src with only version to
+name-version format.
