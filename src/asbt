@@ -212,7 +212,7 @@ check-built-package () {
 		VERSION="UNKNOWN"
 	fi
 	# Check if package has already been built
-	if [ -f "/tmp/$package"*-"$VERSION"* ] 2>/dev/null || [ -f "/$outdir/$package"*-"$VERSION"* ] 2>/dev/null; then
+	if [ -f "/tmp/$package"*-"$VERSION"* ] 2>/dev/null || [ -f "$outdir/$package"*-"$VERSION"* ] 2>/dev/null; then
 		built=1
 		echo "Package: $package($VERSION) already built."
 	else
