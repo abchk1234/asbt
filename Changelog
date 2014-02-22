@@ -55,3 +55,6 @@ Add options (-C) for viewing ChangeLog.txt from the local slackbuilds repo
 (SBo) and (-t) for tracking source and built package for specified package.
 + refinement of getting package option to rename src with only version to
 name-version format + Bugfixes.
+
+0.8.4 (22/02/14)
+Bugfixes (mainly on getting a package and on track option).

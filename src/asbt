@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.3" # Version
+ver="0.8.4" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
@@ -181,18 +181,18 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --directory-prefix="$path" -N "$link" || exit 1
+		wget --tries=5 --directory-prefix="$path" -N "$link" || exit 1
 	else
-		wget --directory-prefix="$srcdir" -N "$link" || exit 1
-	fi
-	# Check if downloaded package contains the package name or not
-	if [ ! `echo "$src" | grep "$PRGNAM"` ]; then
-		# Rename it and link it
-		mv -v "$srcdir/$src" "$srcdir/$PRGNAM-$src"
-		ln -sf "$srcdir/$PRGNAM-$src" "$path" || exit 1
-	else
-		# Only linking required
-		ln -sf "$srcdir/$src" "$path" || exit 1
+		wget --tries=5 --directory-prefix="$srcdir" -N "$link" || exit 1
+		# Check if downloaded package contains the package name or not
+		if [ ! `echo "$src" | grep "$PRGNAM"` ] && [ `echo "$src" | wc -c` -le 15 ]; then
+			# Rename it and link it
+			mv -v "$srcdir/$src" "$srcdir/$PRGNAM-$src"
+			ln -sf "$srcdir/$PRGNAM-$src" "$path/$src" || exit 1
+		else
+			# Only linking required
+			ln -sf "$srcdir/$src" "$path" || exit 1
+		fi
 	fi
 }
 get-package () {
@@ -323,7 +323,7 @@ list|-l)
 track|-t)
 	check-option "$2"
 	echo "Source:"
-	ls -1 "$srcdir/$package"* 2> /dev/null
+	find "$srcdir" -name "$package*" -type f -maxdepth 1
 	echo -e "\nBuilt:"
 	ls -1 "$outdir/$package"* 2> /dev/null
 	find "/tmp" -name "$package*" -type f -maxdepth 1
@@ -399,7 +399,7 @@ process|-P)
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
-		git --git-dir="$gitdir" --work-tree="$repodir" pull origin master
+		git --git-dir="$gitdir" --work-tree="$repodir" pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.."
 		exit 1
