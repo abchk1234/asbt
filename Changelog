@@ -62,3 +62,6 @@ Bugfixes (mainly on getting a package and on track option).
 0.8.5 (28/02/14)
 Bugfixes and refinements; add option to re-download a package.
 + Add options -L for longlisting files in the specified package folder.
+
+0.8.6 (03/03/14)
+Bugfixes.

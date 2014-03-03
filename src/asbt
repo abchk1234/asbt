@@ -17,11 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.5 (dated: 28 Feb 2014)" # Version
+ver="0.8.6 (dated: 03 Mar 2014)" # Version
 
 # Variables used:
-repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
-#repodir="/home/$USER/slackbuilds" # Alternate repository for slackbuilds.
+repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
+#repodir="/home/$USER/git/slackbuilds" # Alternate repository for slackbuilds.
 srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
 #srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
 outdir="/home/$USER/packages" # Where the build package will be placed.
@@ -32,6 +32,7 @@ config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="" # Leave it blank for using above defaults
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
+
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
@@ -70,7 +71,7 @@ get-path() {
 			exit 1
 		fi
 	else
-		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
+		path=`find -L "$repodir" -maxdepth 2 -type d -name "$package"`
 	fi
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
@@ -239,7 +240,7 @@ build-package () {
 		echo "Building $package"
 	fi
 	# Fix CWD to include path to package
-	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild"
+	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
 		sudo -k CWD="$path" "$path/$package.SlackBuild" || exit 1
@@ -326,10 +327,10 @@ longlist|-L)
 track|-t)
 	check-option "$2"
 	echo "Source:"
-	find "$srcdir" -name "$package*" -type f -maxdepth 1
+	find "$srcdir" -maxdepth 1 -name "$package*" -type f
 	echo -e "\nBuilt:"
 	ls -1 "$outdir/$package"* 2> /dev/null
-	find "/tmp" -name "$package*" -type f -maxdepth 1
+	find "/tmp" -maxdepth 1 -name "$package*" -type f
 	;;
 goto|-g)
 	check-option "$2"
@@ -421,7 +422,7 @@ process|-P)
 	for i in /var/log/packages/*_SBo*; do
 		package=`basename $i | rev | cut -d "-" -f 4- | rev`
 		pkgver=`basename $i | rev | cut -d "-" -f 3 | rev`
-		path=`find -L "$repodir" -type d -maxdepth 2 -name "$package"`
+		path=`find -L "$repodir" -maxdepth 2 -name "$package" -type d`
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
 		else
