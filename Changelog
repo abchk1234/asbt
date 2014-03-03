@@ -58,3 +58,7 @@ name-version format + Bugfixes.
 
 0.8.4 (22/02/14)
 Bugfixes (mainly on getting a package and on track option).
+
+0.8.5 (28/02/14)
+Bugfixes and refinements; add option to re-download a package.
++ Add options -L for longlisting files in the specified package folder.

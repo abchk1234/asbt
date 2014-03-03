@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.4" # Version
+ver="0.8.5 (dated: 28 Feb 2014)" # Version
 
 # Variables used:
 repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
@@ -66,7 +66,7 @@ get-path() {
 		if [ -f "$path"/*.SlackBuild ]; then
 			package=`find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d "."`
 		else
-			echo "Unable to get info about $package"
+			echo "asbt: Unable to process $package"
 			exit 1
 		fi
 	else
@@ -318,6 +318,11 @@ list|-l)
 	get-path
 	ls $path
 	;;
+longlist|-L)
+	check-option "$2"
+	get-path
+	ls -l $path
+	;;
 track|-t)
 	check-option "$2"
 	echo "Source:"
@@ -345,13 +350,20 @@ goto|-g)
 	fi
 	;;
 get|-G)
-	get-path
 	check-option "$2"
+	get-path
 	get-package
+	if [ $valid -eq 1 ]; then
+		echo -n "Re-download? [y/N]: "
+		read -e choice
+		if [ "$choice" == y ] || [ "$choice" == Y ]; then
+			download-source
+		fi
+	fi
 	;;
 build|-B)
-	get-path
 	check-option "$2"
+	get-path
 	build-package
 	;;
 install|-I)
@@ -438,7 +450,7 @@ Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]
 	[view,-v]	[goto,-g]	[list,-l]
-	[track,-t]
+	[track,-t]	[longlist|-L]	
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[--update,-u]	[--check,-c]	[--all,-a]	
@@ -468,4 +480,5 @@ unset md5
 unset valid
 unset built
 unset editor
+unset choice
 exit 0

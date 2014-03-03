@@ -1,6 +1,6 @@
 .\" Manpage for asbt.
 .\" Contact aaditya_gnulinux@zoho.com.
-.TH ASBT 1 "18 Feb 2014" "0.8" "asbt man page"
+.TH ASBT 1 "28 Feb 2014" "0.8" "asbt man page"
 .SH NAME
 asbt \- a tool to manage packages in your local slackbuilds repository
 .SH SYNOPSIS
@@ -41,6 +41,9 @@ Using the package path instead of the package name is also possible.
 [list,-l] 
 	List files inside the folder of given package.
 
+[longlist,-L]
+	List more details about the files inside the package folder.
+
 [track,-t]
 	Track the source and built package for specified package.
 
@@ -80,7 +83,7 @@ Using the package path instead of the package name is also possible.
 	Echo program version.
 
 [--changelog,-C]
-	View the ChangeLog.txt in the local copy of the slackbuilds repository (SBo).
+	View the ChangeLog.txt file in the slackbuilds repository.
 .fi
 .SH VARIABLES
 The following variables are used (in the script) :
@@ -104,7 +107,8 @@ The following variables are used (in the script) :
  # Editor for viewing/editing slackbuilds.
 
 Samples for these variables are present in the script itself.
-These can be also be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf".
+These can be also be overrided by specifying the options provided
+in the configuration file "/etc/asbt/asbt.conf".
 .fi
 .SH RETURN VALUES
 .nf
@@ -119,7 +123,7 @@ asbt get dosbox (get or download the dosbox source code)
 asbt view dosbox (view the dosbox slackbuild)
 asbt build dosbox (build the dosbox package)
 asbt install dosbox (install the built dosbox package)
-asbt install dosbox-0.74 (install specified version of built dosbox package)
+asbt install dosbox-0.74 (install specified version of the package)
 asbt update (update git repository of slackbuilds)
 asbt --all (view all packages installed from the slackbuilds repository)
 asbt --check (check for updates to installed packages from SBo)
