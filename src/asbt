@@ -228,7 +228,7 @@ build-package () {
 	check-built-package	
 	# Check for SlackBuild
 	if [ -f "$path/$package.SlackBuild" ]; then
-		chmod +x "$path/$package.SlackBuild"
+		chmod +x "$path/$package.SlackBuild" || exit 1
 	else
 		echo "File: $path/$package.SlackBuild N/A"
 		exit 1
