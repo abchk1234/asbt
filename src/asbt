@@ -47,10 +47,12 @@ if [ $# -gt 2 ] ; then
 fi
 
 # Check the repository directory
-if [ ! -d "$repodir" ]; then
-	echo "slackbuilds repository $repodir doesnt exist.."
-	exit 1 
-fi
+check-repo () {
+	if [ ! -d "$repodir" ]; then
+		echo "slackbuilds repository $repodir doesnt exist.."
+		exit 1 
+	fi
+}
 
 # Functions
 check-option () {
@@ -276,6 +278,7 @@ upgrade-package () {
 # Options
 case "$1" in
 search|-s)
+	check-repo
 	check-option "$2"
 	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
 	;;
@@ -284,6 +287,7 @@ query|-q)
 	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
 	;;
 find|-f)
+	check-repo
 	check-option "$2"
 	echo "Present in slackbuilds repository:"
 	find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
@@ -291,16 +295,19 @@ find|-f)
 	find "/var/log/packages" -iname "*$package*_SBo" -printf "%f\n"
 	;;
 info|-i)
+	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/$package.info"
 	;;
 readme|-r)
+	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/README"
 	;;
 view|-v)
+	check-repo
 	check-option "$2"
 	get-path
 	if [ -e $editor ]; then
@@ -310,16 +317,19 @@ view|-v)
 	fi
 	;;
 desc|-d)
+	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/slack-desc"
 	;;
 list|-l)
+	check-repo
 	check-option "$2"
 	get-path
 	ls $path
 	;;
 longlist|-L)
+	check-repo
 	check-option "$2"
 	get-path
 	ls -l $path
@@ -329,10 +339,11 @@ track|-t)
 	echo "Source:"
 	find "$srcdir" -maxdepth 1 -name "$package*" -type f
 	echo -e "\nBuilt:"
-	ls -1 "$outdir/$package"* 2> /dev/null
+	find "$outdir" -maxdepth 1 -name "$package*" -type f
 	find "/tmp" -maxdepth 1 -name "$package*" -type f
 	;;
 goto|-g)
+	check-repo
 	check-option "$2"
 	get-path
 	if [ "$TERM" == "linux" ]; then
@@ -351,6 +362,7 @@ goto|-g)
 	fi
 	;;
 get|-G)
+	check-repo
 	check-option "$2"
 	get-path
 	get-package
@@ -363,6 +375,7 @@ get|-G)
 	fi
 	;;
 build|-B)
+	check-repo
 	check-option "$2"
 	get-path
 	build-package
@@ -377,9 +390,9 @@ upgrade|-U)
 	;; 
 remove|-R)
 	check-option "$2"
-	echo "Removing $package"
 	# Check if package is installed 
 	if [ -f "/var/log/packages/$package"* ]; then
+		echo "Removing $package"
 		rpkg=`ls "/var/log/packages/$package"*`
 		sudo -k /sbin/removepkg "$rpkg"
 	else
@@ -388,6 +401,7 @@ remove|-R)
 	fi
 	;;
 process|-P)
+	check-repo
 	check-option "$2"
 	get-path
 	echo "Processing $package..."
@@ -410,7 +424,7 @@ process|-P)
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
-		git --git-dir="$gitdir" --work-tree="$repodir" pull origin master || exit 1
+		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.."
 		exit 1
@@ -419,6 +433,7 @@ process|-P)
 --all|-a)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
 --check|-c)
+	check-repo
 	for i in /var/log/packages/*_SBo*; do
 		package=`basename $i | rev | cut -d "-" -f 4- | rev`
 		pkgver=`basename $i | rev | cut -d "-" -f 3 | rev`
@@ -437,6 +452,7 @@ process|-P)
 --version|-V)
         echo -e "asbt version-$ver" ;;
 --changelog|-C)
+	check-repo
 	if [ -f "$repodir/ChangeLog.txt" ]; then
 		less "$repodir/ChangeLog.txt"
 	else
