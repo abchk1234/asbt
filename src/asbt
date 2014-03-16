@@ -41,6 +41,9 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 
 #--------------------------------------------------------------------------------------#
 
+# Exit on error(s)
+set -e
+
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
@@ -252,7 +255,7 @@ build-package () {
 	if [ -f "$path/$package.SlackBuild" ]; then
 		chmod +x "$path/$package.SlackBuild" || exit 1
 	else
-		echo "File: $path/$package.SlackBuild N/A"
+		echo "asbt: $path/$package.SlackBuild N/A"
 		exit 1
 	fi
 	# Check for built package
@@ -342,7 +345,7 @@ desc|-d)
 	check-repo
 	check-option "$2"
 	get-path
-	get-content "$path/slack-desc"
+	get-content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
 	;;
 list|-l)
 	check-repo

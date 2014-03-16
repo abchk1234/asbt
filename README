@@ -104,3 +104,12 @@ Bugs:
 1) asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
 	This change is reverted after building the package.
 But if for some reason the build process was interrupted/failed, then the slackbuild won't be reverted, and git may complain about this change when updating the git repo, so you may have to revert/delete the offending slackbuild manually to allow git to update the slackbuilds repository.
+
+2) If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
+then they can change ownership of the slackbuilds git repository, and you could get an error message like:
+
+chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild’: Operation not permitted
+
+In such a case, simply change ownership of the slackbuilds repository using the chown command. Example,
+
+sudo chown -R aaditya /home/aaditya/slackbuilds
