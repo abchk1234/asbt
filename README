@@ -8,7 +8,7 @@ It supports following functions/options:
 3)  readme about specified package (-r)
 4)  goto the package directory (-g)
 5)  view slackbuild (-v)
-6)  list files contained in specified package directory (-l)
+6)  list files contained in specified package directory (-l,-L)
 7)  description about specified package (-d)
 8)  get/download the package (-G)
 9)  build the package (-B)
