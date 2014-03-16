@@ -1,5 +1,5 @@
 #!/bin/bash
-# asbt : A package manager for a local slackbuilds repository.
+# asbt : A tool to manage packages in a local slackbuilds repository.
 ##
 # Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
@@ -20,18 +20,26 @@
 ver="0.8.6 (dated: 03 Mar 2014)" # Version
 
 # Variables used:
+
 repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
 #repodir="/home/$USER/git/slackbuilds" # Alternate repository for slackbuilds.
+
 srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
 #srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
-outdir="/home/$USER/packages" # Where the build package will be placed.
+
+outdir="/home/$USER/packages" # Where the built package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
+
 gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir="" # Leave it blank if you dont want to use the --update option.
+
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="" # Leave it blank for using above defaults
+
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
+
+#--------------------------------------------------------------------------------------#
 
 package="$2" # Name of package input by the user.
 
@@ -46,34 +54,36 @@ if [ $# -gt 2 ] ; then
 	exit 1
 fi
 
-# Check the repository directory
+# Check the repo directory
 check-repo () {
 	if [ ! -d "$repodir" ]; then
-		echo "slackbuilds repository $repodir doesnt exist.."
+		echo "asbt: SlackBuild repository $repodir does not exist."
 		exit 1 
 	fi
 }
 
-# Functions
+# Check number of arguments 
 check-option () {
 	if [ ! "$1" ]; then
 		echo "Additional parameter required for this option. Type asbt -h for more info."
 		exit 1
 	fi
 }
+
+# Get the full path of a package
 get-path() {
 	# Check if path to package is specified instead of package name
 	if [ -d "$package" ]; then
-		path=`readlink -f "$package"`
+		path=$(readlink -f "$package")
 		# Get the name of the package
 		if [ -f "$path"/*.SlackBuild ]; then
-			package=`find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d "."`
+			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
 		else
 			echo "asbt: Unable to process $package"
 			exit 1
 		fi
 	else
-		path=`find -L "$repodir" -maxdepth 2 -type d -name "$package"`
+		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 	fi
 	# Check path (if directory exists)
 	if [ ! -d "$path" ]; then
@@ -81,6 +91,7 @@ get-path() {
 		exit 1
 	fi
 }
+
 get-info () {
 	# Source the .info file to get the package details
 	if [ -f "$path/$package.info" ]; then
@@ -91,6 +102,7 @@ get-info () {
 		exit 1
 	fi
 }
+
 get-content () {
 	if [ -f "$1" ]; then
 		# Return the content of the argument passed.
@@ -100,6 +112,8 @@ get-content () {
 		exit 1
 	fi
 }
+
+# Get info about the source of the package
 get-source-data () {
 	get-info
 	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
@@ -108,7 +122,7 @@ get-source-data () {
 	else
 		link="$DOWNLOAD"
 	fi
-	src=`basename "$link"`
+	src=$(basename "$link")
 	# Check if src contains PRGNAM in the name
 	if [ ! `echo "$src" | grep "$PRGNAM"` ]; then
 		# Append PRGNAM to the beginning and check
@@ -135,6 +149,7 @@ get-source-data () {
 		fi
 	fi
 }
+
 check-source () {
 	get-source-data
 	# Check if source has already been downloaded
@@ -178,6 +193,7 @@ check-source () {
 		valid=0
 	fi
 }
+
 download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
@@ -196,6 +212,7 @@ download-source () {
 		fi
 	fi
 }
+
 get-package () {
 	check-source
 	if [ $valid -ne 1 ]; then
@@ -205,6 +222,7 @@ get-package () {
 		echo "Source: $src present."
 	fi
 }
+
 check-built-package () {
 	# Source the .info file to get the package version 
 	if [ -f "$path/$package.info" ]; then
@@ -220,12 +238,14 @@ check-built-package () {
 		built=0
 	fi
 }
+
 process-built-package () {
 	check-built-package
 	if [ $built -eq 0 ]; then
 		build-package
 	fi
 }
+
 build-package () {
 	check-built-package	
 	# Check for SlackBuild
@@ -252,6 +272,7 @@ build-package () {
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
 }
+
 install-package () {
 	# Check if package present
 	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
@@ -263,6 +284,7 @@ install-package () {
 		exit 1
 	fi 
 }
+
 upgrade-package () {
 	# Check if package present
 	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
@@ -284,7 +306,7 @@ search|-s)
 	;;
 query|-q)
 	check-option "$2"
-	find "/var/log/packages" -iname "*$package*" -printf "%f\n"
+	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n"
 	;;
 find|-f)
 	check-repo
@@ -292,7 +314,7 @@ find|-f)
 	echo "Present in slackbuilds repository:"
 	find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	echo -e "\nInstalled:"
-	find "/var/log/packages" -iname "*$package*_SBo" -printf "%f\n"
+	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
 	;;
 info|-i)
 	check-repo
@@ -337,10 +359,10 @@ longlist|-L)
 track|-t)
 	check-option "$2"
 	echo "Source:"
-	find "$srcdir" -maxdepth 1 -name "$package*" -type f
+	find "$srcdir" -maxdepth 1 -type f -iname "$package*"
 	echo -e "\nBuilt:"
-	find "$outdir" -maxdepth 1 -name "$package*" -type f
-	find "/tmp" -maxdepth 1 -name "$package*" -type f
+	find "$outdir" -maxdepth 1 -type f -iname "$package*"
+	find "/tmp" -maxdepth 1 -type f -iname "$package*"
 	;;
 goto|-g)
 	check-repo
@@ -435,14 +457,14 @@ process|-P)
 --check|-c)
 	check-repo
 	for i in /var/log/packages/*_SBo*; do
-		package=`basename $i | rev | cut -d "-" -f 4- | rev`
-		pkgver=`basename $i | rev | cut -d "-" -f 3 | rev`
-		path=`find -L "$repodir" -maxdepth 2 -name "$package" -type d`
+		package=`basename "$i" | rev | cut -d "-" -f 4- | rev`
+		pkgver=`basename "$i" | rev | cut -d "-" -f 3 | rev`
+		path=`find -L "$repodir" -maxdepth 2 -type d -name "$package"`
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
 		else
 			# For packages not present in slackbuilds repo
-			VERSION=$pkgver
+			VERSION="$pkgver"
 		fi
 		if [[ ! "$pkgver" == "$VERSION" ]]; then
 			printf "$package:\t$pkgver -> $VERSION\n"
@@ -461,21 +483,27 @@ process|-P)
 	fi
 	;;
 --help|-h|*)
+	if [ -d "$repodir" ]; then
+		repo="$repodir"
+	else
+		repo="N/A"
+	fi
 	cat << EOF 
 Usage: asbt <option> [package]
 Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]
 	[view,-v]	[goto,-g]	[list,-l]
-	[track,-t]	[longlist|-L]	
+	[track,-t]	[longlist,-L]	
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[--update,-u]	[--check,-c]	[--all,-a]	
 	[--help,-h]	[--version,-V]	[--changelog,-C]
 
-Using repository: $repodir
+Using repository: $repo
 For more info, see the man page and/or the README.
 EOF
+	unset repo
        ;;
 esac
 
