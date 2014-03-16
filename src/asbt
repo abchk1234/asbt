@@ -457,9 +457,9 @@ process|-P)
 --check|-c)
 	check-repo
 	for i in /var/log/packages/*_SBo*; do
-		package=`basename "$i" | rev | cut -d "-" -f 4- | rev`
-		pkgver=`basename "$i" | rev | cut -d "-" -f 3 | rev`
-		path=`find -L "$repodir" -maxdepth 2 -type d -name "$package"`
+		package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
+		pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
+		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
 		else
