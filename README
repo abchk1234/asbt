@@ -112,4 +112,4 @@ chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/
 
 In such a case, simply change ownership of the slackbuilds repository using the chown command. Example,
 
-sudo chown -R aaditya /home/aaditya/slackbuilds
+sudo chown -R $USER /home/$USER/slackbuilds

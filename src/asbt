@@ -41,8 +41,8 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 
 #--------------------------------------------------------------------------------------#
 
-# Exit on error(s)
-set -e
+# Exit on error(s) - optional - as most errors are manually handled.
+#set -e
 
 package="$2" # Name of package input by the user.
 
@@ -60,7 +60,7 @@ fi
 # Check the repo directory
 check-repo () {
 	if [ ! -d "$repodir" ]; then
-		echo "asbt: SlackBuild repository $repodir does not exist."
+		echo "SlackBuild repository $repodir does not exist."
 		exit 1 
 	fi
 }
