@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.0 (dated: 08 May 2014)" # Version
+ver="0.9.1 (dated: 08 May 2014)" # Version
 
 # Variables used:
 
@@ -51,6 +51,45 @@ if [ -e "$config" ]; then
 	. "$config"
 fi
 
+# Setup function
+setup () {
+	if [ ! -d "$repodir" ]; then
+		echo "Slackbuild repository not present."
+	       	echo "Press y to set it up, or n to exit [y/N]: "
+		read -e ch
+		if [ "$ch" == "y" || "ch" == "Y" ]; then
+			echo "Default Slackbuilds directory: /home/$USER/slackbuilds"
+	       		echo "Press y use it, or n to change [Y/n]: "
+			read -e ch1
+			if [ "$ch1" == "y" || "$ch1" == "Y" ]; then
+				mkdir /home/$USER/slackbuilds
+			else
+				echo "Enter path of existing directory to use / or path of new dirctory to create: "
+				read repopath
+				if [ -d $repopath ]; then
+					let repodir = "$repopath"
+				else
+					mkdir "$repopath" | exit 1
+					let repodir = "$repopath"
+				fi
+			fi
+		else
+			exit 1
+		fi
+
+		echo "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
+		read -e ch2
+		if [ "$ch2" == "y" || "ch2" == "Y" ]; then
+			cd "$repodir" && git clone git://slackbuilds.org/slackbuilds | exit 1
+		else
+			exit 1
+		fi
+
+		echo "Writing configuration to file.."
+		sudo sed -i 's/repodir="/home/$user/slackbuilds"//' && sudo echo 'repodir="$repodir"' >> /etc/asbt/asbt.conf | exit 1
+	fi
+}
+
 # Check the no of input parameters
 if [ $# -gt 2 ] ; then
 	echo "Invalid syntax. Type asbt -h for more info."
@@ -61,7 +100,13 @@ fi
 check-repo () {
 	if [ ! -d "$repodir" ]; then
 		echo "SlackBuild repository $repodir does not exist."
-		exit 1 
+		echo "Would you like to setup? [y/N]: "
+		read -e choice
+		if [ "$choice" == "y" || "$choice" == "Y" ]; then
+			setup
+		else
+			exit 1
+		fi
 	fi
 }
 
@@ -452,7 +497,7 @@ process|-P)
 detail|-D)
 	check-option "$2"
 	if [ -f /var/log/packages/$package* ]; then
-		cat /var/log/packages/$package*
+		less /var/log/packages/$package*
 	else
 		echo "Details about package $package N/A"
 		exit 1
