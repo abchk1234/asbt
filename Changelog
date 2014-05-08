@@ -65,3 +65,7 @@ Bugfixes and refinements; add option to re-download a package.
 
 0.8.6 (03/03/14)
 Bugfixes and refinements.
+
+0.8.7 (16/04/14)
+Add option -T for tidying the srcdir and pkgdir by removing all but the latest
+three (by date) source or built packages.

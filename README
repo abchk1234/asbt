@@ -21,6 +21,7 @@ It supports following functions/options:
 16) check for upgrades to installed packages (-c)
 17) View the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
 18) Track the source and built package for specified package (-t) 
+19) Tidy the source and package directories by removing old entries (-T)
 
 It uses the following (Slackware) tools:
 

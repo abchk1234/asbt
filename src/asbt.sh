@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.6 (dated: 03 Mar 2014)" # Version
+ver="0.8.7 (dated: 16 Apr 2014)" # Version
 
 # Variables used:
 
@@ -62,6 +62,20 @@ check-repo () {
 	if [ ! -d "$repodir" ]; then
 		echo "SlackBuild repository $repodir does not exist."
 		exit 1 
+	fi
+}
+
+# Check the src and out directories
+check-src-dir () {
+	if [ ! -d "$srcdir" ]; then
+		echo "Source directory $srcdir does not exist."
+		exit 1
+	fi
+}
+check-out-dir () {
+	if [ ! -d "$outdir" ]; then
+		echo "Output directory $outdir does not exist."
+		exit 1
 	fi
 }
 
@@ -442,6 +456,25 @@ process|-P)
 		exit 1
 	fi
 	;;
+tidy|-T)
+	check-option "$2"
+	if [ "$2" == "src" ]; then
+		check-src-dir
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries
+		for i in $(find "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
+			# Remove all but the 3 latest (by date) source packages			
+			rm -v $(ls -td -1 "$srcdir/$i"* | tail -n +4) 2>/dev/null
+		done
+	elif [ "$2" == "pkg" ]; then
+		check-out-dir
+		for i in $(find "$outdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+			rm -v $(ls -td -1 "$outdir/$i"* | tail -n +4) 2>/dev/null
+		done
+	else	
+		echo "Unrecognised option for tidy."
+		exit 1
+	fi
+	;;		       
 --update|-u)
 	if [ -z "$gitdir" ]; then
 		echo "Git directory not specified."
@@ -497,7 +530,7 @@ Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]
 	[view,-v]	[goto,-g]	[list,-l]
-	[track,-t]	[longlist,-L]	
+	[track,-t]	[tidy|-T]	[longlist,-L]	
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[--update,-u]	[--check,-c]	[--all,-a]	
