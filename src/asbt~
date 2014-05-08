@@ -55,9 +55,9 @@ fi
 setup () {
 	if [ ! -d "$repodir" ]; then
 		echo "Slackbuild repository not present."
-	       	echo -n "Press y to set it up, or n to exit [y/N]: "
+	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
-		if [ "$ch" == "Y" ] || [ "$ch" == "y" ]; then
+		if [ ! "$ch" == "n" ] || [ ! "$ch" == "N" ]; then
 			echo "Default Slackbuilds directory: /home/$USER/slackbuilds"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
