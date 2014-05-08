@@ -15,13 +15,14 @@ It supports following functions/options:
 10) install the built package (-I)
 11) upgrade installed package with built package (-U)
 12) remove installed package (-R)
-13) query installed packages (-q)
-14) view all packages installed from the slackbuilds repo (-a)
-15) update the local git repo of slackbuilds (-u)
-16) check for upgrades to installed packages (-c)
-17) View the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
-18) Track the source and built package for specified package (-t) 
-19) Enlist all packages which have given package in their .info file (-e)
+13) details about installed package (-D)
+14) query installed packages (-q)
+15) view all packages installed from the slackbuilds repo (-a)
+16) update the local git repo of slackbuilds (-u)
+17) check for upgrades to installed packages (-c)
+18) View the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
+19) Track the source and built package for specified package (-t) 
+20) Enlist all packages which have given package in their .info file (-e)
 
 It uses the following (Slackware) tools:
 

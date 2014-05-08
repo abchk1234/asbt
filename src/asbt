@@ -309,7 +309,7 @@ search|-s)
 	;;
 query|-q)
 	check-option "$2"
-	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n"
+	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
 	;;
 find|-f)
 	check-repo
@@ -446,6 +446,15 @@ process|-P)
 		install-package
 	else
 		echo "N/A"
+		exit 1
+	fi
+	;;
+detail|-D)
+	check-option "$2"
+	if [ -f /var/log/packages/$package* ]; then
+		cat /var/log/packages/$package*
+	else
+		echo "Details about package $package N/A"
 		exit 1
 	fi
 	;;
