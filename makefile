@@ -1,5 +1,5 @@
 NAME=asbt
-VER=0.8.6
+VER=0.9.0
 install=/usr/bin/install
 rm=/usr/bin/rm
 shell=/bin/bash
@@ -25,6 +25,6 @@ install:
 
 uninstall: 
 	$(rm) $(DESTDIR)$(BINDIR)/$(NAME)
-	$(rm) $(DESTDIR)$(MANDIR)/$(NAME).1.gz
+	$(rm) $(DESTDIR)$(MANDIR)/$(NAME).1
 	$(rm) -r $(DESTDIR)$(SETDIR)
 	$(rm) -r $(DESTDIR)$(DOCDIR)

@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.8.6 (dated: 03 Mar 2014)" # Version
+ver="0.9.0 (dated: 08 May 2014)" # Version
 
 # Variables used:
 
@@ -359,6 +359,13 @@ longlist|-L)
 	get-path
 	ls -l $path
 	;;
+enlist|-e)
+	check-repo
+	check-option "$2"
+	for i in $(find -L "$repodir" -type f -name "*.info");
+		do grep "$package" $i && printf "@ $i\n\n"; 
+	done
+	;;
 track|-t)
 	check-option "$2"
 	echo "Source:"
@@ -497,7 +504,7 @@ Options-
 	[search,-s]	[query,-q]	[find,-f]
 	[info,-i]	[readme,-r]	[desc,-d]
 	[view,-v]	[goto,-g]	[list,-l]
-	[track,-t]	[longlist,-L]	
+	[track,-t]	[longlist,-L]	[enlist,-e]
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[--update,-u]	[--check,-c]	[--all,-a]	
