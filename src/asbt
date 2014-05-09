@@ -54,11 +54,11 @@ fi
 edit-config () {
 	echo "Enter your password to view and edit the configuration file."
 	if [ -e $editor ]; then
-	       sudo -k nano $config
+	       sudo -k $editor $config
 	elif [ -e /usr/bin/nano ]; then
-	       sudo -k vim $config
+	       sudo -k nano $config
 	elif [ -e /usr/bin/vim ]; then
-		sudo -k $editor $config
+		sudo -k vim $config
 	else
 	       echo "Unable to find editor to edit the configuration file $config"
 	       exit 1
@@ -127,13 +127,13 @@ setup () {
 			echo "Slackbuild repository seems to be empty."
 			create-git-repo
 		fi	
+
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
 		echo "Slackbuild repository seems to be empty."
 		create-git-repo
 	else
 		edit-config
 	fi
-
 }
 
 # Check the no of input parameters
