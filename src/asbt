@@ -123,10 +123,10 @@ setup () {
 		check-repo
 		
 		# Now create git repo from upstream
-		#if [ $(ls "$repodir" | wc -w) -le 0 ]; then
-		#	echo "Slackbuild repository seems to be empty."
+		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
+			echo "Slackbuild repository seems to be empty."
 			create-git-repo
-		#fi	
+		fi	
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
 		echo "Slackbuild repository seems to be empty."
 		create-git-repo
