@@ -65,6 +65,20 @@ edit-config () {
 	fi
 }
 
+# Check the repo directory
+check-repo () {
+if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
+		echo "SlackBuild repository $repodir does not exist or is empty."
+		echo -n "Would you like to setup? [y/N]: "
+		read -e choice
+		if [ "$choice" == "y" ] || [ "$choice" == "Y" ]; then
+			setup
+		else
+			exit 1
+		fi
+	fi
+}
+
 create-git-repo () {
 	echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
@@ -104,12 +118,13 @@ setup () {
 		# Edit the config file to reflect above changes
 		edit-config
 
-		# Re-read the config file
+		# Re-read the config file and check repo
 		. $config
+		check-repo
 		
 		# Now create git repo from upstream
-		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
-			echo "Slackbuild repository seems to be empty."
+		#if [ $(ls "$repodir" | wc -w) -le 0 ]; then
+		#	echo "Slackbuild repository seems to be empty."
 			create-git-repo
 		fi	
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
@@ -127,19 +142,6 @@ if [ $# -gt 2 ] ; then
 	exit 1
 fi
 
-# Check the repo directory
-check-repo () {
-if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
-		echo "SlackBuild repository $repodir does not exist or is empty."
-		echo -n "Would you like to setup? [y/N]: "
-		read -e choice
-		if [ "$choice" == "y" ] || [ "$choice" == "Y" ]; then
-			setup
-		else
-			exit 1
-		fi
-	fi
-}
 
 # Check number of arguments 
 check-option () {
