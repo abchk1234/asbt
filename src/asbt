@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.1 (dated: 08 May 2014)" # Version
+ver="0.9.1 (dated: 10 May 2014)" # Version
 
 # Variables used:
 
@@ -66,17 +66,12 @@ edit-config () {
 }
 
 create-git-repo () {
-	echo "Slackbuild repository seems to be empty."
 	echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
 	if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 		exit 1
 	else
-		if [ $(basename "$repodir") == "slackbuilds" ]; then
-			cd "$repodir/.." && rmdir --ignore-fail-on-non-empty slackbuilds && git clone git://slackbuilds.org/slackbuilds
-		else
-			cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds $(basename "$repodir")
-		fi
+		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds $(basename "$repodir")
 	fi
 }
 
@@ -109,10 +104,16 @@ setup () {
 		# Edit the config file to reflect above changes
 		edit-config
 
+		# Re-read the config file
+		. $config
+		
 		# Now create git repo from upstream
-		create-git-repo
-	
+		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
+			echo "Slackbuild repository seems to be empty."
+			create-git-repo
+		fi	
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
+		echo "Slackbuild repository seems to be empty."
 		create-git-repo
 	else
 		edit-config
