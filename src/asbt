@@ -52,7 +52,7 @@ if [ -e "$config" ]; then
 fi
 
 edit-config () {
-	echo "Enter your password to view and edit the configuration file"
+	echo "Enter your password to view and edit the configuration file."
 	if [ -e $editor ]; then
 	       sudo -k nano $config
 	elif [ -e /usr/bin/nano ]; then
