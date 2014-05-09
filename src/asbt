@@ -55,50 +55,62 @@ fi
 setup () {
 	if [ ! -d "$repodir" ]; then
 		echo "Slackbuild repository not present."
-	       	echo -n "Press y to set it up, or n to exit [y/N]: "
+	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
-		if [ "$ch" == "Y" ] || [ "$ch" == "y" ]; then
+		if [ "$ch" == "n" ] || [ "$ch" == "N" ]; then
+			exit 1
+		else
 			echo "Default Slackbuilds directory: /home/$USER/slackbuilds"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
-			if [ ! "$ch1" == "n" ] || [ ! "$ch1" == "N" ]; then
-				mkdir /home/$USER/slackbuilds
-			else
-				echo "Enter path of existing directory to use / or path of new dirctory to create: "
+			if [ "$ch1" == "n" ] || [ "$ch1" == "N" ]; then
+				echo "Enter path of existing directory to use, or path of new dirctory to create: "
 				read repopath
 				if [ -d $repopath ]; then
-					let repodir = "$repopath"
+					repodir="$repopath"
 				else
 					mkdir "$repopath" | exit 1
-					let repodir = "$repopath"
+					repodir="$repopath"
 				fi
+			else
+				mkdir /home/$USER/slackbuilds
 			fi
-		else
-			exit 1
 		fi
+		
+#		echo "Writing configuration to file.."
+#		sudo -k sed -i 's|repodir="/home/$user/slackbuilds"|repodir="$repodir"|' /etc/asbt/asbt.conf
 
-		echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
-		read -e ch2
-		if [ "$ch2" == "y" ] || [ "ch2" == "Y" ]; then
-			cd "$repodir/.." && git clone git://slackbuilds.org/slackbuilds | exit 1
+		echo -e "\nEnter your password to view and edit the configuration file"
+		if [ -e /usr/bin/nano ]; then
+		       sudo -k nano /etc/asbt/asbt.conf
+		elif [ -e /usr/bin/vim ]; then
+		       sudo -k vim /etc/asbt/asbt.conf
 		else
-			exit 1
+		       echo "Unable to find editor to edit the configuration file /etc/asbt/asbt.conf"
+		       exit 1
 		fi
+		
+#		echo -ne "\nUpdate the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
+#		read -e ch2
+#		if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
+#			exit 1
+#		else
+#			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds
+#		fi
 
-		echo "Writing configuration to file.."
-		sudo sed -i 's/repodir="/home/$user/slackbuilds"//' && sudo echo 'repodir="$repodir"' >> /etc/asbt/asbt.conf | exit 1
 	fi
 	
 	if [ $(ls "$repodir" | wc -w) -le 0 ]; then
-		echo "Slackbuild repository seems to be empty."
-		echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [y/N]: "
+		echo -e "\nSlackbuild repository seems to be empty."
+		echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
 		read -e ch2
-		if [ "$ch2" == "y" ] || [ "ch2" == "Y" ]; then
-			cd "$repodir/.." && git clone git://slackbuilds.org/slackbuilds | exit 1
-		else
+		if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 			exit 1
+		else
+			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds
 		fi
 	fi
+
 }
 
 # Check the no of input parameters
