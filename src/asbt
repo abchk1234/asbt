@@ -51,6 +51,20 @@ if [ -e "$config" ]; then
 	. "$config"
 fi
 
+edit-config () {
+	echo "Enter your password to view and edit the configuration file"
+	if [ -e $editor ]; then
+	       sudo -k nano $config
+	elif [ -e /usr/bin/nano ]; then
+	       sudo -k vim $config
+	elif [ -e /usr/bin/vim ]; then
+		sudo -k $editor $config
+	else
+	       echo "Unable to find editor to edit the configuration file $config"
+	       exit 1
+	fi
+}
+
 # Setup function
 setup () {
 	if [ ! -d "$repodir" ]; then
@@ -77,38 +91,20 @@ setup () {
 			fi
 		fi
 		
-#		echo "Writing configuration to file.."
-#		sudo -k sed -i 's|repodir="/home/$user/slackbuilds"|repodir="$repodir"|' /etc/asbt/asbt.conf
-
-		echo -e "\nEnter your password to view and edit the configuration file"
-		if [ -e /usr/bin/nano ]; then
-		       sudo -k nano /etc/asbt/asbt.conf
-		elif [ -e /usr/bin/vim ]; then
-		       sudo -k vim /etc/asbt/asbt.conf
-		else
-		       echo "Unable to find editor to edit the configuration file /etc/asbt/asbt.conf"
-		       exit 1
-		fi
-		
-#		echo -ne "\nUpdate the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
-#		read -e ch2
-#		if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
-#			exit 1
-#		else
-#			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds
-#		fi
-
-	fi
+		# Edit the config file to reflect above changes
+		edit-config
 	
-	if [ $(ls "$repodir" | wc -w) -le 0 ]; then
-		echo -e "\nSlackbuild repository seems to be empty."
+	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
+		echo "Slackbuild repository seems to be empty."
 		echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
 		read -e ch2
 		if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 			exit 1
 		else
-			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds
+			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds | exit 1
 		fi
+	else
+		edit-config
 	fi
 
 }

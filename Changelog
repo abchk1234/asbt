@@ -71,5 +71,6 @@ Add option -e (enlist) for enlisting all packages which have given package name
 in their .info files. (Can be usefull to find which packages depend on given
 package.)
 
-0.9.1 (08/05/14)
-Add option (-D) for getting details about installed package.
+0.9.1 (09/05/14)
+Add option (-D) for getting details about installed package + Add option (-S)
+to allow users to setup and configure the tool.
