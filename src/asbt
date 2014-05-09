@@ -30,7 +30,7 @@ srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
 outdir="/home/$USER/packages" # Where the built package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 
-gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
+gitdir="/home/$USER/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir="" # Leave it blank if you dont want to use the --update option.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
@@ -101,7 +101,7 @@ setup () {
 		if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 			exit 1
 		else
-			git --git-dir="$repodir/.." clone git://slackbuilds.org/slackbuilds | exit 1
+			cd "$repodir/.." && rmdir slackbuilds && git clone git://slackbuilds.org/slackbuilds
 		fi
 	else
 		edit-config
