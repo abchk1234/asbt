@@ -1,5 +1,5 @@
 asbt is a tool for managing packages in your local copy of slackbuilds,
-usually obtained from http://slackbuilds.org/ (SBo), for Slackware Linux.
+which can be obtained from http://slackbuilds.org/ (SBo), for Slackware Linux.
 
 It supports following functions/options:
 
@@ -36,14 +36,14 @@ displaying information about the packages, getting and building them,
 checking updates to the packages, and viewing details about the installed packages, etc.
 
 When root access is required, for example, when installing or removing packages,
-sudo is used to gain the root privelege. This ensures demarcation between between
+sudo is used to gain the root privelege. This ensures demarcation between
 informational activites like searching, viewing information, etc, and activites which
 change the system state, like installing or removing packages.
 
 Also, asbt is designed with simplicity in mind; complex cases are not handled and are left to the user's discretion;
-rather, it aids and automates common functions like searching for and downloading the source, building the packages,
+rather, it aids and automates common functions like searching for packages, downloading the source, building the packages,
 and installing / upgading them, while following rules like where to store these source and built packages, and
-displaying information about the process in a transparent way, while at the same time not hindering the user with excess verbiage.
+displays information about the process in a transparent way, while at the same time not hindering the user with excess verbiage.
 
 The variables used are:
 
@@ -127,6 +127,7 @@ then they can change ownership of the slackbuilds git repository, and you could 
 
 chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild’: Operation not permitted
 
-In such a case, simply change ownership of the slackbuilds repository using the chown command. Example,
+In such a case, simply change ownership of the slackbuilds repository using the chown command. For example,
 
 sudo chown -R $USER /home/$USER/slackbuilds
+
