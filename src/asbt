@@ -80,12 +80,13 @@ if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
 }
 
 create-git-repo () {
-	echo -n "Update the Slackbuild repository by syncing from www.slackbuilds.org? [Y/n]: "
+	echo -n "Update the Slackbuild repository by cloning from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
 	if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 		exit 1
 	else
-		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds $(basename "$repodir")
+		# A workaround has to be applied to clone the git directory as the basename of the repodir
+		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds $(basename "$repodir") | exit 1
 	fi
 }
 
@@ -111,7 +112,9 @@ setup () {
 					repodir="$repopath"
 				fi
 			else
-				mkdir /home/$USER/slackbuilds
+				if [ ! -d /home/$USER/slackbuilds ]; then
+					mkdir /home/$USER/slackbuilds
+				fi
 			fi
 		fi
 		
@@ -133,6 +136,8 @@ setup () {
 		create-git-repo
 	else
 		edit-config
+		. $config
+		create-git-repo
 	fi
 }
 
