@@ -30,6 +30,21 @@ It uses the following (Slackware) tools:
 2) removepkg
 3) upgradepkg
 
+Ideology:
+asbt runs as a normal application, and aids in package management of SBo packages by
+displaying information about the packages, getting and building them,
+checking updates to the packages, and viewing details about the installed packages, etc.
+
+When root access is required, for example, when installing or removing packages,
+sudo is used to gain the root privelege. This ensures demarcation between between
+informational activites like searching, viewing information, etc, and activites which
+change the system state, like installing or removing packages.
+
+Also, asbt is designed with simplicity in mind; complex cases are not handled and are left to the user's discretion;
+rather, it aids and automates common functions like searching for and downloading the source, building the packages,
+and installing / upgading them, while following rules like where to store these source and built packages, and
+displaying information about the process in a transparent way, while at the same time not hindering the user with excess verbiage.
+
 The variables used are:
 
 1) repodir=""
