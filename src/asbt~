@@ -80,7 +80,7 @@ if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
 }
 
 create-git-repo () {
-	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
+	echo -n "Clone the Slackbuild repository from www.slackbuilds.org to $repodir? [Y/n]: "
 	read -e ch2
 	if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
 		exit 1
