@@ -1,0 +1,90 @@
+# Gives an example of most of the commands to better explain the working.
+
+$ asbt
+Usage: asbt <option> [package]
+Options-
+	[search,-s]	[query,-q]	[find,-f]
+	[info,-i]	[readme,-r]	[desc,-d]
+	[view,-v]	[goto,-g]	[list,-l]
+	[track,-t]	[longlist,-L]	[enlist,-e]
+	[get,-G]	[build,-B]	[install,-I]
+	[upgrade,-U]	[remove,-R]	[process,-P]
+	[--update,-u]	[--check,-c]	[--all,-a]	
+	[--help,-h]	[--setup,-S]	[--changelog,-C]
+	[--version,-V]
+
+Using repository: /home/aaditya/slackbuilds
+For more info, see the man page and/or the README.
+
+$ asbt -s dosbox
+system/dosbox
+
+$ asbt -q dosbox
+dosbox-0.74-x86_64-2_SBo
+
+$ asbt -f dosbox
+Present in slackbuilds repository:
+system/dosbox
+
+Installed:
+dosbox-0.74-x86_64-2_SBo
+
+$ asbt -i dosbox
+PRGNAM="dosbox"
+VERSION="0.74"
+HOMEPAGE="http://dosbox.sourceforge.net"
+DOWNLOAD="http://downloads.sourceforge.net/dosbox/dosbox-0.74.tar.gz"
+MD5SUM="b9b240fa87104421962d14eee71351e8"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES=""
+MAINTAINER="Michiel van Wessem"
+EMAIL="michiel@slackbuilds.org"
+
+$ asbt -r dosbox
+DOSbox is a DOS emulator/virtual machine for X11 and Unix.
+It allows you to play many of the old games you grew up loving,
+as well as many apps designed to run on DOS.
+
+SDL_sound is an optional dependency.
+
+asbt -d dosbox
+ DOSbox (DOS emulator/virtual machine for X11 and Unix)
+
+ It allows you to play many of the old games you grew up loving, as
+ well as many apps designed to run on DOS.
+
+$ asbt -v dosbox
+(The slackbuild is viewed in your preferred editor specified in the config file)
+
+$ asbt -g dosbox
+(A new terminal is opened in the directory of the dosbox package)
+
+$ asbt -l dosbox
+README	   dosbox-0.74-gcc46.patch  dosbox.desktop  slack-desc
+doinst.sh  dosbox.SlackBuild	    dosbox.info
+
+$ asbt -L dosbox
+total 28
+-rw-r--r-- 1 root root  206 Apr 23 17:34 README
+-rw-r--r-- 1 root root  114 Apr 23 17:34 doinst.sh
+-rw-r--r-- 1 root root  274 Apr 23 17:34 dosbox-0.74-gcc46.patch
+-rw-r--r-- 1 root root 3439 Apr 23 17:34 dosbox.SlackBuild
+-rw-r--r-- 1 root root  197 Apr 23 17:34 dosbox.desktop
+-rw-r--r-- 1 root root  296 Apr 23 17:34 dosbox.info
+-rw-r--r-- 1 root root  739 Apr 23 17:34 slack-desc
+
+$ asbt -t dosbox
+Source:
+/home/aaditya/src/dosbox-0.74.tar.gz
+
+Built:
+/home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz
+
+asbt -e dosbox
+PRGNAM="dosbox"
+HOMEPAGE="http://dosbox.sourceforge.net"
+DOWNLOAD="http://downloads.sourceforge.net/dosbox/dosbox-0.74.tar.gz"
+@ /home/aaditya/slackbuilds/system/dosbox/dosbox.info
+
+
