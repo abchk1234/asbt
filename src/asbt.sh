@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.1 (dated: 10 May 2014)" # Version
+ver="0.9.2 (dated: 11 May 2014)" # Version
 
 # Variables used:
 
@@ -76,6 +76,21 @@ if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
 		else
 			exit 1
 		fi
+	fi
+}
+
+# Check the src and out directories
+check-src-dir () {
+	if [ ! -d "$srcdir" ]; then
+		echo "Source directory $srcdir does not exist."
+		exit 1
+	fi
+}
+
+check-out-dir () {
+	if [ ! -d "$outdir" ]; then
+		echo "Output directory $outdir does not exist."
+		exit 1
 	fi
 }
 
@@ -142,11 +157,12 @@ setup () {
 }
 
 # Check the no of input parameters
-if [ $# -gt 2 ] ; then
-	echo "Invalid syntax. Type asbt -h for more info."
-	exit 1
-fi
-
+check-input () {
+	if [ $# -gt 2 ] ; then
+		echo "Invalid syntax. Type asbt -h for more info."
+		exit 1
+	fi
+}
 
 # Check number of arguments 
 check-option () {
@@ -386,15 +402,18 @@ upgrade-package () {
 # Options
 case "$1" in
 search|-s)
+	check-input
 	check-repo
 	check-option "$2"
 	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
+	check-input
 	check-option "$2"
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
 	;;
 find|-f)
+	check-input
 	check-repo
 	check-option "$2"
 	echo "Present in slackbuilds repository:"
@@ -403,18 +422,21 @@ find|-f)
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
 	;;
 info|-i)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/$package.info"
 	;;
 readme|-r)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/README"
 	;;
 view|-v)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
@@ -425,24 +447,28 @@ view|-v)
 	fi
 	;;
 desc|-d)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	get-content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
 	;;
 list|-l)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	ls $path
 	;;
 longlist|-L)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	ls -l $path
 	;;
 enlist|-e)
+	check-input
 	check-repo
 	check-option "$2"
 	for i in $(find -L "$repodir" -type f -name "*.info");
@@ -450,6 +476,7 @@ enlist|-e)
 	done
 	;;
 track|-t)
+	check-input
 	check-option "$2"
 	echo "Source:"
 	find "$srcdir" -maxdepth 1 -type f -iname "$package*"
@@ -458,6 +485,7 @@ track|-t)
 	find "/tmp" -maxdepth 1 -type f -iname "$package*"
 	;;
 goto|-g)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
@@ -477,6 +505,7 @@ goto|-g)
 	fi
 	;;
 get|-G)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
@@ -490,20 +519,24 @@ get|-G)
 	fi
 	;;
 build|-B)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
 	build-package
 	;;
 install|-I)
+	check-input
 	check-option "$2"
 	install-package
 	;;
 upgrade|-U)
+	check-input
 	check-option "$2"
 	upgrade-package
 	;; 
 remove|-R)
+	check-input
 	check-option "$2"
 	# Check if package is installed 
 	if [ -f "/var/log/packages/$package"* ]; then
@@ -516,6 +549,7 @@ remove|-R)
 	fi
 	;;
 process|-P)
+	check-input
 	check-repo
 	check-option "$2"
 	get-path
@@ -532,12 +566,55 @@ process|-P)
 		exit 1
 	fi
 	;;
-detail|-D)
+details|-D)
+	check-input
 	check-option "$2"
 	if [ -f /var/log/packages/$package* ]; then
 		less /var/log/packages/$package*
 	else
 		echo "Details about package $package N/A"
+		exit 1
+	fi
+	;;
+tidy|-T)
+	# Check arguments
+	if [ $# -gt 3 ]; then
+		echo "Invalid syntax. Correct syntax for this option is:"
+		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>"
+		exit 1
+	fi
+
+	if [ "$2" == "--dry-run" ]; then
+		flag=1
+		# Shift argument left so that cleanup is handled same whether dry-run is specified or not.
+		shift
+	else
+		flag=0
+	fi
+
+	if [ "$2" == "src" ]; then
+		check-src-dir
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries
+		for i in $(find "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
+			# Remove all but the 3 latest (by date) source packages
+			if [ $flag -eq 1 ]; then
+				# Dry-run; only display packages to be deleted
+				ls -td -1 "$srcdir/$i"* | tail -n +4
+			else
+				rm -v $(ls -td -1 "$srcdir/$i"* | tail -n +4) 2>/dev/null
+			fi
+		done
+	elif [ "$2" == "pkg" ]; then
+		check-out-dir
+		for i in $(find "$outdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+			if [ $flag -eq 1 ]; then
+				ls -td -1 "$outdir/$i"* | tail -n +4
+			else
+				rm -v $(ls -td -1 "$outdir/$i"* | tail -n +4) 2>/dev/null
+			fi
+		done
+	else
+		echo "Unrecognised option for tidy. See the man page for more info."
 		exit 1
 	fi
 	;;
@@ -601,10 +678,10 @@ Options-
 	[track,-t]	[longlist,-L]	[enlist,-e]
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
-	[--update,-u]	[--check,-c]	[--all,-a]	
-	[--help,-h]	[--setup,-S]	[--changelog,-C]
-	[--version,-V]
-
+	[details,-D]	[tidy,-T]	[--update,-u]
+	[--check,-c]	[--all,-a]	[--help,-h]
+	[--version,-V]	[--setup,-S]	[--changelog,-C]
+	
 Using repository: $repo
 For more info, see the man page and/or the README.
 EOF

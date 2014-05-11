@@ -21,9 +21,10 @@ It supports following functions/options:
 15) view all packages installed from the slackbuilds repo (-a)
 16) update the local git repo of slackbuilds (-u)
 17) check for upgrades to installed packages (-c)
-18) View the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
-19) Track the source and built package for specified package (-t) 
-20) Enlist all packages which have given package in their .info file (-e)
+18) view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
+19) track the source and built package for specified package (-t) 
+20) enlist all packages which have given package in their .info file (-e)
+21) Tidy the source and package directories by removing old entries (-T)
 
 It uses the following (Slackware) tools:
 
@@ -88,8 +89,10 @@ asbt -G dosbox (get(download) dosbox(source))
 asbt -B dosbox (build package for dosbox)
 asbt -I dosbox (install built package)
 asbt -I dosbox-0.74 (install specified version of built package)
+asbt -D dosbox (view details about installed package dosbox)
 asbt -a (list all packages installed from the slackbuilds repository)
 asbt -c (check for updates to packages installed from the slackbuild repository)
+asbt -T --dry-run pkg (Check which old versions of a package can be deleted from outdir)
 
 Note:
 1) When searching, a *(wildcard) at both ends is implied.

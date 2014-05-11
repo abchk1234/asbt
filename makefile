@@ -1,5 +1,5 @@
 NAME=asbt
-VER=0.9.1
+VER=0.9.2
 install=/usr/bin/install
 rm=/usr/bin/rm
 shell=/bin/bash
@@ -14,7 +14,7 @@ install:
 	$(install) -d $(DESTDIR)$(DOCDIR)
 	$(install) -d $(DESTDIR)$(MANDIR)
 	$(install) -d $(DESTDIR)$(SETDIR)
-	$(install) -m755 src/asbt $(DESTDIR)$(BINDIR)
+	$(install) -m755 src/asbt.sh $(DESTDIR)$(BINDIR)/asbt
 	$(install) -m644 README $(DESTDIR)$(DOCDIR)
 	$(install) -m644 COPYING $(DESTDIR)$(DOCDIR)
 	$(install) -m644 AUTHORS $(DESTDIR)$(DOCDIR)
