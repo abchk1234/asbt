@@ -72,6 +72,7 @@ Samples for these variables are present in the script itself.
 These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf"
 
 Installation:
+
 Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
 
@@ -79,6 +80,7 @@ or, (as root)
 make install
 
 Usage:
+
 asbt <option> [package]
 
 Examples:
@@ -92,9 +94,9 @@ asbt -I dosbox-0.74 (install specified version of built package)
 asbt -D dosbox (view details about installed package dosbox)
 asbt -a (list all packages installed from the slackbuilds repository)
 asbt -c (check for updates to packages installed from the slackbuild repository)
-asbt -T --dry-run pkg (Check which old versions of a package can be deleted from outdir)
 
 Note:
+
 1) When searching, a *(wildcard) at both ends is implied.
 
 For example, if one wants to search for all packages which have the word "xfce", one can use-
