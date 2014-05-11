@@ -202,7 +202,7 @@ get-content () {
 # Get info about the source of the package
 get-source-data () {
 	get-info
-	if [[ `uname -m` == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
+	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
 		arch="x86_64"
 	else
@@ -210,28 +210,28 @@ get-source-data () {
 	fi
 	src=$(basename "$link")
 	# Check if src contains PRGNAM in the name
-	if [ ! `echo "$src" | grep "$PRGNAM"` ]; then
+	if [ ! $(echo "$src" | grep "$PRGNAM") ]; then
 		# Append PRGNAM to the beginning and check
 		if [ -e "$path/$PRGNAM-$src" ]; then
-			md5=`md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
 			pkgnam="$PRGNAM-$src"
 			src="$pkgnam"
 		elif [ -f "$srcdir/$PRGNAM-$src" ]; then
-			md5=`md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " ")
 			pkgnam="$PRGNAM-$src"
 			src="$pkgnam"
 		# Check src without PRGNAM also
 		elif [ -e "$path/$src" ]; then
-			md5=`md5sum "$path/$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
 		elif [ -f "$srcdir/$src" ]; then
-			md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
 		fi
 	else
 		#src alrady contains PRGNAM in the name
 		if [ -e "$path/$src" ]; then
-			md5=`md5sum "$path/$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
 		elif [ -f "$srcdir/$src" ]; then
-			md5=`md5sum "$srcdir/$src" | cut -f 1 -d " "`
+			md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
 		fi
 	fi
 }
@@ -288,7 +288,7 @@ download-source () {
 	else
 		wget --tries=5 --directory-prefix="$srcdir" -N "$link" || exit 1
 		# Check if downloaded package contains the package name or not
-		if [ ! `echo "$src" | grep "$PRGNAM"` ] && [ `echo "$src" | wc -c` -le 15 ]; then
+		if [ ! $(echo "$src" | grep "$PRGNAM") ] && [ $(echo "$src" | wc -c) -le 15 ]; then
 			# Rename it and link it
 			mv "$srcdir/$src" "$srcdir/$PRGNAM-$src"
 			ln -sf "$srcdir/$PRGNAM-$src" "$path" || exit 1
@@ -446,7 +446,7 @@ enlist|-e)
 	check-repo
 	check-option "$2"
 	for i in $(find -L "$repodir" -type f -name "*.info");
-		do grep "$package" $i && printf "@ $i\n\n"; 
+		do (grep "$package" $i && printf "@ $i\n\n"); 
 	done
 	;;
 track|-t)
@@ -632,3 +632,4 @@ unset built
 unset editor
 unset choice
 exit 0
+

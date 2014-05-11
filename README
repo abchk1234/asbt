@@ -1,5 +1,6 @@
 asbt is a tool for managing packages in your local copy of slackbuilds,
-which can be obtained from http://slackbuilds.org/ (SBo), for Slackware Linux.
+which can be obtained from http://slackbuilds.org/ (SBo), 
+for Slackware Linux.
 
 It supports following functions/options:
 
@@ -31,6 +32,7 @@ It uses the following (Slackware) tools:
 3) upgradepkg
 
 Ideology:
+
 asbt runs as a normal application, and aids in package management of SBo packages by
 displaying information about the packages, getting and building them,
 checking updates to the packages, and viewing details about the installed packages, etc.
@@ -43,7 +45,7 @@ change the system state, like installing or removing packages.
 Also, asbt is designed with simplicity in mind; complex cases are not handled and are left to the user's discretion;
 rather, it aids and automates common functions like searching for packages, downloading the source, building the packages,
 and installing / upgading them, while following rules like where to store these source and built packages, and
-displays information about the process in a transparent way, while at the same time not hindering the user with excess verbiage.
+displays information about the process in a transparent way, while at the same time tries not to hinder the user with excess verbiage.
 
 The variables used are:
 
@@ -66,7 +68,7 @@ The variables used are:
 
 Samples for these variables are present in the script itself.
 
-These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf".
+These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf"
 
 Installation:
 Via SBo,
