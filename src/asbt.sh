@@ -101,7 +101,13 @@ create-git-repo () {
 		exit 1
 	else
 		# A workaround has to be applied to clone the git directory as the basename of the repodir
-		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds $(basename "$repodir") | exit 1
+		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds.git $(basename "$repodir")
+		# Now check if the git repo was cloned successfully or the directory was just removed
+		if [ ! -d "$repodir" ]; then
+			# Again try to clone the git repo
+			cd "$repodir/.." | exit 1
+			git clone git://slackbuilds.org/slackbuilds.git $(basename "$repodir")
+		fi
 	fi
 }
 
@@ -133,6 +139,12 @@ setup () {
 			fi
 		fi
 		
+		# Now create git repo from upstream
+		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
+			echo "Slackbuild repository seems to be empty."
+			create-git-repo
+		fi	
+
 		# Edit the config file to reflect above changes
 		edit-config
 
@@ -140,19 +152,17 @@ setup () {
 		. $config
 		check-repo
 		
-		# Now create git repo from upstream
-		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
-			echo "Slackbuild repository seems to be empty."
-			create-git-repo
-		fi	
-
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
 		echo "Slackbuild repository seems to be empty."
 		create-git-repo
 	else
 		edit-config
 		. $config
-		create-git-repo
+		#echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [y/N]: "
+		#read -e ch3
+		#if [ "$ch3" == "y" ] || [ "$ch3" == "Y" ]; then
+		#	create-git-repo
+		#fi
 	fi
 }
 
