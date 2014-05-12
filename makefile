@@ -19,6 +19,7 @@ install:
 	$(install) -m644 COPYING $(DESTDIR)$(DOCDIR)
 	$(install) -m644 AUTHORS $(DESTDIR)$(DOCDIR)
 	$(install) -m644 Changelog $(DESTDIR)$(DOCDIR)
+	$(install) -m644 doc/Examples $(DESTDIR)$(DOCDIR)
 	$(install) -m644 makefile $(DESTDIR)$(DOCDIR)
 	$(install) -m644 man/asbt.1 $(DESTDIR)$(MANDIR)
 	$(install) -m644 etc/asbt.conf $(DESTDIR)$(SETDIR)

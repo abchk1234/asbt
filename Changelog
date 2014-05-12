@@ -77,4 +77,5 @@ to allow users to setup and configure the tool.
 
 0.9.2 (11/05/14)
 Add option -T for tidying the srcdir and pkgdir by removing all but the latest
-three (by date) source or built packages.
+three (by date) source or built packages + Bugfix setup and associated
+functions and try to make them more robust.

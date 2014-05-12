@@ -158,11 +158,6 @@ setup () {
 	else
 		edit-config
 		. $config
-		#echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [y/N]: "
-		#read -e ch3
-		#if [ "$ch3" == "y" ] || [ "$ch3" == "Y" ]; then
-		#	create-git-repo
-		#fi
 	fi
 }
 
