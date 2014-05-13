@@ -21,8 +21,8 @@ ver="0.9.2 (dated: 11 May 2014)" # Version
 
 # Variables used:
 
-repodir="/home/$USER/slackbuilds" # Repository for slackbuilds. Required.
-#repodir="/home/$USER/git/slackbuilds" # Alternate repository for slackbuilds.
+repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
+#repodir="/home/$USER/slackbuilds" # Alternate repository for slackbuilds.
 
 srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
 #srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
@@ -30,8 +30,8 @@ srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
 outdir="/home/$USER/packages" # Where the built package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 
-gitdir="/home/$USER/slackbuilds/.git" # Slackbuilds git repo directory.
-#gitdir="" # Leave it blank if you dont want to use the --update option.
+gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
+#gitdir"/home/$USER/slackbuilds/.git" # Alternate git repo directory.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="" # Leave it blank for using above defaults

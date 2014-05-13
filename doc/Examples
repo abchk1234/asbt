@@ -16,11 +16,22 @@ Options-
 Using repository: /home/aaditya/slackbuilds
 For more info, see the man page and/or the README.
 
+1) Search in repository-
+
 $ asbt -s dosbox
 system/dosbox
 
+$ asbt -s kabutar
+$
+(No output if package not found)
+
+
+2) Query installed-
+
 $ asbt -q dosbox
 dosbox-0.74-x86_64-2_SBo
+
+3) Find (search + query):
 
 $ asbt -f dosbox
 Present in slackbuilds repository:
@@ -28,6 +39,8 @@ system/dosbox
 
 Installed:
 dosbox-0.74-x86_64-2_SBo
+
+4) View .info file-
 
 $ asbt -i dosbox
 PRGNAM="dosbox"
@@ -41,6 +54,8 @@ REQUIRES=""
 MAINTAINER="Michiel van Wessem"
 EMAIL="michiel@slackbuilds.org"
 
+5) View the Readme-
+
 $ asbt -r dosbox
 DOSbox is a DOS emulator/virtual machine for X11 and Unix.
 It allows you to play many of the old games you grew up loving,
@@ -48,21 +63,32 @@ as well as many apps designed to run on DOS.
 
 SDL_sound is an optional dependency.
 
-asbt -d dosbox
+6) View the slack-desc file-
+
+$ asbt -d dosbox
  DOSbox (DOS emulator/virtual machine for X11 and Unix)
 
  It allows you to play many of the old games you grew up loving, as
  well as many apps designed to run on DOS.
 
+
+7) View and edit the slackbuild-
+
 $ asbt -v dosbox
 (The slackbuild is viewed in your preferred editor specified in the config file)
+
+8) Goto package directory-
 
 $ asbt -g dosbox
 (A new terminal is opened in the directory of the dosbox package)
 
+9) List the files in the slackbuild package folder.
+
 $ asbt -l dosbox
 README	   dosbox-0.74-gcc46.patch  dosbox.desktop  slack-desc
 doinst.sh  dosbox.SlackBuild	    dosbox.info
+
+10) Detailed list (Longlist)-
 
 $ asbt -L dosbox
 total 28
@@ -74,6 +100,8 @@ total 28
 -rw-r--r-- 1 root root  296 Apr 23 17:34 dosbox.info
 -rw-r--r-- 1 root root  739 Apr 23 17:34 slack-desc
 
+11) Track the source and built packages-
+
 $ asbt -t dosbox
 Source:
 /home/aaditya/src/dosbox-0.74.tar.gz
@@ -81,7 +109,10 @@ Source:
 Built:
 /home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz
 
-asbt -e dosbox
+12) Enlist the packages which have the package name in their info file.
+    (Useful for finding which packages depend on given package)
+
+$ asbt -e dosbox
 PRGNAM="dosbox"
 HOMEPAGE="http://dosbox.sourceforge.net"
 DOWNLOAD="http://downloads.sourceforge.net/dosbox/dosbox-0.74.tar.gz"
