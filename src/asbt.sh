@@ -357,7 +357,10 @@ build-package () {
 	check-built-package	
 	# Check for SlackBuild
 	if [ -f "$path/$package.SlackBuild" ]; then
-		chmod +x "$path/$package.SlackBuild" || exit 1
+		chmod +x "$path/$package.SlackBuild"
+	        if [ $? -eq 1 ]; then
+			echo "Enter your password to take ownership of the slackbuild." && sudo -k chown $USER "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
+		fi
 	else
 		echo "asbt: $path/$package.SlackBuild N/A"
 		exit 1
@@ -372,9 +375,9 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -k CWD="$path" "$path/$package.SlackBuild" || exit 1
+		sudo -k CWD="$path" $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -k OUTPUT="$outdir" CWD="$path" "$path/$package.SlackBuild" || exit 1
+		sudo -k OUTPUT="$outdir" CWD="$path" $OPTIONS "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
@@ -476,6 +479,7 @@ enlist|-e)
 	check-input
 	check-repo
 	check-option "$2"
+	echo -e "Grepping for $package in the slackbuild repository...\n"
 	for i in $(find -L "$repodir" -type f -name "*.info");
 		do (grep "$package" $i && printf "@ $i\n\n"); 
 	done
@@ -524,9 +528,14 @@ get|-G)
 	fi
 	;;
 build|-B)
-	check-input
 	check-repo
 	check-option "$2"
+	# Check arguments
+	if [ $# -gt 2 ]; then
+		OPTIONS=$(echo $@ | cut -d " " -f 3-)
+	else
+		OPTIONS=""
+	fi
 	get-path
 	build-package
 	;;
@@ -630,6 +639,7 @@ tidy|-T)
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
+		git --git-dir="$gitdir" --work-tree="$gitdir/.." stash save
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.."
