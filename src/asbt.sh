@@ -665,13 +665,20 @@ tidy|-T)
 	for i in /var/log/packages/*_SBo*; do
 		package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 		pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
+		# Make an exception for virtualbox-kernel package
+		if [ "$package" == "virtualbox-kernel" ] || [ "$package" == "virtualbox-kernel-addons" ]; then
+ 			pkgver=$(echo $pkgver | cut -d "_" -f 1)
+		fi
+		
 		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
+		
 		if [ -f "$path/$package.info" ]; then
 			. "$path/$package.info"
 		else
 			# For packages not present in slackbuilds repo
 			VERSION="$pkgver"
 		fi
+		
 		if [[ ! "$pkgver" == "$VERSION" ]]; then
 			printf "$package:\t$pkgver -> $VERSION\n"
 		fi
