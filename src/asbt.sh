@@ -639,7 +639,7 @@ tidy|-T)
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
-		cd "$gitdir/.." && git stash save
+		cd "$gitdir/.." && git stash save --quiet
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.."
