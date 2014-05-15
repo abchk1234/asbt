@@ -647,7 +647,11 @@ tidy|-T)
 	fi
 	;;
 --all|-a)
-	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" ;;
+	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" 
+	echo -ne "\nTotal: "
+	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
+
+	;;
 --check|-c)
 	check-repo
 	for i in /var/log/packages/*_SBo*; do

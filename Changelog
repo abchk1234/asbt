@@ -81,6 +81,5 @@ three (by date) source or built packages +
 Bugfix setup and associated functions and try to make them more robust +
 Add facility of adding command-line options when building packages +
 Stash git changes instead of failing to update +
-Add option to take ownership of SlackBuild if chmod +x is not allowed +
-Make an exception for virtualbox-kernel package version when checking updates.
+Add option to take ownership of SlackBuild if chmod +x is not allowed.
 

@@ -16,6 +16,7 @@ Options-
 Using repository: /home/aaditya/slackbuilds
 For more info, see the man page and/or the README.
 
+
 1) Search in repository-
 
 $ asbt -s dosbox
@@ -31,6 +32,7 @@ $
 $ asbt -q dosbox
 dosbox-0.74-x86_64-2_SBo
 
+
 3) Find (search + query):
 
 $ asbt -f dosbox
@@ -39,6 +41,7 @@ system/dosbox
 
 Installed:
 dosbox-0.74-x86_64-2_SBo
+
 
 4) View .info file-
 
@@ -54,6 +57,7 @@ REQUIRES=""
 MAINTAINER="Michiel van Wessem"
 EMAIL="michiel@slackbuilds.org"
 
+
 5) View the Readme-
 
 $ asbt -r dosbox
@@ -62,6 +66,7 @@ It allows you to play many of the old games you grew up loving,
 as well as many apps designed to run on DOS.
 
 SDL_sound is an optional dependency.
+
 
 6) View the slack-desc file-
 
@@ -77,16 +82,19 @@ $ asbt -d dosbox
 $ asbt -v dosbox
 (The slackbuild is viewed in your preferred editor specified in the config file)
 
+
 8) Goto package directory-
 
 $ asbt -g dosbox
 (A new terminal is opened in the directory of the dosbox package)
+
 
 9) List the files in the slackbuild package folder.
 
 $ asbt -l dosbox
 README	   dosbox-0.74-gcc46.patch  dosbox.desktop  slack-desc
 doinst.sh  dosbox.SlackBuild	    dosbox.info
+
 
 10) Detailed list (Longlist)-
 
@@ -100,6 +108,7 @@ total 28
 -rw-r--r-- 1 root root  296 Apr 23 17:34 dosbox.info
 -rw-r--r-- 1 root root  739 Apr 23 17:34 slack-desc
 
+
 11) Track the source and built packages-
 
 $ asbt -t dosbox
@@ -109,13 +118,289 @@ Source:
 Built:
 /home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz
 
+
 12) Enlist the packages which have the package name in their info file.
     (Useful for finding which packages depend on given package)
+    (This option can take some time to complete)
 
-$ asbt -e dosbox
-PRGNAM="dosbox"
-HOMEPAGE="http://dosbox.sourceforge.net"
-DOWNLOAD="http://downloads.sourceforge.net/dosbox/dosbox-0.74.tar.gz"
-@ /home/aaditya/slackbuilds/system/dosbox/dosbox.info
+$ asbt -e libiso
+Grepping for libiso in the slackbuild repository...
 
+REQUIRES="libburn libisofs"
+@ /home/aaditya/slackbuilds/system/xfburn/xfburn.info
+
+PRGNAM="libisofs"
+DOWNLOAD="http://files.libburnia-project.org/releases/libisofs-1.3.6.tar.gz"
+@ /home/aaditya/slackbuilds/libraries/libisofs/libisofs.info
+
+PRGNAM="libisoburn"
+DOWNLOAD="http://files.libburnia-project.org/releases/libisoburn-1.3.6.pl01.tar.gz"
+REQUIRES="libisofs libburn"
+@ /home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info
+
+
+13) Get (download) the source
+
+$ asbt -G dosbox
+asbt: /home/aaditya/slackbuilds/system/dosbox/dosbox.info sourced.
+Downloading dosbox-0.74.tar.gz
+--2014-05-15 18:40:19--  http://downloads.sourceforge.net/dosbox/dosbox-0.74.tar.gz
+Resolving downloads.sourceforge.net (downloads.sourceforge.net)... 216.34.181.59
+Connecting to downloads.sourceforge.net (downloads.sourceforge.net)|216.34.181.59|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: http://downloads.sourceforge.net/project/dosbox/dosbox/0.74/dosbox-0.74.tar.gz [following]
+--2014-05-15 18:40:20--  http://downloads.sourceforge.net/project/dosbox/dosbox/0.74/dosbox-0.74.tar.gz
+Reusing existing connection to downloads.sourceforge.net:80.
+HTTP request sent, awaiting response... 302 Found
+Location: http://kaz.dl.sourceforge.net/project/dosbox/dosbox/0.74/dosbox-0.74.tar.gz [following]
+--2014-05-15 18:40:20--  http://kaz.dl.sourceforge.net/project/dosbox/dosbox/0.74/dosbox-0.74.tar.gz
+Resolving kaz.dl.sourceforge.net (kaz.dl.sourceforge.net)... 88.204.157.163
+Connecting to kaz.dl.sourceforge.net (kaz.dl.sourceforge.net)|88.204.157.163|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1265711 (1.2M) [application/x-gzip]
+Saving to: ‘/home/aaditya/src/dosbox-0.74.tar.gz’
+
+100%[=============================================================================================>] 1,265,711   30.4KB/s   in 41s    
+
+2014-05-15 18:41:03 (30.1 KB/s) - ‘/home/aaditya/src/dosbox-0.74.tar.gz’ saved [1265711/1265711]
+
+
+$ asbt -G dosbox
+asbt: /home/aaditya/slackbuilds/system/dosbox/dosbox.info sourced.
+asbt: md5sum matched.
+Source: dosbox-0.74.tar.gz present.
+Re-download? [y/N]: 
+
+
+14) Building the package
+
+$ asbt -B dosbox
+Building dosbox
+Password:
+dosbox-0.74/
+dosbox-0.74/acinclude.m4
+dosbox-0.74/config.sub
+dosbox-0.74/AUTHORS
+dosbox-0.74/configure
+dosbox-0.74/missing
+dosbox-0.74/ChangeLog
+dosbox-0.74/visualc_net/
+dosbox-0.74/visualc_net/dosbox.sln
+dosbox-0.74/visualc_net/dosbox.vcproj
+dosbox-0.74/visualc_net/Makefile.am
+dosbox-0.74/visualc_net/Makefile.in
+dosbox-0.74/README
+.
+.
+.
+.
+.
+usr/share/
+usr/share/pixmaps/
+usr/share/pixmaps/dosbox.ico
+usr/share/applications/
+usr/share/applications/dosbox.desktop
+usr/man/
+usr/man/man1/
+usr/man/man1/dosbox.1.gz
+usr/bin/
+usr/bin/dosbox
+
+Slackware package /home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz created.
+
+
+$ asbt -B dosbox
+Package: dosbox(0.74) already built.
+Re-building dosbox
+Password:
+
+
+15) Install the built package 
+
+$ asbt -I screenfetch
+Installing screenfetch
+Password:
+Verifying package screenfetch-3.2.2-noarch-1_SBo.tgz.
+Installing package screenfetch-3.2.2-noarch-1_SBo.tgz:
+PACKAGE DESCRIPTION:
+# The Bash Screenshot Information Tool
+# #
+# # Screenfetch is a Bash Screenshot Information Tool. This handy
+# # Bash script can be used to generate one of those nifty terminal
+# # theme information + ASCII distribution logos you see in everyone's
+# # screenshots nowadays. It will auto-detect your distribution and
+# # display an ASCII version of that distribution's logo and some
+# # valuable information to the right.
+# #
+# # Homepage: http://git.silverirc.com/cgit.cgi/screenfetch-dev.git/
+# #
+# Package screenfetch-3.2.2-noarch-1_SBo.tgz installed.
+#
+#
+
+
+16) Upgrade installed package
+
+$ asbt -U screenfetch
+Upgrading screenfetch
+Password:
+
++==============================================================================
+| Skipping package screenfetch-3.2.2-noarch-1_SBo (already installed)
++==============================================================================
+
+
+17) Remove installed package 
+
+$ asbt -R screenfetch
+Removing screenfetch
+Password:
+
+Removing package /var/log/packages/screenfetch-3.2.2-noarch-1_SBo...
+Removing files:
+  --> Deleting /usr/bin/screenfetch
+  --> Deleting /usr/doc/screenfetch-3.2.2/CHANGELOG
+  --> Deleting /usr/doc/screenfetch-3.2.2/COPYING
+  --> Deleting /usr/doc/screenfetch-3.2.2/README.mkdn
+  --> Deleting /usr/doc/screenfetch-3.2.2/TODO
+  --> Deleting empty directory /usr/doc/screenfetch-3.2.2/
+
+
+18) Process = Get + Build + Install / Upgrade
+
+$ asbt -P dosbox
+Processing dosbox...
+asbt: /home/aaditya/slackbuilds/system/dosbox/dosbox.info sourced.
+asbt: md5sum matched.
+Source: dosbox-0.74.tar.gz present.
+Package: dosbox(0.74) already built.
+Upgrading dosbox
+Password:
+
+
+19) Display details about installed package
+
+$ asbt -D screenfetch
+PACKAGE NAME:     screenfetch-3.2.2-noarch-1_SBo
+COMPRESSED PACKAGE SIZE:     48K
+UNCOMPRESSED PACKAGE SIZE:     190K
+PACKAGE LOCATION: /home/aaditya/packages/screenfetch-3.2.2-noarch-1_SBo.tgz
+PACKAGE DESCRIPTION:
+screenfetch: The Bash Screenshot Information Tool
+screenfetch:
+screenfetch: Screenfetch is a Bash Screenshot Information Tool. This handy
+screenfetch: Bash script can be used to generate one of those nifty terminal
+screenfetch: theme information + ASCII distribution logos you see in everyone's
+screenfetch: screenshots nowadays. It will auto-detect your distribution and
+screenfetch: display an ASCII version of that distribution's logo and some
+screenfetch: valuable information to the right.
+screenfetch:
+screenfetch: Homepage: http://git.silverirc.com/cgit.cgi/screenfetch-dev.git/
+screenfetch:
+FILE LIST:
+./
+install/
+install/slack-desc
+usr/
+usr/doc/
+usr/doc/screenfetch-3.2.2/
+usr/doc/screenfetch-3.2.2/TODO
+usr/doc/screenfetch-3.2.2/README.mkdn
+usr/doc/screenfetch-3.2.2/COPYING
+usr/doc/screenfetch-3.2.2/CHANGELOG
+usr/bin/
+usr/bin/screenfetch
+/var/log/packages/screenfetch-3.2.2-noarch-1_SBo lines 1-29/29 (END)
+
+
+20) Tidy the source or package directories by removing old items (retails latest 3)
+
+$ asbt -T --dry-run pkg
+$
+(No ouput means nothing will be removed)
+
+$ asbt -T --dry-run src
+$
+
+
+21) Update the git repository
+
+$ asbt -u
+Updating git repo /home/aaditya/git/slackbuilds/.git
+From git://slackbuilds.org/slackbuilds
+ * branch            master     -> FETCH_HEAD
+Already up-to-date.
+
+
+22) Check updates to installed SBo packages
+
+$ asbt -c
+asbt:	0.9.1 -> 0.9.0
+virtualbox-kernel:	4.3.10_3.13.6_custom -> 4.3.10
+
+
+23) Display all installed SBo packages
+
+$ asbt -a
+pangomm-2.34.0-x86_64-1_SBo
+libgtop-2.28.5-x86_64-1_SBo
+volumeicon-0.5.0-x86_64-1_SBo
+cairomm-1.10.0-x86_64-1_SBo
+.
+.
+.
+galculator-2.1.2-x86_64-1_SBo
+driconf-0.9.1-x86_64-1_SBo
+screenfetch-3.2.2-noarch-1_SBo
+
+Total: 89
+
+
+24) Display version and date
+
+$ asbt -V
+asbt version-0.9.2 (dated: 11 May 2014)
+
+
+25) Setup the tool or configure its settings
+
+$ asbt -S
+Slackbuild repository not present.
+Press y to set it up, or n to exit [Y/n]: 
+Default Slackbuilds directory: /home/aaditya/slackbuilds
+Press y use it, or n to change [Y/n]: 
+Slackbuild repository seems to be empty.
+Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: 
+Cloning into 'slackbuilds'...
+remote: Counting objects: 200422, done.
+.
+.
+.
+Enter your password to view and edit the configuration file.
+Password:
+
+$ asbt -S
+Enter your password to view and edit the configuration file.
+Password:
+
+
+26) View the SlackBuilds Changelog
+
+$ asbt -C
+Wed May 14 01:04:28 UTC 2014
+audio/eawpats: Add missing package.
+audio/qtractor: Updated for version 0.6.1.
+desktop/catfish: Updated for version 1.0.2.
+desktop/cellwriter: New maintainer.
+desktop/homerun: Updated for version 1.2.4.
+desktop/spectrwm: Updated for version 2.5.1.
+desktop/xfce4-whiskermenu-plugin: Updated for version 1.3.2.
+.
+.
+.
+.
+
+27) View the help
+
+$ asbt -h
 
