@@ -385,10 +385,16 @@ build-package () {
 
 install-package () {
 	# Check if package present
-	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
-		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
-		echo "Installing $package"
-		sudo -k /sbin/installpkg "$pkgpath"
+	if [[ $(ls "$outdir/$package"* 2> /dev/null) ]] || [[ $(ls "/tmp/$package"* 2> /dev/null) ]]; then
+		pkgpath=$(ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1)
+		# Check if package is installed 
+		if [ -f "/var/log/packages/$package"* ]; then
+			echo "Re-installing $package"
+			sudo -k /sbin/upgradepkg --reinstall "$pkgpath"
+		else
+			echo "Installing $package"
+			sudo -k /sbin/installpkg "$pkgpath"
+		fi
 	else
 		echo "Package: $package N/A"
 		exit 1
@@ -518,8 +524,10 @@ get|-G)
 	check-repo
 	check-option "$2"
 	get-path
+	upgrade-package
 	get-package
 	if [ $valid -eq 1 ]; then
+	upgrade-package
 		echo -n "Re-download? [y/N]: "
 		read -e choice
 		if [ "$choice" == y ] || [ "$choice" == Y ]; then
