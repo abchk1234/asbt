@@ -313,7 +313,7 @@ usr/bin/screenfetch
 /var/log/packages/screenfetch-3.2.2-noarch-1_SBo lines 1-29/29 (END)
 
 
-20) Tidy the source or package directories by removing old items (retails latest 3)
+20) Tidy the source or package directories by removing old items (retains latest 3)
 
 $ asbt -T --dry-run pkg
 $
@@ -400,7 +400,22 @@ desktop/xfce4-whiskermenu-plugin: Updated for version 1.3.2.
 .
 .
 
+
 27) View the help
 
 $ asbt -h
+Usage: asbt <option> [package]
+Options-
+	[search,-s]	[query,-q]	[find,-f]
+	[info,-i]	[readme,-r]	[desc,-d]
+	[view,-v]	[goto,-g]	[list,-l]
+	[track,-t]	[longlist,-L]	[enlist,-e]
+	[get,-G]	[build,-B]	[install,-I]
+	[upgrade,-U]	[remove,-R]	[process,-P]
+	[--update,-u]	[--check,-c]	[--all,-a]	
+	[--help,-h]	[--setup,-S]	[--changelog,-C]
+	[--version,-V]
+
+Using repository: /home/aaditya/slackbuilds
+For more info, see the man page and/or the README.
 
