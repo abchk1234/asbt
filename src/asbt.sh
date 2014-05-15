@@ -698,8 +698,8 @@ Options-
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[details,-D]	[tidy,-T]	[--update,-u]
-	[--check,-c]	[--all,-a]	[--help,-h]
-	[--version,-V]	[--setup,-S]	[--changelog,-C]
+	[--check,-c]	[--all,-a]	[--changelog,-C]
+	[--version,-V]	[--setup,-S]	[--help,-h]
 	
 Using repository: $repo
 For more info, see the man page and/or the README.
