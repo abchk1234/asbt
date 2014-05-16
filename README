@@ -151,3 +151,8 @@ In such a case, one change ownership of the slackbuilds repository using the cho
 
 sudo chown -R $USER /home/$USER/slackbuilds
 
+
+7) Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
+
+The --dry-run option can be used to see which entries are going to be deleted.
+

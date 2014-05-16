@@ -430,7 +430,7 @@ find|-f)
 	check-input
 	check-repo
 	check-option "$2"
-	echo "Present in slackbuilds repository:"
+	echo "In slackbuilds repository:"
 	find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
 	echo -e "\nInstalled:"
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
@@ -524,10 +524,8 @@ get|-G)
 	check-repo
 	check-option "$2"
 	get-path
-	upgrade-package
 	get-package
 	if [ $valid -eq 1 ]; then
-	upgrade-package
 		echo -n "Re-download? [y/N]: "
 		read -e choice
 		if [ "$choice" == y ] || [ "$choice" == Y ]; then

@@ -7,7 +7,7 @@ asbt \- a tool to manage packages in your local slackbuilds repository
 asbt <option> [package]
 .SH DESCRIPTION
 asbt acts like a package manager for your local copy of slackbuilds,
-usually obtained from http://slackbuilds.org (SBo).
+which can be obtained from http://slackbuilds.org (SBo).
 
 It supports searching a package in your repository, viewing details about that package, installing or removing it, and other options.
 
@@ -72,8 +72,7 @@ Using the package path instead of the package name is also possible.
 	process = get + build + install/upgrade the package.
 
 [tidy,-T] [--dry-run] <src|pkg>
-Tidy the srcdir or pkgdir, that is, remove old source or built packages.
-Retains the latest 3 entries (by date).
+	Tidy the srcdir or pkgdir, ie, remove old source or built packages.
 .fi
 .PP
 .nf
