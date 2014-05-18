@@ -83,3 +83,5 @@ Add facility of adding command-line options when building packages +
 Stash git changes instead of failing to update +
 Add option to take ownership of SlackBuild if chmod +x is not allowed.
 
+0.9.3 (18/05/14)
+Display version also in find option

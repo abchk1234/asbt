@@ -37,7 +37,7 @@ dosbox-0.74-x86_64-2_SBo
 
 $ asbt -f dosbox
 Present in slackbuilds repository:
-system/dosbox
+system/dosbox(0.74)
 
 Installed:
 dosbox-0.74-x86_64-2_SBo
@@ -211,7 +211,7 @@ Slackware package /home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz created.
 
 $ asbt -B dosbox
 Package: dosbox(0.74) already built.
-Re-building dosbox
+Re-building dosbox4
 Password:
 
 
@@ -237,6 +237,11 @@ PACKAGE DESCRIPTION:
 # Package screenfetch-3.2.2-noarch-1_SBo.tgz installed.
 #
 #
+
+
+$ asbt -I screenfetch
+Re-installing screenfetch
+Password:
 
 
 16) Upgrade installed package

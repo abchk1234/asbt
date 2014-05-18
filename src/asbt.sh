@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.2 (dated: 11 May 2014)" # Version
+ver="0.9.3 (dated: 18 May 2014)" # Version
 
 # Variables used:
 
@@ -430,8 +430,13 @@ find|-f)
 	check-input
 	check-repo
 	check-option "$2"
-	echo "In slackbuilds repository:"
-	find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"
+	echo -e "In slackbuilds repository:"
+	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
+		# Get version
+		. "$repodir/$i"/*.info 2> /dev/null 
+		# Display package and version
+		echo "$i($VERSION)"
+	done
 	echo -e "\nInstalled:"
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
 	;;
