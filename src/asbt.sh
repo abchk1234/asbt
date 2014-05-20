@@ -191,6 +191,7 @@ get-path() {
 			exit 1
 		fi
 	else
+		# Search in the slackbuilds repo
 		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 	fi
 	# Check path (if directory exists)
