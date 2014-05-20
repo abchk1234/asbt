@@ -225,16 +225,19 @@ get-content () {
 # Get info about the source of the package
 get-source-data () {
 	get-info
+	# Check special cases where the package has a separate download for x86_64
 	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
 		arch="x86_64"
 	else
 		link="$DOWNLOAD"
 	fi
-	src=$(basename "$link")
+
+	src=$(basename "$link")	# Name of source file
+
 	# Check if src contains PRGNAM in the name
 	if [ ! $(echo "$src" | grep "$PRGNAM") ]; then
-		# Append PRGNAM to the beginning and check
+		# Append PRGNAM to the beginning
 		if [ -e "$path/$PRGNAM-$src" ]; then
 			md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
 			pkgnam="$PRGNAM-$src"
@@ -265,23 +268,22 @@ check-source () {
 	if [ -e "$path/$src" ]; then
 		# Check validity of downloaded source
 		if [ "$arch" == "x86_64" ]; then
-			# 64 bit source
 			if [ "$md5" == "$MD5SUM_x86_64" ]; then
-				# Source valid
 				valid=1
 				echo "asbt: md5sum matched."
 			else
 				valid=0	
 			fi
 		else
+			# Normal package for all arch
 			if [ "$md5" == "$MD5SUM" ]; then
-				# Source valid
 				valid=1
 				echo "asbt: md5sum matched."
 			else
 				valid=0
 			fi
 		fi
+
 	# Check if source present but not linked
 	elif [ -f "$srcdir/$src" ]; then
 		# Check validity of downloaded source
@@ -349,6 +351,7 @@ check-built-package () {
 }
 
 process-built-package () {
+	# This process-built-package function is used with the process option
 	check-built-package
 	if [ $built -eq 0 ]; then
 		build-package
@@ -360,7 +363,8 @@ build-package () {
 	# Check for SlackBuild
 	if [ -f "$path/$package.SlackBuild" ]; then
 		chmod +x "$path/$package.SlackBuild"
-	        if [ $? -eq 1 ]; then
+		if [ $? -eq 1 ]; then
+		# Chmod as normal user failed
 			echo "Enter your password to take ownership of the slackbuild." && sudo -k chown $USER "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
 		fi
 	else
