@@ -67,15 +67,10 @@ edit-config () {
 
 # Check the repo directory
 check-repo () {
-if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -le 0 ]; then
+	if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -eq 0 ]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
-		echo -n "Would you like to setup? [y/N]: "
-		read -e choice
-		if [ "$choice" == "y" ] || [ "$choice" == "Y" ]; then
-			setup
-		else
-			exit 1
-		fi
+		echo "Use asbt -S to setup the tool."
+		exit 1
 	fi
 }
 
