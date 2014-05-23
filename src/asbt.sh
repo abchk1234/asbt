@@ -34,7 +34,7 @@ gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir"/home/$USER/slackbuilds/.git" # Alternate git repo directory.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
-#config="" # Leave it blank for using above defaults
+#config="/home/$USER/.asbt.conf" # Alternate config file.
 
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
@@ -47,12 +47,14 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 package="$2" # Name of package input by the user.
 
 # Check for the configuration file 
-if [ -e "$config" ]; then
-	. "$config"
-fi
+check-config () {
+	if [ -e "$config" ]; then
+		. "$config"
+	fi
+}
 
 edit-config () {
-	echo "Enter your password to view and edit the configuration file."
+	echo "Enter your password to view or edit the configuration file $config"
 	if [ -e $editor ]; then
 	       sudo -k $editor $config
 	elif [ -e /usr/bin/nano ]; then
@@ -145,15 +147,17 @@ setup () {
 		edit-config
 
 		# Re-read the config file and check repo
-		. $config
+		#. $config
+		check-config
 		check-repo
 		
 	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
 		echo "Slackbuild repository seems to be empty."
 		create-git-repo
 	else
-		edit-config
-		. $config
+		edit-config || exit 1
+		#. $config
+		check-config
 	fi
 }
 
@@ -418,8 +422,9 @@ upgrade-package () {
 case "$1" in
 search|-s)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
@@ -429,8 +434,9 @@ query|-q)
 	;;
 find|-f)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	echo -e "In slackbuilds repository:"
 	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
 		# Get version
@@ -443,22 +449,25 @@ find|-f)
 	;;
 info|-i)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	get-content "$path/$package.info"
 	;;
 readme|-r)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	get-content "$path/README"
 	;;
 view|-v)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	if [ -e $editor ]; then
 		$editor "$path/$package.SlackBuild"
@@ -468,29 +477,33 @@ view|-v)
 	;;
 desc|-d)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	get-content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
 	;;
 list|-l)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	ls $path
 	;;
 longlist|-L)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	ls -l $path
 	;;
 enlist|-e)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	echo -e "Grepping for $package in the slackbuild repository...\n"
 	for i in $(find -L "$repodir" -type f -name "*.info");
 		do (grep "$package" $i && printf "@ $i\n\n"); 
@@ -499,6 +512,7 @@ enlist|-e)
 track|-t)
 	check-input
 	check-option "$2"
+	check-config
 	echo "Source:"
 	find "$srcdir" -maxdepth 1 -type f -iname "$package*"
 	echo -e "\nBuilt:"
@@ -507,8 +521,9 @@ track|-t)
 	;;
 goto|-g)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	if [ "$TERM" == "linux" ]; then
 		echo "Goto: N/A"
@@ -527,8 +542,9 @@ goto|-g)
 	;;
 get|-G)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	get-package
 	if [ $valid -eq 1 ]; then
@@ -540,8 +556,9 @@ get|-G)
 	fi
 	;;
 build|-B)
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	# Check arguments
 	if [ $# -gt 2 ]; then
 		OPTIONS=$(echo $@ | cut -d " " -f 3-)
@@ -554,11 +571,13 @@ build|-B)
 install|-I)
 	check-input
 	check-option "$2"
+	check-config
 	install-package
 	;;
 upgrade|-U)
 	check-input
 	check-option "$2"
+	check-config
 	upgrade-package
 	;; 
 remove|-R)
@@ -576,8 +595,9 @@ remove|-R)
 	;;
 process|-P)
 	check-input
-	check-repo
 	check-option "$2"
+	check-config
+	check-repo
 	get-path
 	echo "Processing $package..."
 	get-package || exit 1
@@ -603,6 +623,7 @@ details|-D)
 	fi
 	;;
 tidy|-T)
+	check-config
 	# Check arguments
 	if [ $# -gt 3 ]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
@@ -645,6 +666,7 @@ tidy|-T)
 	fi
 	;;
 --update|-u)
+	check-config
 	if [ -z "$gitdir" ]; then
 		echo "Git directory not specified."
 		exit 1
@@ -662,9 +684,9 @@ tidy|-T)
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" 
 	echo -ne "\nTotal: "
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
-
 	;;
 --check|-c)
+	check-config
 	check-repo
 	for i in /var/log/packages/*_SBo*; do
 		package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
@@ -689,10 +711,13 @@ tidy|-T)
 	done
 	;;
 --setup|-S)
-	setup ;;
+	check-config
+	setup
+	;;
 --version|-V)
         echo -e "asbt version-$ver" ;;
 --changelog|-C)
+	check-config
 	check-repo
 	if [ -f "$repodir/ChangeLog.txt" ]; then
 		less "$repodir/ChangeLog.txt"
@@ -702,6 +727,7 @@ tidy|-T)
 	fi
 	;;
 --help|-h|*)
+	check-config
 	if [ -d "$repodir" ]; then
 		repo="$repodir"
 	else

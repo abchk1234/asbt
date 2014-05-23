@@ -214,6 +214,20 @@ Re-building dosbox4
 Password:
 
 
+14-a) Passing options while building:
+
+$ asbt -B volumeicon NOTIFY=yes
+Building volumeicon
+[sudo] password for aaditya: 
+
+
+14-b) Specifying path instead of package name:
+
+$ asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
+Building thermal_daemon
+[sudo] password for aaditya: 
+
+
 15) Install the built package 
 
 $ asbt -I screenfetch
