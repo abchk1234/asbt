@@ -147,7 +147,6 @@ setup () {
 		edit-config
 
 		# Re-read the config file and check repo
-		#. $config
 		check-config
 		check-repo
 		
@@ -156,7 +155,6 @@ setup () {
 		create-git-repo
 	else
 		edit-config || exit 1
-		#. $config
 		check-config
 	fi
 }
@@ -401,7 +399,7 @@ install-package () {
 			sudo -k /sbin/installpkg "$pkgpath"
 		fi
 	else
-		echo "Package: $package N/A"
+		echo "Package $package: N/A"
 		exit 1
 	fi 
 }
@@ -413,7 +411,7 @@ upgrade-package () {
 		echo "Upgrading $package"
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
-		echo "Package: $package N/A"
+		echo "Package $package: N/A"
 		exit 1
 	fi 
 }
@@ -504,7 +502,7 @@ enlist|-e)
 	check-option "$2"
 	check-config
 	check-repo
-	echo -e "Grepping for $package in the slackbuild repository...\n"
+	echo -e "Grepping for the word $package in the slackbuild repository...\n"
 	for i in $(find -L "$repodir" -type f -name "*.info");
 		do (grep "$package" $i && printf "@ $i\n\n"); 
 	done
@@ -589,7 +587,7 @@ remove|-R)
 		rpkg=`ls "/var/log/packages/$package"*`
 		sudo -k /sbin/removepkg "$rpkg"
 	else
-		echo "Package: $package N/A"
+		echo "Package $package: N/A"
 		exit 1
 	fi
 	;;
@@ -618,7 +616,7 @@ details|-D)
 	if [ -f /var/log/packages/$package* ]; then
 		less /var/log/packages/$package*
 	else
-		echo "Details about package $package N/A"
+		echo "Details of package $package: N/A"
 		exit 1
 	fi
 	;;

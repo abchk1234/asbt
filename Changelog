@@ -84,4 +84,6 @@ Stash git changes instead of failing to update +
 Add option to take ownership of SlackBuild if chmod +x is not allowed.
 
 0.9.3 (18/05/14)
-Display version also in find option
+Display version also in find option +
+Update documentation and comments in code +
+Small bugfixes.
