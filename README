@@ -11,7 +11,7 @@ It supports following functions/options:
 5)  view slackbuild (-v)
 6)  list files contained in specified package directory (-l,-L)
 7)  description about specified package (-d)
-8)  get/download the package (-G)
+8)  get / download the package (-G)
 9)  build the package (-B)
 10) install the built package (-I)
 11) details about installed package (-D)
@@ -24,7 +24,7 @@ It supports following functions/options:
 18) view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
 19) track the source and built package for specified package (-t) 
 20) enlist all packages which have given package in their .info file (-e)
-21) Tidy the source and package directories by removing old entries (-T)
+21) tidy the source and package directories by removing old entries (-T)
 
 It uses the following (Slackware) tools:
 
@@ -40,7 +40,7 @@ checking updates to the packages, and viewing details about the installed packag
 
 When root access is required, for example, when installing or removing packages,
 sudo is used to gain the root privelege. This ensures demarcation between
-informational activites like searching, viewing information, etc, and activites which
+informational activites like searching or viewing information, and activites which
 change the system state, like installing or removing packages.
 
 Also, asbt is designed with simplicity in mind; 
@@ -48,7 +48,7 @@ some complex cases are not handled and are left to the user's discretion.
 Rather, it aids and automates functions like searching for packages, downloading the source, building the packages,
 and installing / upgading them, while following rules like where to store these source and built packages,
 and displays information about the process in a transparent way, 
-while at the same time tries not to hinder the user with excess verbiage.
+without trying to hinder the user with excess verbiage.
 
 The variables used are:
 
