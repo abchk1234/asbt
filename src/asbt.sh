@@ -133,6 +133,7 @@ setup () {
 				# Default configuration
 				if [ ! -d /home/$USER/slackbuilds ]; then
 					mkdir /home/$USER/slackbuilds
+					repodir=/home/$USER/slackbuilds
 				fi
 			fi
 		fi
