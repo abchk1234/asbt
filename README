@@ -43,7 +43,7 @@ sudo is used to gain the root privelege. This ensures demarcation between
 informational activites like searching or viewing information, and activites which
 change the system state, like installing or removing packages.
 
-Also, asbt is designed with simplicity in mind; 
+asbt is designed with simplicity in mind; 
 some complex cases are not handled and are left to the user's discretion.
 Rather, it aids and automates functions like searching for packages, downloading the source, building the packages,
 and installing / upgading them, while following rules like where to store these source and built packages,
@@ -108,10 +108,8 @@ asbt search xfce
 Instead of-
 asbt search '*xfce*'
 
-
 2) When querying, if the package(s) is/are installed, they will they displayed,
 else no output. A *(wildcard) at both ends is also implied when querying.
-
 
 3) Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel),
 and you get something like:
@@ -125,13 +123,11 @@ In such a case, expand the name of package to install, so that it can differenti
 
 asbt upgrade virtualbox-kernel-4.3.4_3.10.28
 
-
 4) Giving package path instead of package supports installation of package from custom folder. For example,
 
 asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
 
 Here the above path is the folder which contains the source and slackbuild and related files.
-
 
 5) While building packages, options can also be passed. For example,
 
@@ -139,14 +135,12 @@ asbt -B volumeicon NOTIFY=yes
 
 These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
-
 6) asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
 	This change is reverted after building the package.
 But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, 
 then the slackbuild would be changed, and git may complain about this change when updating the git repo.
 	To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
 To know more about git stash, read the git-stash man page.
-
 
 7) If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
 then they can change ownership of the slackbuilds git repository, and you repeatedly get messages like:
@@ -157,7 +151,6 @@ Enter your password to take ownership of the slackbuild.
 In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
 
 sudo chown -R $USER /home/$USER/slackbuilds
-
 
 8) Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
