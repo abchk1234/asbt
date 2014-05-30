@@ -45,9 +45,9 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #set -e
 
 # Double brackets [[ ]] are used to optimise condition checking,
-# as they are bash built-in compared to [ ]
-# But as it can reduce portability to sh,
-# so its used where a function is called many times.
+# as they are a bash built-in compared to [ ] (test instruction)
+# But as they can reduce portability to the bourne shell sh,
+# so its used only where a function is called many times.
 
 package="$2" # Name of package input by the user.
 
@@ -468,7 +468,7 @@ readme|-r)
 	get-content "$path/README"
 	;;
 view|-v)
-	check-input "$@"
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
