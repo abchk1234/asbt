@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.3 (dated: 18 May 2014)" # Version
+ver="0.9.4 (dated: 30 May 2014)" # Version
 
 # Variables used:
 
@@ -44,12 +44,42 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 # Exit on error(s) - optional - as most errors are manually handled.
 #set -e
 
+# Double brackets [[ ]] are used to optimise condition checking,
+# as they are bash built-in compared to [ ]
+# But as it can reduce portability to sh,
+# so its used where a function is called many times.
+
 package="$2" # Name of package input by the user.
+
+# Check the no of input parameters
+check-input () {
+	if [[ $1 -gt 2 ]] ; then
+		echo "Invalid syntax. Type asbt -h for more info."
+		exit 1
+	fi
+}
+
+# Check number of arguments 
+check-option () {
+	if [[ ! "$1" ]]; then
+		echo "Additional parameter required for this option. Type asbt -h for more info."
+		exit 1
+	fi
+}
 
 # Check for the configuration file 
 check-config () {
-	if [ -e "$config" ]; then
+	if [[ -e "$config" ]]; then
 		. "$config"
+	fi
+}
+
+# Check the repo directory
+check-repo () {
+	if [[ ! -d "$repodir" ]] || [[ $(ls "$repodir" | wc -w) -eq 0 ]]; then
+		echo "SlackBuild repository $repodir does not exist or is empty."
+		echo "Use asbt -S to setup the tool."
+		exit 1
 	fi
 }
 
@@ -64,15 +94,6 @@ edit-config () {
 	else
 	       echo "Unable to find editor to edit the configuration file $config"
 	       exit 1
-	fi
-}
-
-# Check the repo directory
-check-repo () {
-	if [ ! -d "$repodir" ] || [ $(ls "$repodir" | wc -w) -eq 0 ]; then
-		echo "SlackBuild repository $repodir does not exist or is empty."
-		echo "Use asbt -S to setup the tool."
-		exit 1
 	fi
 }
 
@@ -133,7 +154,7 @@ setup () {
 				# Default configuration
 				if [ ! -d /home/$USER/slackbuilds ]; then
 					mkdir /home/$USER/slackbuilds
-					repodir=/home/$USER/slackbuilds
+					repodir="/home/$USER/slackbuilds"
 				fi
 			fi
 		fi
@@ -160,29 +181,13 @@ setup () {
 	fi
 }
 
-# Check the no of input parameters
-check-input () {
-	if [ $# -gt 2 ] ; then
-		echo "Invalid syntax. Type asbt -h for more info."
-		exit 1
-	fi
-}
-
-# Check number of arguments 
-check-option () {
-	if [ ! "$1" ]; then
-		echo "Additional parameter required for this option. Type asbt -h for more info."
-		exit 1
-	fi
-}
-
 # Get the full path of a package
 get-path() {
 	# Check if path to package is specified instead of package name
-	if [ -d "$package" ]; then
+	if [[ -d "$package" ]]; then
 		path=$(readlink -f "$package")
 		# Get the name of the package
-		if [ -f "$path"/*.SlackBuild ]; then
+		if [[ -f "$path"/*.SlackBuild ]]; then
 			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
 		else
 			echo "asbt: Unable to process $package"
@@ -193,7 +198,7 @@ get-path() {
 		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 	fi
 	# Check path (if directory exists)
-	if [ ! -d "$path" ]; then
+	if [[ ! -d "$path" ]]; then
 		echo "Directory: $repodir/$package N/A"
 		exit 1
 	fi
@@ -201,7 +206,7 @@ get-path() {
 
 get-info () {
 	# Source the .info file to get the package details
-	if [ -f "$path/$package.info" ]; then
+	if [[ -f "$path/$package.info" ]]; then
 		. "$path/$package.info"
 		echo "asbt: $path/$package.info sourced."
 	else
@@ -211,7 +216,7 @@ get-info () {
 }
 
 get-content () {
-	if [ -f "$1" ]; then
+	if [[ -f "$1" ]]; then
 		# Return the content of the argument passed.
 		cat "$1"
 	else
@@ -420,19 +425,19 @@ upgrade-package () {
 # Options
 case "$1" in
 search|-s)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
 	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
 	;;
 query|-q)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
 	;;
 find|-f)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -447,7 +452,7 @@ find|-f)
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
 	;;
 info|-i)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -455,7 +460,7 @@ info|-i)
 	get-content "$path/$package.info"
 	;;
 readme|-r)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -463,7 +468,7 @@ readme|-r)
 	get-content "$path/README"
 	;;
 view|-v)
-	check-input
+	check-input "$@"
 	check-option "$2"
 	check-config
 	check-repo
@@ -475,7 +480,7 @@ view|-v)
 	fi
 	;;
 desc|-d)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -483,7 +488,7 @@ desc|-d)
 	get-content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
 	;;
 list|-l)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -491,7 +496,7 @@ list|-l)
 	ls $path
 	;;
 longlist|-L)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -499,7 +504,7 @@ longlist|-L)
 	ls -l $path
 	;;
 enlist|-e)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -509,7 +514,7 @@ enlist|-e)
 	done
 	;;
 track|-t)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	echo "Source:"
@@ -519,7 +524,7 @@ track|-t)
 	find "/tmp" -maxdepth 1 -type f -iname "$package*"
 	;;
 goto|-g)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -540,7 +545,7 @@ goto|-g)
 	fi
 	;;
 get|-G)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -568,19 +573,19 @@ build|-B)
 	build-package
 	;;
 install|-I)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	install-package
 	;;
 upgrade|-U)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	upgrade-package
 	;; 
 remove|-R)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	# Check if package is installed 
 	if [ -f "/var/log/packages/$package"* ]; then
@@ -593,7 +598,7 @@ remove|-R)
 	fi
 	;;
 process|-P)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -612,7 +617,7 @@ process|-P)
 	fi
 	;;
 details|-D)
-	check-input
+	check-input "$#"
 	check-option "$2"
 	if [ -f /var/log/packages/$package* ]; then
 		less /var/log/packages/$package*
@@ -691,13 +696,13 @@ tidy|-T)
 		package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 		pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
 		# Make an exception for virtualbox-kernel package
-		if [ "$package" == "virtualbox-kernel" ] || [ "$package" == "virtualbox-kernel-addons" ]; then
+		if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
  			pkgver=$(echo $pkgver | cut -d "_" -f 1)
 		fi
 		
 		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 		
-		if [ -f "$path/$package.info" ]; then
+		if [[ -f "$path/$package.info" ]]; then
 			. "$path/$package.info"
 		else
 			# For packages not present in slackbuilds repo

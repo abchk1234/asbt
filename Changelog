@@ -87,3 +87,8 @@ Add option to take ownership of SlackBuild if chmod +x is not allowed.
 Display version also in find option +
 Update documentation and comments in code +
 Small bugfixes.
+
+0.9.4 (30/05/14)
+Fix detection of extra arguments specified +
+use bash specific [[ ]] in place of [ ] to optimise the code where required +
+change order of functions in code.
