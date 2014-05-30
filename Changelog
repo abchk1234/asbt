@@ -90,5 +90,6 @@ Small bugfixes.
 
 0.9.4 (30/05/14)
 Fix detection of extra arguments specified +
-use bash specific [[ ]] in place of [ ] to optimise the code where required +
-change order of functions in code.
+Use bash specific [[ ]] in place of [ ] to optimise the code where required +
+Change order of functions in code +
+Add test cases (not finished, will be continued).
