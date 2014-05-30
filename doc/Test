@@ -1,42 +1,78 @@
 #!/bin/bash
 # Some test cases for asbt
 
+echo "../src/asbt.sh"
+../src/asbt.sh
+
+echo
+
 echo "../src/asbt.sh -s"
-../src/asbt.sh -s
+../src/asbt.sh -s; echo
 echo "../src/asbt.sh -s asbt"
-../src/asbt.sh -s asbt
+../src/asbt.sh -s asbt; echo
 echo "../src/asbt.sh -s asbtasbt"
-../src/asbt.sh -s asbtasbt
+../src/asbt.sh -s asbtasbt; echo
 echo "../src/asbt.sh -s asbt asbt"
 ../src/asbt.sh -s asbt asbt
 
 echo 
 
 echo "../src/asbt.sh -q"
-../src/asbt.sh -q
+../src/asbt.sh -q; echo
 echo "../src/asbt.sh -q asbt"
-../src/asbt.sh -q asbt
+../src/asbt.sh -q asbt; echo
 echo "../src/asbt.sh -q asbtasbt"
-../src/asbt.sh -q asbtasbt
+../src/asbt.sh -q asbtasbt; echo
 echo "../src/asbt.sh -q asbt asbt"
 ../src/asbt.sh -q asbt asbt
 
 echo 
 
 echo "../src/asbt.sh -f"
-../src/asbt.sh -f
+../src/asbt.sh -f; echo
 echo "../src/asbt.sh -f asbt"
-../src/asbt.sh -f asbt
+../src/asbt.sh -f asbt; echo
+echo "../src/asbt.sh -f asbtasbt"
+../src/asbt.sh -f asbtasbt; echo
 echo "../src/asbt.sh -f asbt asbt"
 ../src/asbt.sh -f asbt asbt
 
 echo 
 
 echo "../src/asbt.sh -i"
-../src/asbt.sh -i
+../src/asbt.sh -i; echo
 echo "../src/asbt.sh -i asbt"
-../src/asbt.sh -i asbt
+../src/asbt.sh -i asbt; echo
 echo "../src/asbt.sh -i asbtasbt"
-../src/asbt.sh -i asbtasbt
+../src/asbt.sh -i asbtasbt; echo
 echo "../src/asbt.sh -i asbt asbt"
 ../src/asbt.sh -i asbt asbt
+
+echo 
+
+echo "../src/asbt.sh -r"
+../src/asbt.sh -r; echo
+echo "../src/asbt.sh -r asbt"
+../src/asbt.sh -r asbt; echo
+echo "../src/asbt.sh -r asbtasbt"
+../src/asbt.sh -r asbtasbt; echo
+echo "../src/asbt.sh -r asbt asbt"
+../src/asbt.sh -r asbt asbt
+
+echo
+
+echo "../src/asbt.sh -d"
+../src/asbt.sh -d; echo
+echo "../src/asbt.sh -d asbt"
+../src/asbt.sh -d asbt; echo
+echo "../src/asbt.sh -d asbtasbt"
+../src/asbt.sh -d asbtasbt; echo
+echo "../src/asbt.sh -d asbt asbt"
+../src/asbt.sh -d asbt asbt
+
+echo
+
+echo "../src/asbt.sh"
+../src/asbt.sh
+
+echo

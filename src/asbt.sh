@@ -187,10 +187,10 @@ get-path() {
 	if [[ -d "$package" ]]; then
 		path=$(readlink -f "$package")
 		# Get the name of the package
-		if [[ -f "$path"/*.SlackBuild ]]; then
+		if [ -f "$path"/*.SlackBuild ]; then
 			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
 		else
-			echo "asbt: Unable to process $package"
+			echo "asbt: Unable to process $package; SlackBuild not found."
 			exit 1
 		fi
 	else
