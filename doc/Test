@@ -1,4 +1,3 @@
-#!/bin/bash
 # Some test cases for asbt
 
 echo "./src/asbt.sh"

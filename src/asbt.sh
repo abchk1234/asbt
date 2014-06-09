@@ -45,7 +45,7 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #set -e
 
 # Double brackets [[ ]] are used to optimise condition checking,
-# as they are a bash built-in compared to [ ] (test instruction)
+# as they are a bash built-in compared to [ ] (test instruction).
 # But as they can reduce portability to the bourne shell sh,
 # so its used only where a function is called many times.
 
@@ -397,7 +397,7 @@ install-package () {
 	if [[ $(ls "$outdir/$package"* 2> /dev/null) ]] || [[ $(ls "/tmp/$package"* 2> /dev/null) ]]; then
 		pkgpath=$(ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1)
 		# Check if package is installed 
-		if [ -f "/var/log/packages/$package"* ]; then
+		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
 			echo "Re-installing $package"
 			sudo -k /sbin/upgradepkg --reinstall "$pkgpath"
 		else
@@ -508,9 +508,9 @@ enlist|-e)
 	check-option "$2"
 	check-config
 	check-repo
-	echo -e "Grepping for the word $package in the slackbuild repository...\n"
-	for i in $(find -L "$repodir" -type f -name "*.info");
-		do (grep "$package" $i && printf "@ $i\n\n"); 
+	echo -e "Grepping for $package in the slackbuild repository...\n"
+	for i in $(find -L "$repodir" -type f -name "*.info"); do 
+		(grep "$package" $i && printf "@ $i\n\n"); 
 	done
 	;;
 track|-t)
