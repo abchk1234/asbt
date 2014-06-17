@@ -96,4 +96,5 @@ Add test cases (not finished, will be continued).
 
 0.9.5 (09/06/15)
 Try to install correct package when more than one package has same part of
-name.
+name +
+Prevent hang on tidying built packages by force removing the old packages.

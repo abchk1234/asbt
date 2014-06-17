@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.4 (dated: 30 May 2014)" # Version
+ver="0.9.5 (dated: 09 June 2014)" # Version
 
 # Variables used:
 
@@ -659,9 +659,10 @@ tidy|-T)
 		check-out-dir
 		for i in $(find "$outdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			if [ $flag -eq 1 ]; then
+				# Dry-run
 				ls -td -1 "$outdir/$i"* | tail -n +4
 			else
-				rm -v $(ls -td -1 "$outdir/$i"* | tail -n +4) 2>/dev/null
+				rm -vf $(ls -td -1 "$outdir/$i"* | tail -n +4) 2>/dev/null
 			fi
 		done
 	else
