@@ -551,6 +551,7 @@ get|-G)
 	check-option "$2"
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
+		echo
 		check-config
 		check-repo
 		get-path
@@ -606,6 +607,7 @@ process|-P)
 	#check-input "$#"
 	check-option "$2"
 	for i in $(echo $* | cut -f 2- -d " "); do
+		package="$i"
 		echo 
 		check-config
 		check-repo
