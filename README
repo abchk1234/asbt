@@ -11,12 +11,12 @@ It supports following functions/options:
 5)  view slackbuild (-v)
 6)  list files contained in specified package directory (-l,-L)
 7)  description about specified package (-d)
-8)  get / download the package (-G)
-9)  build the package (-B)
-10) install the built package (-I)
+8)  get / download the package(s) (-G)
+9)  build the package(s) (-B)
+10) install the built package(s) (-I)
 11) details about installed package (-D)
-12) upgrade installed package with built package (-U)
-13) remove installed package (-R)
+12) upgrade installed package(s) with built package(s) (-U)
+13) remove installed package(s) (-R)
 14) query installed packages (-q)
 15) view all packages installed from the slackbuilds repo (-a)
 16) update the local git repo of slackbuilds (-u)
@@ -158,5 +158,6 @@ The --dry-run option can be used to see which entries are going to be deleted.
 
 9) Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), 
 remove (-R), and process (-P).
+
 However, multiple packages cannot be used for the build (-B) option, since build takes the extra arguments as build options.
 

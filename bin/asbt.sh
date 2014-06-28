@@ -624,7 +624,7 @@ remove|-R)
 			rpkg=`ls "/var/log/packages/$package"*`
 			sudo -k /sbin/removepkg "$rpkg"
 		else
-			echo "Package $package: N/A"
+			echo "Unable to remove $i"
 			#exit 1
 		fi
 	done
