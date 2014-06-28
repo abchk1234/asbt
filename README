@@ -159,5 +159,5 @@ The --dry-run option can be used to see which entries are going to be deleted.
 9) Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), 
 remove (-R), and process (-P).
 
-However, multiple packages cannot be used for the build (-B) option, since build takes the extra arguments as build options.
+However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
 
