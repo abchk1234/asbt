@@ -1,13 +1,13 @@
 .\" Manpage for asbt.
 .\" Contact aaditya_gnulinux@zoho.com.
-.TH ASBT 1 "28 Feb 2014" "0.8" "asbt man page"
+.TH ASBT 1 "10 May 2014" "0.9" "asbt man page"
 .SH NAME
 asbt \- a tool to manage packages in your local slackbuilds repository
 .SH SYNOPSIS
 asbt <option> [package]
 .SH DESCRIPTION
 asbt acts like a package manager for your local copy of slackbuilds,
-usually obtained from http://slackbuilds.org (SBo).
+which can be obtained from http://slackbuilds.org (SBo).
 
 It supports searching a package in your repository, viewing details about that package, installing or removing it, and other options.
 
@@ -44,6 +44,9 @@ Using the package path instead of the package name is also possible.
 [longlist,-L]
 	List more details about the files inside the package folder.
 
+[enlist,-e]
+	Enlist all packages which have given package in their .info file
+
 [track,-t]
 	Track the source and built package for specified package.
 
@@ -56,6 +59,9 @@ Using the package path instead of the package name is also possible.
 [install,-I]
 	Install the package.
 
+[details,-D]
+	Details about installed package.
+
 [upgrade,-U]
 	Upgrade the package.
 
@@ -65,14 +71,13 @@ Using the package path instead of the package name is also possible.
 [process,-P]
 	process = get + build + install/upgrade the package.
 
-[tidy,-T] <src|pkg>
-	Tidy the srcdir or pkgdir, that is, remove old source or built packages.
-	Retains the latest 3 entries (by date).
+[tidy,-T] [--dry-run] <src|pkg>
+	Tidy the srcdir or pkgdir, ie, remove old source or built packages.
 .fi
 .PP
 .nf
 [--update,-u] 
-	Update the local slackbuilds git repository.
+	Update the local slackbuilds repository via git from SBo.
 
 [--all,-a] 
 	View all packages installed from the slackbuilds repository.
@@ -82,6 +87,9 @@ Using the package path instead of the package name is also possible.
 
 [--help,-h]
 	Read the help.
+
+[--setup,-S]
+	Setup the options for the tool.
 
 [--version,-V]
 	Echo program version.
@@ -128,9 +136,11 @@ asbt view dosbox (view the dosbox slackbuild)
 asbt build dosbox (build the dosbox package)
 asbt install dosbox (install the built dosbox package)
 asbt install dosbox-0.74 (install specified version of the package)
+asbt details dosbox (view details about installed package dosbox)
 asbt update (update git repository of slackbuilds)
 asbt --all (view all packages installed from the slackbuilds repository)
 asbt --check (check for updates to installed packages from SBo)
 .fi
 .SH SEE ALSO
 installpkg(8),upgradepkg(8),removepkg(8),sudo(8)
+
