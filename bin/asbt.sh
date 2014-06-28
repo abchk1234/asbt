@@ -50,6 +50,8 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 # so its used only where a function is called many times.
 
 package="$2" # Name of package input by the user.
+# Since version 0.9.5, this is default for options that take a single argument;
+# else its modified in a loop for processing multiple packages.
 
 # Check the no of input parameters
 check-input () {
@@ -545,19 +547,22 @@ goto|-g)
 	fi
 	;;
 get|-G)
-	check-input "$#"
+	#check-input "$#"
 	check-option "$2"
-	check-config
-	check-repo
-	get-path
-	get-package
-	if [ $valid -eq 1 ]; then
-		echo -n "Re-download? [y/N]: "
-		read -e choice
-		if [ "$choice" == y ] || [ "$choice" == Y ]; then
-			download-source
+	for i in $(echo $* | cut -f 2- -d " "); do
+		package="$i"
+		check-config
+		check-repo
+		get-path
+		get-package
+		if [ $valid -eq 1 ]; then
+			echo -n "Re-download? [y/N]: "
+			read -e choice
+			if [ "$choice" == y ] || [ "$choice" == Y ]; then
+				download-source
+			fi
 		fi
-	fi
+	done
 	;;
 build|-B)
 	check-option "$2"
@@ -598,23 +603,26 @@ remove|-R)
 	fi
 	;;
 process|-P)
-	check-input "$#"
+	#check-input "$#"
 	check-option "$2"
-	check-config
-	check-repo
-	get-path
-	echo "Processing $package..."
-	get-package || exit 1
-	process-built-package || exit 1
-	# Check if package is already installed
-	if [ -f "/var/log/packages/$package"* ]; then
-		upgrade-package
-	elif [ ! -f "/var/log/packages/$package"* ]; then
-		install-package
-	else
-		echo "N/A"
-		exit 1
-	fi
+	for i in $(echo $* | cut -f 2- -d " "); do
+		echo 
+		check-config
+		check-repo
+		get-path
+		echo "Processing $package..."
+		get-package || exit 1
+		process-built-package || exit 1
+		# Check if package is already installed
+		if [ -f "/var/log/packages/$package"* ]; then
+			upgrade-package
+		elif [ ! -f "/var/log/packages/$package"* ]; then
+			install-package
+		else
+			echo "Failed to install $i"
+			#exit 1
+		fi
+	done
 	;;
 details|-D)
 	check-input "$#"
