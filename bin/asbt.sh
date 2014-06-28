@@ -549,11 +549,11 @@ goto|-g)
 get|-G)
 	#check-input "$#"
 	check-option "$2"
+	check-config
+	check-repo
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
 		echo
-		check-config
-		check-repo
 		get-path
 		get-package
 		if [ $valid -eq 1 ]; then
@@ -572,9 +572,24 @@ build|-B)
 	# Check arguments
 	if [ $# -gt 2 ]; then
 		OPTIONS=$(echo $@ | cut -d " " -f 3-)
+		# Try to check that the arguments specified do not specify multiple packages
+		# Save package name for later.
+		pname="$package"
+		for i in $(echo $* | cut -f 3- -d " "); do
+			package="$i"
+			#get-path
+			# Search in the slackbuilds repo
+			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
+			if [[ -d "$path" ]]; then
+				echo "Only one package can be built at a time."
+				exit 1
+			fi
+		done
 	else
 		OPTIONS=""
 	fi
+	# Revert package name, as it could have been changed while checking the arguments.
+	package="$pname"
 	get-path
 	build-package
 	;;
@@ -606,11 +621,11 @@ remove|-R)
 process|-P)
 	#check-input "$#"
 	check-option "$2"
+	check-config
+	check-repo
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
 		echo 
-		check-config
-		check-repo
 		get-path
 		echo "Processing $package..."
 		get-package || exit 1
