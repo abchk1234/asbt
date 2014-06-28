@@ -578,7 +578,6 @@ build|-B)
 		for i in $(echo $* | cut -f 3- -d " "); do
 			package="$i"
 			#get-path
-			# Search in the slackbuilds repo
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 			if [[ -d "$path" ]]; then
 				echo "Only one package can be built at a time."
@@ -594,29 +593,41 @@ build|-B)
 	build-package
 	;;
 install|-I)
-	check-input "$#"
+	#check-input "$#"
 	check-option "$2"
 	check-config
-	install-package
+	for i in $(echo $* | cut -f 2- -d " "); do
+		package="$i"
+		echo
+		install-package
+	done
 	;;
 upgrade|-U)
-	check-input "$#"
+	#check-input "$#"
 	check-option "$2"
 	check-config
-	upgrade-package
+	for i in $(echo $* | cut -f 2- -d " "); do
+		package="$i"
+		echo
+		upgrade-package
+	done
 	;; 
 remove|-R)
-	check-input "$#"
+	#check-input "$#"
 	check-option "$2"
-	# Check if package is installed 
-	if [ -f "/var/log/packages/$package"* ]; then
-		echo "Removing $package"
-		rpkg=`ls "/var/log/packages/$package"*`
-		sudo -k /sbin/removepkg "$rpkg"
-	else
-		echo "Package $package: N/A"
-		exit 1
-	fi
+	for i in $(echo $* | cut -f 2- -d " "); do
+		package="$i"
+		echo
+		# Check if package is installed 
+		if [ -f "/var/log/packages/$package"* ]; then
+			echo "Removing $package"
+			rpkg=`ls "/var/log/packages/$package"*`
+			sudo -k /sbin/removepkg "$rpkg"
+		else
+			echo "Package $package: N/A"
+			#exit 1
+		fi
+	done
 	;;
 process|-P)
 	#check-input "$#"
