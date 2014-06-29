@@ -469,6 +469,7 @@ readme|-r)
 	check-repo
 	get-path
 	get-content "$path/README"
+	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware"
 	;;
 view|-v)
 	check-input "$#"

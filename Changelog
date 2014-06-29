@@ -100,3 +100,6 @@ name +
 Prevent hang on tidying built packages by force removing the old packages +
 Add support for processing multiple packages for some options like get, 
 install, upgrade, remove, and process.
+
+0.9.6 (29/06/15)
+Dislay contents of README.Slackware along with README in the -r option.
