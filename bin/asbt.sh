@@ -469,6 +469,7 @@ readme|-r)
 	check-repo
 	get-path
 	get-content "$path/README"
+	echo
 	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware"
 	;;
 view|-v)
