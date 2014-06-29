@@ -51,7 +51,7 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 
 package="$2" # Name of package input by the user.
 # Since version 0.9.5, this is default for options that take a single argument;
-# else its modified in a loop for processing multiple packages.
+# else $package is modified in a loop for processing multiple packages.
 
 # Check the no of input parameters
 check-input () {
@@ -99,14 +99,13 @@ edit-config () {
 	fi
 }
 
-# Check the src and out directories
+# Check the src and output(package) directories
 check-src-dir () {
 	if [ ! -d "$srcdir" ]; then
 		echo "Source directory $srcdir does not exist."
 		exit 1
 	fi
 }
-
 check-out-dir () {
 	if [ ! -d "$outdir" ]; then
 		echo "Output directory $outdir does not exist."
@@ -114,6 +113,7 @@ check-out-dir () {
 	fi
 }
 
+# Clone git repository from slackbuilds.org (SBo)
 create-git-repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
@@ -408,7 +408,7 @@ install-package () {
 		fi
 	else
 		echo "Package $package: N/A"
-		exit 1
+		#exit 1
 	fi 
 }
 
@@ -420,11 +420,12 @@ upgrade-package () {
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
 		echo "Package $package: N/A"
-		exit 1
+		#exit 1
 	fi 
 }
 
-# Options
+# Program options
+# Modular approach is used by calling functions for each task
 case "$1" in
 search|-s)
 	check-input "$#"
@@ -547,10 +548,10 @@ goto|-g)
 	fi
 	;;
 get|-G)
-	#check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
+	# Run a loop for getting all the packages
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
 		echo
@@ -571,10 +572,10 @@ build|-B)
 	check-repo
 	# Check arguments
 	if [ $# -gt 2 ]; then
-		OPTIONS=$(echo $@ | cut -d " " -f 3-)
-		# Try to check that the arguments specified do not specify multiple packages
+		OPTIONS=$(echo $@ | cut -d " " -f 3-) # Build options
 		# Save package name for later.
 		pname="$package"
+		# Try to check that the arguments specified do not specify multiple packages
 		for i in $(echo $* | cut -f 3- -d " "); do
 			package="$i"
 			#get-path
@@ -584,16 +585,15 @@ build|-B)
 				exit 1
 			fi
 		done
+		# Revert package name, as it could have been changed while checking the arguments.
+		package="$pname"
 	else
 		OPTIONS=""
 	fi
-	# Revert package name, as it could have been changed while checking the arguments.
-	package="$pname"
 	get-path
 	build-package
 	;;
 install|-I)
-	#check-input "$#"
 	check-option "$2"
 	check-config
 	for i in $(echo $* | cut -f 2- -d " "); do
@@ -603,7 +603,6 @@ install|-I)
 	done
 	;;
 upgrade|-U)
-	#check-input "$#"
 	check-option "$2"
 	check-config
 	for i in $(echo $* | cut -f 2- -d " "); do
@@ -613,7 +612,6 @@ upgrade|-U)
 	done
 	;; 
 remove|-R)
-	#check-input "$#"
 	check-option "$2"
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
@@ -623,6 +621,8 @@ remove|-R)
 			echo "Removing $package"
 			rpkg=`ls "/var/log/packages/$package"*`
 			sudo -k /sbin/removepkg "$rpkg"
+		elif [ $? -eq 1 ]; then
+			echo "Package $i: N/A"
 		else
 			echo "Unable to remove $i"
 			#exit 1
@@ -630,7 +630,6 @@ remove|-R)
 	done
 	;;
 process|-P)
-	#check-input "$#"
 	check-option "$2"
 	check-config
 	check-repo
@@ -642,9 +641,9 @@ process|-P)
 		get-package || exit 1
 		process-built-package || exit 1
 		# Check if package is already installed
-		if [ -f "/var/log/packages/$package"* ]; then
+		if [[ -f "/var/log/packages/$package"* ]]; then
 			upgrade-package
-		elif [ ! -f "/var/log/packages/$package"* ]; then
+		elif [[ ! -f "/var/log/packages/$package"* ]]; then
 			install-package
 		else
 			echo "Failed to install $i"
@@ -805,7 +804,6 @@ unset pkgpath
 unset link
 unset arch
 unset conf
-unset rpkg
 unset src
 unset pkgnam
 unset md5

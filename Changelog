@@ -94,7 +94,7 @@ Use bash specific [[ ]] in place of [ ] to optimise the code where required +
 Change order of functions in code +
 Add test cases (not finished, will be continued).
 
-0.9.5 (09/06/15)
+0.9.5 (28/06/15)
 Try to install correct package when more than one package has same part of
 name +
 Prevent hang on tidying built packages by force removing the old packages +
