@@ -400,7 +400,7 @@ install-package () {
 		pkgpath=$(ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1)
 		# Check if package is installed 
 		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
-			echo "Re-installing $package"
+			echo "(Re)installing $package"
 			sudo -k /sbin/upgradepkg --reinstall "$pkgpath"
 		else
 			echo "Installing $package"
