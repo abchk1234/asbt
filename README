@@ -121,7 +121,7 @@ N/A
 This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
 
-asbt upgrade virtualbox-kernel-4.3.4_3.10.28
+asbt install virtualbox-kernel-4.3.4_3.10.28
 
 4) Giving package path instead of package supports installation of package from custom folder. For example,
 
@@ -143,7 +143,7 @@ then the slackbuild would be changed, and git may complain about this change whe
 To know more about git stash, read the git-stash man page.
 
 7) If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
-then they can change ownership of the slackbuilds git repository, and you repeatedly get messages like:
+then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
 chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild’: Operation not permitted
 Enter your password to take ownership of the slackbuild.
