@@ -33,11 +33,11 @@ outdir="/home/$USER/packages" # Where the built package will be placed.
 gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir"/home/$USER/slackbuilds/.git" # Alternate git repo directory.
 
-config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
-#config="/home/$USER/.asbt.conf" # Alternate config file.
-
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
+
+config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
+#config="/home/$USER/.asbt.conf" # Alternate config file.
 
 #--------------------------------------------------------------------------------------#
 
@@ -55,7 +55,7 @@ package="$2" # Name of package input by the user.
 
 # Check the no of input parameters
 check-input () {
-	if [[ $1 -gt 2 ]] ; then
+	if [[ "$1" -gt 2 ]] ; then
 		echo "Invalid syntax. Type asbt -h for more info."
 		exit 1
 	fi
@@ -80,7 +80,7 @@ check-config () {
 check-repo () {
 	if [[ ! -d "$repodir" ]] || [[ $(ls "$repodir" | wc -w) -eq 0 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
-		echo "Use asbt -S to setup the tool."
+		echo "To setup the slackbuilds repository `asbt -S` can be used."
 		exit 1
 	fi
 }
@@ -425,7 +425,8 @@ upgrade-package () {
 }
 
 # Program options
-# Modular approach is used by calling functions for each task
+# (Modular approach is used by calling functions for each task)
+
 case "$1" in
 search|-s)
 	check-input "$#"
@@ -813,5 +814,6 @@ unset valid
 unset built
 unset editor
 unset choice
+
 exit 0
 
