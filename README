@@ -160,6 +160,7 @@ The --dry-run option can be used to see which entries are going to be deleted.
 remove (-R), and process (-P).
 
 For example,
+
 asbt -P i3 i3status
 
 The packages are processed in the order they are specified.

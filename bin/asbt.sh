@@ -320,8 +320,10 @@ download-source () {
 		# Check if downloaded package contains the package name or not
 		if [ ! $(echo "$src" | grep "$PRGNAM") ] && [ $(echo "$src" | wc -c) -le 15 ]; then
 			# Rename it and link it
-			mv "$srcdir/$src" "$srcdir/$PRGNAM-$src"
-			ln -sf "$srcdir/$PRGNAM-$src" "$path" || exit 1
+			echo "Renaming $src"
+			mv -v "$srcdir/$src" "$srcdir/$PRGNAM-$src"
+			ln -sf "$srcdir/$PRGNAM-$src" "$path/$src" || exit 1
+			echo  # Give a line break
 		else
 			# Only linking required
 			ln -sf "$srcdir/$src" "$path" || exit 1
