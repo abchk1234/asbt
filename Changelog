@@ -102,4 +102,5 @@ Add support for processing multiple packages for some options like get,
 install, upgrade, remove, and process.
 
 0.9.6 (29/06/15)
-Dislay contents of README.Slackware along with README in the -r option.
+Dislay contents of README.Slackware along with README in the -r option +
+Renaming of src files where pkgname is not in the link made more transparent. 
