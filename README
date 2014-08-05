@@ -87,16 +87,16 @@ asbt <option> [package]
 
 Examples:
 
-asbt -s dosbox (search for package dosbox)
-asbt -i dosbox (read the info file for dosbox)
-asbt -v dosbox (view/edit slackbuild)
-asbt -G dosbox (get(download) dosbox(source))
-asbt -B dosbox (build package for dosbox)
-asbt -I dosbox (install built package)
-asbt -I dosbox-0.74 (install specified version of built package)
-asbt -D dosbox (view details about installed package dosbox)
-asbt -a (list all packages installed from the slackbuilds repository)
-asbt -c (check for updates to packages installed from the slackbuild repository)
+asbt -s dosbox  # search for package dosbox
+asbt -i dosbox  # read the info file for dosbox
+asbt -v dosbox  # view/edit slackbuild
+asbt -G dosbox  # get(download) dosbox(source)
+asbt -B dosbox  # build package for dosbox
+asbt -I dosbox  # install built package
+asbt -I dosbox-0.74  # install specified version of built package
+asbt -D dosbox  # view details about installed package dosbox
+asbt -a  # list all packages installed from the slackbuilds repository
+asbt -c  # check for updates to packages installed from the slackbuild repository
 
 Note:
 
@@ -155,6 +155,10 @@ sudo chown -R $USER /home/$USER/slackbuilds
 8) Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
 The --dry-run option can be used to see which entries are going to be deleted.
+
+Example,
+
+asbt -T --dry-run pkg
 
 9) Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), 
 remove (-R), and process (-P).
