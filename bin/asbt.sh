@@ -503,7 +503,8 @@ enlist|-e)
 	check-repo
 	echo -e "Grepping for $package in the slackbuild repository...\n"
 	for i in $(find -L "$repodir" -type f -name "*.info"); do 
-		(grep "$package" $i && printf "@ $i\n\n"); 
+		#(grep "$package" $i && printf "@ $i\n\n"); 
+		grep -H --color "$package" "$i"
 	done
 	;;
 track|-t)
