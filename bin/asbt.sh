@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.6 (dated: 01 August 2014)" # Version
+ver="0.9.7 (dated: 05 August 2014)" # Version
 
 # Variables used:
 
@@ -239,31 +239,16 @@ get-source-data () {
 	fi
 
 	src=$(basename "$link")	# Name of source file
-
-	# Check if src contains PRGNAM in the name
-	if [ ! $(echo "$src" | grep "$PRGNAM") ]; then
-		# Append PRGNAM to the beginning
-		if [ -e "$path/$PRGNAM-$src" ]; then
-			md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
-			pkgnam="$PRGNAM-$src"
-			src="$pkgnam"
-		elif [ -f "$srcdir/$PRGNAM-$src" ]; then
-			md5=$(md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " ")
-			pkgnam="$PRGNAM-$src"
-			src="$pkgnam"
-		# Check src without PRGNAM also
-		elif [ -e "$path/$src" ]; then
-			md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
-		elif [ -f "$srcdir/$src" ]; then
-			md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
-		fi
-	else
-		#src alrady contains PRGNAM in the name
-		if [ -e "$path/$src" ]; then
-			md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
-		elif [ -f "$srcdir/$src" ]; then
-			md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
-		fi
+	
+	# Check for source in various locations
+	if [ -f "$srcdir/$src" ]; then
+		md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
+	elif [ -f "$srcdir/$PRGNAM-$src" ]; then
+		md5=$(md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " ")
+	elif [ -e "$path/$src" ]; then
+		md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
+	elif [ -e "$path/$PRGNAM-$src" ]; then
+		md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
 	fi
 }
 
@@ -402,7 +387,7 @@ install-package () {
 		pkgpath=$(ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1)
 		# Check if package is installed 
 		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
-			echo "(Re)installing $package"
+			echo "Upgrading $package"
 			sudo -k /sbin/upgradepkg --reinstall "$pkgpath"
 		else
 			echo "Installing $package"
@@ -718,7 +703,7 @@ tidy|-T)
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
-		cd "$gitdir/.." && git stash save --quiet
+		cd "$gitdir/.." && git stash --quiet
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.."

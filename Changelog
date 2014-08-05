@@ -94,13 +94,17 @@ Use bash specific [[ ]] in place of [ ] to optimise the code where required +
 Change order of functions in code +
 Add test cases (not finished, will be continued).
 
-0.9.5 (28/06/15)
+0.9.5 (28/06/14)
 Try to install correct package when more than one package has same part of
 name +
 Prevent hang on tidying built packages by force removing the old packages +
 Add support for processing multiple packages for some options like get, 
 install, upgrade, remove, and process.
 
-0.9.6 (29/06/15)
+0.9.6 (29/06/14)
 Dislay contents of README.Slackware along with README in the -r option +
-Renaming of src files where pkgname is not in the link made more transparent. 
+Renaming of src files where pkgname is not in the link made more transparent.
+
+0.9.7 (05/08/14)
+Checking for source made simpler (now $pkgname-$src is linked as just $src) +
+Display upgrading (instead of re-installing) when upgrading or re-installing .
