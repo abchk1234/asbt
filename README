@@ -26,7 +26,7 @@ It supports following functions/options:
 20) enlist all packages which have given package in their .info file (-e)
 21) tidy the source and package directories by removing old entries (-T)
 
-It uses the following (Slackware) tools:
+It uses the following Slackware tools:
 
 1) installpkg
 2) removepkg
