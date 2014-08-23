@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.7 (dated: 05 August 2014)" # Version
+ver="0.9.8 (dated: 23 August 2014)" # Version
 
 # Variables used:
 
@@ -712,7 +712,7 @@ tidy|-T)
 	fi
 	;;
 --all|-a)
-	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" 
+	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | sort 
 	echo -ne "\nTotal: "
 	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
 	;;

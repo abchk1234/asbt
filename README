@@ -29,8 +29,8 @@ It supports following functions/options:
 It uses the following Slackware tools:
 
 1) installpkg
-2) removepkg
-3) upgradepkg
+2) upgradepkg
+3) removepkg
 
 Ideology:
 

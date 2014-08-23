@@ -109,3 +109,6 @@ Renaming of src files where pkgname is not in the link made more transparent.
 Checking for source made simpler (now $pkgname-$src is linked as just $src) +
 Display upgrading (instead of re-installing) when upgrading or re-installing +
 Change output of enlist option (use grep in color mode).
+
+0.9.8 (23/08/14)
+Sort output of "--all" option alphabetically.
