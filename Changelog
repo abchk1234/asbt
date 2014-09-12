@@ -112,3 +112,5 @@ Change output of enlist option (use grep in color mode).
 
 0.9.8 (23/08/14)
 Sort output of "--all" option alphabetically.
+Support use of build flags passed to each package while building.
+Now config file in home folder overrides config file in /etc by default.
