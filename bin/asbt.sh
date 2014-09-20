@@ -36,7 +36,7 @@ gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
 
-buildargs="MAKEFLAGS='-j2'" # Build flags specified while building a package
+buildargs='MAKEFLAGS="-j 2" MAKEOPTS="-j 2"' # Build flags specified while building a package
 #buildargs="" # No buildflags by default
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
@@ -128,7 +128,7 @@ create-git-repo () {
 		# Now check if the git repo was cloned successfully or the directory was just removed
 		if [ ! -d "$repodir" ]; then
 			# Again try to clone the git repo
-			cd "$repodir/.." | exit 1
+			cd "$repodir/.." || exit 1
 			git clone git://slackbuilds.org/slackbuilds.git $(basename "$repodir")
 		fi
 	fi
@@ -152,7 +152,7 @@ setup () {
 				if [ -d $repopath ]; then
 					repodir="$repopath"
 				else
-					mkdir "$repopath" | exit 1
+					mkdir "$repopath" || exit 1
 					repodir="$repopath"
 				fi
 			else
@@ -376,9 +376,9 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -k CWD="$path" $buildargs $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -k CWD="$path" "$buildargs" $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -k OUTPUT="$outdir" CWD="$path" $buildargs $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -k OUTPUT="$outdir" CWD="$path" "$buildargs" $OPTIONS "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
@@ -575,8 +575,7 @@ build|-B)
 			#get-path
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 			if [[ -d "$path" ]]; then
-				echo "Only one package can be built at a time."
-				exit 1
+				echo "Only one package can be built at a time." && exit 1
 			fi
 		done
 		# Revert package name, as it could have been changed while checking the arguments.
@@ -651,8 +650,7 @@ details|-D)
 	if [ -f /var/log/packages/$package* ]; then
 		less /var/log/packages/$package*
 	else
-		echo "Details of package $package: N/A"
-		exit 1
+		echo "Details of package $package: N/A" && exit 1
 	fi
 	;;
 tidy|-T)
@@ -660,8 +658,7 @@ tidy|-T)
 	# Check arguments
 	if [ $# -gt 3 ]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
-		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>"
-		exit 1
+		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>" && exit 1
 	fi
 
 	if [ "$2" == "--dry-run" ]; then
@@ -695,23 +692,20 @@ tidy|-T)
 			fi
 		done
 	else
-		echo "Unrecognised option for tidy. See the man page for more info."
-		exit 1
+		echo "Unrecognised option for tidy. See the man page for more info." && exit 1
 	fi
 	;;
 --update|-u)
 	check-config
 	if [ -z "$gitdir" ]; then
-		echo "Git directory not specified."
-		exit 1
+		echo "Git directory not specified." && exit 1
 	fi
 	if [ -d "$gitdir" ]; then
 		echo "Updating git repo $gitdir"
 		cd "$gitdir/.." && git stash --quiet
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
-		echo "Git directory $gitdir doesnt exist.."
-		exit 1
+		echo "Git directory $gitdir doesnt exist.." && exit 1
 	fi
 	;;
 --all|-a)
