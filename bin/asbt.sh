@@ -36,8 +36,8 @@ gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
 
-buildargs='MAKEFLAGS="-j 2"' # Build flags specified while building a package
-#buildargs="" # No buildflags by default
+buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
+#buildflags="" # No buildflags by default
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 #config="/home/$USER/.asbt.conf" # Alternate config file.
@@ -376,9 +376,9 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -k CWD="$path" "$buildargs" $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -k CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -k OUTPUT="$outdir" CWD="$path" "$buildargs" $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -k OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"

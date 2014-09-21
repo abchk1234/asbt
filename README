@@ -139,12 +139,12 @@ asbt -B volumeicon NOTIFY=yes
 These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
 5-b) Build flags in the config file are passed to each package while building. 
-The default flags that are specified are: "MAKEFLAGS='-j2'" (means use 2 CPU cores while building).
+The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
 
 However, some packages can fail to build on multiple cores (for example, webkitgtk).
 For such packages, while building, the buildargs can be overrided, for example:
 
-asbt -B webkitgtk MAKEFLAGS='-j1'
+asbt -B webkitgtk MAKEFLAGS=-j1
 
 6) asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
 	This change is reverted after building the package.
