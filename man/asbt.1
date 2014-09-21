@@ -14,61 +14,61 @@ It supports searching a package in your repository, viewing details about that p
 Using the package path instead of the package name is also possible.
 .SH OPTIONS
 .nf
-[search,-s] 
+[search,-s] <pkg> 
 	Search the repository for given package.
 
-[query,-q]
+[query,-q] <pkg|--sbo|--all>
 	Query whether given package is installed.
 
-[find,-f]
+[find,-f] <pkg>
 	find = search + query given SBo package.
 
-[info,-i] 
+[info,-i] <pkg>
 	Read the info page for given package.
 
-[readme,-r] 
+[readme,-r] <pkg>
 	Read the README for given package.
 
-[desc,-d] 
+[desc,-d] <pkg>
 	View the description of the package.
 
-[view,-v] 
+[view,-v] <pkg>
 	View the SlackBuild for given package.
 
-[goto,-g] 
+[goto,-g] <pkg>
 	Goto the given package directory.
 
-[list,-l] 
+[list,-l] <pkg>
 	List files inside the folder of given package.
 
-[longlist,-L]
+[longlist,-L] <pkg>
 	List more details about the files inside the package folder.
 
-[enlist,-e]
+[enlist,-e] <pkg>
 	Enlist all packages which have given package in their .info file
 
-[track,-t]
+[track,-t] <pkg>
 	Track the source and built package for specified package.
 
-[get,-G]
+[get,-G] <pkg1> <pkg2> ..
 	Download the package(s).
 
-[build,-B]
+[build,-B] <pkg1> <pkg2> ..
 	Build the package.
 
-[install,-I]
+[install,-I] <pkg1> <pkg2> ..
 	Install the package(s).
 
-[details,-D]
+[details,-D] <pkg>
 	Details about installed package.
 
-[upgrade,-U]
+[upgrade,-U] <pkg1> <pkg2> ..
 	Upgrade the package(s).
 
-[remove,-R] 
+[remove,-R] <pkg1> <pkg2> ..
 	Remove the package(s).
 
-[process,-P]
+[process,-P] <pkg1> <pkg2> ..
 	process = get + build + install/upgrade the package(s).
 
 [tidy,-T] [--dry-run] <src|pkg>
@@ -79,10 +79,7 @@ Using the package path instead of the package name is also possible.
 [--update,-u] 
 	Update the local slackbuilds repository via git from SBo.
 
-[--all,-a] 
-	View all packages installed from the slackbuilds repository.
-
-[--check,-c]
+[--check,-c] [all]
 	Check for upgrades to installed packages.
 
 [--help,-h]
@@ -140,9 +137,13 @@ asbt build dosbox (build the dosbox package)
 asbt install dosbox (install the built dosbox package)
 asbt install dosbox-0.74 (install specified version of the package)
 asbt details dosbox (view details about installed package dosbox)
+asbt query dosbox (query is dosbox is installed or not)
+asbt query --sbo (query all SBo packages)
+asbt query --all (query all packages)
 asbt update (update git repository of slackbuilds)
 asbt --all (view all packages installed from the slackbuilds repository)
 asbt --check (check for updates to installed packages from SBo)
+asbt --check all (check all packages for updates to installed packages from SBo)
 .fi
 .SH SEE ALSO
 installpkg(8),upgradepkg(8),removepkg(8),sudo(8)

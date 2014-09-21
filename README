@@ -18,7 +18,7 @@ It supports following functions/options:
 12) upgrade installed package with built package (-U)
 13) remove installed package (-R)
 14) query installed packages (-q)
-15) view all packages installed from the slackbuilds repo (-a)
+15) view all packages installed from the slackbuilds repo (-q --sbo)
 16) update the local git repo of slackbuilds (-u)
 17) check for upgrades to installed packages (-c)
 18) view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
@@ -95,8 +95,11 @@ asbt -B dosbox  # build package for dosbox
 asbt -I dosbox  # install built package
 asbt -I dosbox-0.74  # install specified version of built package
 asbt -D dosbox  # view details about installed package dosbox
-asbt -a  # list all packages installed from the slackbuilds repository
+asbt -q dosbox  # query whether dosbox is installed
+asbt -q --sbo  # query all SBo intalled packages
+asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the slackbuild repository
+asbt -c all # check all installed packages for updates to packages from the slackbuild repository
 
 Note:
 

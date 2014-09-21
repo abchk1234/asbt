@@ -36,7 +36,7 @@ gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
 
-buildargs='MAKEFLAGS="-j 2" MAKEOPTS="-j 2"' # Build flags specified while building a package
+buildargs='MAKEFLAGS="-j 2"' # Build flags specified while building a package
 #buildargs="" # No buildflags by default
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
@@ -428,7 +428,21 @@ search|-s)
 query|-q)
 	check-input "$#"
 	check-option "$2"
-	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
+	# Check if special options were specified
+	if [ "$2" == "--all" ]; then
+		# Query all packages
+		find "/var/log/packages" -name "*" -printf "%f\n" | sort 
+		echo -ne "\nTotal: "
+		find "/var/log/packages" -name "*" -printf "%f\n" | wc -l
+	elif [ "$2" == "--sbo" ]; then
+		# Query SBo packages
+		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | sort 
+		echo -ne "\nTotal: "
+		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
+	else
+		# Query specified package
+		find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
+	fi
 	;;
 find|-f)
 	check-input "$#"
@@ -708,35 +722,59 @@ tidy|-T)
 		echo "Git directory $gitdir doesnt exist.." && exit 1
 	fi
 	;;
---all|-a)
-	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | sort 
-	echo -ne "\nTotal: "
-	find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
-	;;
 --check|-c)
+	check-input "$#"
 	check-config
 	check-repo
-	for i in /var/log/packages/*_SBo*; do
-		package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
-		pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-		# Make an exception for virtualbox-kernel package
-		if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
- 			pkgver=$(echo $pkgver | cut -d "_" -f 1)
-		fi
-		
-		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
-		
-		if [[ -f "$path/$package.info" ]]; then
-			. "$path/$package.info"
-		else
-			# For packages not present in slackbuilds repo
-			VERSION="$pkgver"
-		fi
-		
-		if [[ ! "$pkgver" == "$VERSION" ]]; then
-			printf "$package:\t$pkgver -> $VERSION\n"
-		fi
-	done
+	
+	# Check if --all option was specified
+	if [ "$2" == "all" ] || [ "$2" == "--all" ]; then
+		# Check all installed packages
+		for i in /var/log/packages/*; do
+			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
+			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
+			# Make an exception for virtualbox-kernel package
+			if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
+ 				pkgver=$(echo $pkgver | cut -d "_" -f 1)
+			fi
+			
+			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
+			
+			if [[ -f "$path/$package.info" ]]; then
+				. "$path/$package.info"
+			else
+				# For packages not present in slackbuilds repo
+				VERSION="$pkgver"
+			fi
+			
+			if [[ ! "$pkgver" == "$VERSION" ]]; then
+				printf "$package:\t$pkgver -> $VERSION\n"
+			fi
+		done
+	else
+		# Only SBo packages
+		for i in /var/log/packages/*_SBo*; do
+			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
+			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
+			# Make an exception for virtualbox-kernel package
+			if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
+ 				pkgver=$(echo $pkgver | cut -d "_" -f 1)
+			fi
+			
+			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
+			
+			if [[ -f "$path/$package.info" ]]; then
+				. "$path/$package.info"
+			else
+				# For packages not present in slackbuilds repo
+				VERSION="$pkgver"
+			fi
+			
+			if [[ ! "$pkgver" == "$VERSION" ]]; then
+				printf "$package:\t$pkgver -> $VERSION\n"
+			fi
+		done
+	fi
 	;;
 --setup|-S)
 	check-config
@@ -771,8 +809,8 @@ Options-
 	[get,-G]	[build,-B]	[install,-I]
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[details,-D]	[tidy,-T]	[--update,-u]
-	[--check,-c]	[--all,-a]	[--changelog,-C]
-	[--version,-V]	[--setup,-S]	[--help,-h]
+	[--check,-c]	[--help,-h]	[--changelog,-C]
+	[--version,-V]	[--setup,-S]	
 	
 Using repository: $repo
 For more info, see the man page and/or the README.
