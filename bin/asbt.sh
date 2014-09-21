@@ -336,6 +336,7 @@ check-built-package () {
 	else
 		VERSION="UNKNOWN"
 	fi
+	# Check if package has already been built
 	if [[ $(ls -t "/tmp/$package"*-"$VERSION"* 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"* 2> /dev/null) ]]; then
 		built=1
 		echo "Package: $package($VERSION) already built."

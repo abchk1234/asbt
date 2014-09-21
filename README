@@ -69,7 +69,7 @@ The variables used are:
 5) editor="" 
  # Editor for viewing/editing slackbuilds.
 
-6) buildflags="MAKEFLAGS=-j2"
+6) buildflags=""
  # Build flags specified while building a package
 
 Samples for these variables are present in the script itself.
@@ -101,24 +101,20 @@ asbt -D dosbox  # view details about installed package dosbox
 asbt -q dosbox  # query whether dosbox is installed
 asbt -q --sbo  # query all SBo intalled packages
 asbt -q --all  # query all installed packages
-asbt -c  # check for updates to packages installed from the slackbuild repository
-asbt -c all # check all installed packages for updates to packages from the slackbuild repository
+asbt -c  # check for updates to packages installed from the repo
+asbt -c all # check all installed packages for updates to packages from the repo
 
 Note:
 
 1) When searching, a *(wildcard) at both ends is implied.
 
-For example, if one wants to search for all packages which have the word "xfce", one can use-
-asbt search xfce
-
-Instead of-
-asbt search '*xfce*'
+For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
+instead of `asbt search '*xfce*'`
 
 2) When querying, if the package(s) is/are installed, they will they displayed,
 else no output. A *(wildcard) at both ends is also implied when querying.
 
-3) Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel),
-and you get something like:
+3) Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
 Installing virtualbox-kernel
 /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
@@ -142,18 +138,22 @@ asbt -B volumeicon NOTIFY=yes
 These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
 5-b) Build flags in the config file are passed to each package while building. 
+
 The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
 
 However, some packages can fail to build on multiple cores (for example, webkitgtk).
+
 For such packages, while building, the buildargs can be overrided. For example,
 
 asbt -B webkitgtk MAKEFLAGS=-j1
 
 6) asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
-	This change is reverted after building the package.
+This change is reverted after building the package.
+
 But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, 
 then the slackbuild would be changed, and git may complain about this change when updating the git repo.
-	To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
+	
+To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
 To know more about git stash, read the git-stash man page.
 
 7) If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
