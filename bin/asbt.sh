@@ -336,8 +336,7 @@ check-built-package () {
 	else
 		VERSION="UNKNOWN"
 	fi
-	# Check if package has already been built
-	if [ -f "/tmp/$package"*-"$VERSION"* ] 2>/dev/null || [ -f "$outdir/$package"*-"$VERSION"* ] 2>/dev/null; then
+	if [[ $(ls -t "/tmp/$package"*-"$VERSION"* 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"* 2> /dev/null) ]]; then
 		built=1
 		echo "Package: $package($VERSION) already built."
 	else
@@ -632,7 +631,6 @@ remove|-R)
 			echo "Package $i: N/A"
 		else
 			echo "Unable to remove $i"
-			#exit 1
 		fi
 	done
 	;;
@@ -654,7 +652,6 @@ process|-P)
 			install-package
 		else
 			echo "Failed to install $i"
-			#exit 1
 		fi
 	done
 	;;
