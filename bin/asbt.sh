@@ -837,6 +837,8 @@ unset valid
 unset built
 unset editor
 unset choice
+unset buildflags
+unset flags
 
 exit 0
 
