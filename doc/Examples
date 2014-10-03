@@ -17,7 +17,7 @@ Using repository: /home/aaditya/slackbuilds
 For more info, see the man page and/or the README.
 
 
-1) Search in repository-
+1) Search in repository
 
 $ asbt -s dosbox
 system/dosbox
@@ -26,12 +26,12 @@ $ asbt -s kabutar
 (No output if package not found)
 
 
-2-a) Query installed package-
+2-a) Query installed package
 
 $ asbt -q dosbox
 dosbox-0.74-x86_64-2_SBo
 
-2-b) Query installed SBo packages
+2-b) Query all SBo packages
 
 $ asbt -q --sbo
 pangomm-2.34.0-x86_64-1_SBo
@@ -46,7 +46,7 @@ screenfetch-3.2.2-noarch-1_SBo
 
 Total: 89
 
-2-c) Query all packages-
+2-c) Query all installed packages
 
 $ asbt -q --all
 ConsoleKit-0.4.5-x86_64-1
@@ -62,7 +62,7 @@ zsh-5.0.2-x86_64-1
 Total: 1042
 
 
-3) Find (search + query):
+3) Find (search + query)
 
 $ asbt -f dosbox
 Present in slackbuilds repository:
@@ -72,7 +72,7 @@ Installed:
 dosbox-0.74-x86_64-2_SBo
 
 
-4) View .info file-
+4) View .info file
 
 $ asbt -i dosbox
 PRGNAM="dosbox"
@@ -87,7 +87,7 @@ MAINTAINER="Michiel van Wessem"
 EMAIL="michiel@slackbuilds.org"
 
 
-5) View the Readme-
+5) View the Readme
 
 $ asbt -r dosbox
 DOSbox is a DOS emulator/virtual machine for X11 and Unix.
@@ -97,7 +97,7 @@ as well as many apps designed to run on DOS.
 SDL_sound is an optional dependency.
 
 
-6) View the slack-desc file-
+6) View the slack-desc file
 
 $ asbt -d dosbox
  DOSbox (DOS emulator/virtual machine for X11 and Unix)
@@ -106,26 +106,26 @@ $ asbt -d dosbox
  well as many apps designed to run on DOS.
 
 
-7) View and edit the slackbuild-
+7) View and edit the slackbuild
 
 $ asbt -v dosbox
 (The slackbuild is viewed in your preferred editor specified in the config file)
 
 
-8) Goto package directory-
+8) Goto package directory
 
 $ asbt -g dosbox
 (A new terminal is opened in the directory of the specified package)
 
 
-9) List the files in the slackbuild package folder.
+9) List the files in the slackbuild package folder
 
 $ asbt -l dosbox
 README	   dosbox-0.74-gcc46.patch  dosbox.desktop  slack-desc
 doinst.sh  dosbox.SlackBuild	    dosbox.info
 
 
-10) Detailed list (Longlist)-
+10) Detailed list (Longlist)
 
 $ asbt -L dosbox
 total 28
@@ -138,7 +138,7 @@ total 28
 -rw-r--r-- 1 root root  739 Apr 23 17:34 slack-desc
 
 
-11) Track the source and built packages-
+11) Track the source and built packages
 
 $ asbt -t dosbox
 Source:
@@ -148,7 +148,7 @@ Built:
 /home/aaditya/packages/dosbox-0.74-x86_64-2_SBo.tgz
 
 
-12) Enlist the packages which have the package name in their info file.
+12) Enlist the packages which have the package name in their info file
     (Useful for finding which packages depend on given package)
     (This option can take some time to complete)
 
@@ -201,7 +201,7 @@ Source: dosbox-0.74.tar.gz present.
 Re-download? [y/N]: 
 
 
-14) Building the package
+14) Build a package
 
 $ asbt -B dosbox
 Building dosbox
@@ -221,7 +221,7 @@ dosbox-0.74/visualc_net/Makefile.in
 dosbox-0.74/README
 ...
 ...
-....
+...
 usr/share/
 usr/share/pixmaps/
 usr/share/pixmaps/dosbox.ico

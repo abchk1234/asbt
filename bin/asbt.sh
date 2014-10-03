@@ -386,8 +386,8 @@ build-package () {
 
 install-package () {
 	# Check if package present
-	if [[ $(ls "$outdir/$package"* 2> /dev/null) ]] || [[ $(ls "/tmp/$package"* 2> /dev/null) ]]; then
-		pkgpath=$(ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1)
+	if [[ $(ls "$outdir/$package"*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"*.t?z 2> /dev/null) ]]; then
+		pkgpath=$(ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1)
 		# Check if package is installed 
 		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
 			echo "Upgrading $package"
@@ -404,8 +404,8 @@ install-package () {
 
 upgrade-package () {
 	# Check if package present
-	if [[ `ls "$outdir/$package"* 2> /dev/null` ]] || [[ `ls "/tmp/$package"* 2> /dev/null` ]]; then
-		pkgpath=`ls -t "/tmp/$package"* "$outdir/$package"* 2> /dev/null | head -n 1`
+	if [[ `ls "$outdir/$package"*.t?z 2> /dev/null` ]] || [[ `ls "/tmp/$package"*.t?z 2> /dev/null` ]]; then
+		pkgpath=`ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1`
 		echo "Upgrading $package"
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
