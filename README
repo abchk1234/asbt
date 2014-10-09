@@ -4,33 +4,33 @@ for Slackware Linux.
 
 It supports following functions/options:
 
-1)  search the repository (-s)
-2)  info about specified package (-i)
-3)  readme about specified package (-r)
-4)  goto the package directory (-g)
-5)  view slackbuild (-v)
-6)  list files contained in specified package directory (-l,-L)
-7)  description about specified package (-d)
-8)  get / download the package (-G)
-9)  build the package (-B)
-10) install the built package (-I)
-11) details about installed package (-D)
-12) upgrade installed package with built package (-U)
-13) remove installed package (-R)
-14) query installed packages (-q)
-15) view all packages installed from SBo (-q --sbo)
-16) update the local git repo of slackbuilds (-u)
-17) check for upgrades to installed packages (-c)
-18) view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
-19) track the source and built package for specified package (-t) 
-20) enlist all packages which have given package in their .info file (-e)
-21) tidy the source and package directories by removing old entries (-T)
+1.  search the repository (-s)
+2.  info about specified package (-i)
+3.  readme about specified package (-r)
+4.  goto the package directory (-g)
+5.  view slackbuild (-v)
+6.  list files contained in specified package directory (-l,-L)
+7.  description about specified package (-d)
+8.  get / download the package (-G)
+9.  build the package (-B)
+10. install the built package (-I)
+11. details about installed package (-D)
+12. upgrade installed package with built package (-U)
+13. remove installed package (-R)
+14. query installed packages (-q)
+15. view all packages installed from SBo (-q --sbo)
+16. update the local git repo of slackbuilds (-u)
+17. check for upgrades to installed packages (-c)
+18. view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
+19. track the source and built package for specified package (-t) 
+20. enlist all packages which have given package in their .info file (-e)
+21. tidy the source and package directories by removing old entries (-T)
 
 It uses the following Slackware tools:
 
-1) installpkg
-2) upgradepkg
-3) removepkg
+1. installpkg
+2. upgradepkg
+3. removepkg
 
 # Ideology:
 
@@ -81,7 +81,7 @@ These can be overrided by specifying the options provided in the configuration f
 Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
 
-or, (as root)
+Or, (as root)
 make install
 
 # Post Installation:
@@ -119,7 +119,7 @@ asbt -c all # check all installed packages for updates to packages from the repo
 
 * When searching, a *(wildcard) at both ends is implied.
 
-For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
+  For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
 instead of `asbt search '*xfce*'`
 
 * When querying, if the package(s) is/are installed, they will they displayed,
@@ -127,67 +127,65 @@ else no output. A *(wildcard) at both ends is also implied when querying.
 
 * Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
-Installing virtualbox-kernel
+  Installing virtualbox-kernel
 /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
 N/A
 
-This could be because there are 2 packages virtualbox-kernel, while it can process only one.
+  This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
 
-asbt install virtualbox-kernel-4.3.4_3.10.28
+  asbt install virtualbox-kernel-4.3.4_3.10.28
 
 * Giving package path instead of package supports installation of package from custom folder. For example,
 
-asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
+  asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
 
-Here the above path is the folder which contains the source and slackbuild and related files.
+  Here the above path is the folder which contains the source and slackbuild and related files.
 
 * While building packages, options can also be passed. For example,
 
-asbt -B volumeicon NOTIFY=yes
+  asbt -B volumeicon NOTIFY=yes
 
-These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
+  These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
 * Build flags in the config file are passed to each package while building. 
 
-The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
+  The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
 
-However, some packages can fail to build on multiple cores (for example, webkitgtk).
+  However, some packages can fail to build on multiple cores (for example, webkitgtk).
 
-For such packages, while building, the buildargs can be overrided. For example,
+  For such packages, while building, the buildargs can be overrided. For example,
 
-asbt -B webkitgtk MAKEFLAGS=-j1
+  asbt -B webkitgtk MAKEFLAGS=-j1
 
 * asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
-This change is reverted after building the package.
+  This change is reverted after building the package.
 
-But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, 
-then the slackbuild would be changed, and git may complain about this change when updating the git repo.
+  But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, then the slackbuild would be changed, and git may complain about this change when updating the git repo.
 	
-To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
-To know more about git stash, read the git-stash man page.
+  To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
+  To know more about git stash, read the git-stash man page.
 
-* If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
-then they can change ownership of the slackbuilds git repository, and you can get messages like:
+* If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
-chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild’: Operation not permitted
-Enter your password to take ownership of the slackbuild.
+  chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
+  Enter your password to take ownership of the slackbuild.
 
-In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
+  In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
 
-sudo chown -R $USER /home/$USER/slackbuilds
+  sudo chown -R $USER /home/$USER/slackbuilds
 
 * Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
-The --dry-run option can be used to see which entries are going to be deleted. For example,
+  The --dry-run option can be used to see which entries are going to be deleted. For example,
 
-asbt -T --dry-run pkg
+  asbt -T --dry-run pkg
 
 * Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), remove (-R), and process (-P). For example,
 
-asbt -P i3 i3status
+  asbt -P i3 i3status
 
-The packages are processed in the order they are specified.
+  The packages are processed in the order they are specified.
 
-However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
+  However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
 
