@@ -32,7 +32,7 @@ It uses the following Slackware tools:
 2) upgradepkg
 3) removepkg
 
-# Ideology
+# Ideology:
 
 asbt runs as a normal application, and aids in package management of SBo packages by
 displaying information about the packages, getting and building them,
@@ -76,7 +76,7 @@ Samples for these variables are present in the script itself.
 
 These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf"
 
-# Installation
+# Installation:
 
 Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
@@ -84,7 +84,7 @@ http://slackbuilds.org/repository/14.1/system/asbt/
 or, (as root)
 make install
 
-# Post Installation
+# Post Installation:
 
 asbt can be setup using the command:
 
@@ -95,11 +95,11 @@ If it is empty, it prompts to set it up by cloning the slackbuilds.org git repos
 
 Further it asks to set the variables in the configuration file /etc/asbt/asbt.conf
 
-# Usage
+# Usage:
 
 asbt <option> [package]
 
-# Examples
+# Examples:
 
 asbt -s dosbox  # search for package dosbox
 asbt -i dosbox  # read the info file for dosbox
@@ -115,17 +115,17 @@ asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the repo
 asbt -c all # check all installed packages for updates to packages from the repo
 
-# Notes
+# Notes:
 
-1) When searching, a *(wildcard) at both ends is implied.
+* When searching, a *(wildcard) at both ends is implied.
 
 For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
 instead of `asbt search '*xfce*'`
 
-2) When querying, if the package(s) is/are installed, they will they displayed,
+* When querying, if the package(s) is/are installed, they will they displayed,
 else no output. A *(wildcard) at both ends is also implied when querying.
 
-3) Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
+* Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
 Installing virtualbox-kernel
 /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
@@ -136,19 +136,19 @@ In such a case, expand the name of package to install, so that it can differenti
 
 asbt install virtualbox-kernel-4.3.4_3.10.28
 
-4) Giving package path instead of package supports installation of package from custom folder. For example,
+* Giving package path instead of package supports installation of package from custom folder. For example,
 
 asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
 
 Here the above path is the folder which contains the source and slackbuild and related files.
 
-5) While building packages, options can also be passed. For example,
+* While building packages, options can also be passed. For example,
 
 asbt -B volumeicon NOTIFY=yes
 
 These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
-5-b) Build flags in the config file are passed to each package while building. 
+* Build flags in the config file are passed to each package while building. 
 
 The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
 
@@ -158,7 +158,7 @@ For such packages, while building, the buildargs can be overrided. For example,
 
 asbt -B webkitgtk MAKEFLAGS=-j1
 
-6) asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
+* asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
 This change is reverted after building the package.
 
 But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, 
@@ -167,7 +167,7 @@ then the slackbuild would be changed, and git may complain about this change whe
 To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
 To know more about git stash, read the git-stash man page.
 
-7) If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
+* If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg),
 then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
 chmod: changing permissions of ‘/home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild’: Operation not permitted
@@ -177,14 +177,13 @@ In such a case, one change ownership of the slackbuilds repository using the cho
 
 sudo chown -R $USER /home/$USER/slackbuilds
 
-8) Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
+* Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
 The --dry-run option can be used to see which entries are going to be deleted. For example,
 
 asbt -T --dry-run pkg
 
-9) Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), 
-remove (-R), and process (-P). For example,
+* Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), remove (-R), and process (-P). For example,
 
 asbt -P i3 i3status
 
