@@ -18,7 +18,7 @@ It supports following functions/options:
 12) upgrade installed package with built package (-U)
 13) remove installed package (-R)
 14) query installed packages (-q)
-15) view all packages installed from the slackbuilds repo (-q --sbo)
+15) view all packages installed from SBo (-q --sbo)
 16) update the local git repo of slackbuilds (-u)
 17) check for upgrades to installed packages (-c)
 18) view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
@@ -32,7 +32,7 @@ It uses the following Slackware tools:
 2) upgradepkg
 3) removepkg
 
-Ideology:
+# Ideology
 
 asbt runs as a normal application, and aids in package management of SBo packages by
 displaying information about the packages, getting and building them,
@@ -76,7 +76,7 @@ Samples for these variables are present in the script itself.
 
 These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf"
 
-Installation:
+# Installation
 
 Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
@@ -84,11 +84,22 @@ http://slackbuilds.org/repository/14.1/system/asbt/
 or, (as root)
 make install
 
-Usage:
+# Post Installation
+
+asbt can be setup using the command:
+
+asbt -S
+
+This checks if the slackbuilds repository is present, and is not empty.
+If it is empty, it prompts to set it up by cloning the slackbuilds.org git repository.
+
+Further it asks to set the variables in the configuration file /etc/asbt/asbt.conf
+
+# Usage
 
 asbt <option> [package]
 
-Examples:
+# Examples
 
 asbt -s dosbox  # search for package dosbox
 asbt -i dosbox  # read the info file for dosbox
@@ -104,7 +115,7 @@ asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the repo
 asbt -c all # check all installed packages for updates to packages from the repo
 
-Note:
+# Notes
 
 1) When searching, a *(wildcard) at both ends is implied.
 
