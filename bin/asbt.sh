@@ -152,7 +152,7 @@ setup () {
 				if [ -d $repopath ]; then
 					repodir="$repopath"
 				else
-					mkdir "$repopath" || exit 1
+					mkdir -p "$repopath" || exit 1
 					repodir="$repopath"
 				fi
 			else
