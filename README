@@ -188,10 +188,10 @@ In such a case, expand the name of package to install, so that it can differenti
   The packages are processed in the order they are specified.
 
   However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
+
 * For updating all SBo packages, the following command could be used:
 
-  asbt -P $(asbt -c | cut -f 1 -d ":")  # update all SBo packages
+  asbt -P $(asbt -c | cut -f 1 -d ":")  # updates all installed SBo packages
 
   Note that while upgrading a package, reading its README is recommended as its dependencies could have changed.
-
 
