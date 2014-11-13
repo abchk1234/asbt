@@ -120,3 +120,4 @@ Option added to check updates to all installed packages, which have counterparts
 Check for package extension when installing/upgrading.
 Create directory parent(s) when setting up repo in custom location.
 Documentation updates.
+
