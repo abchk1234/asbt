@@ -115,3 +115,8 @@ Sort output of "--all" option alphabetically.
 Support use of build flags passed to each package while building.
 Now config file in home folder overrides config file in /etc by default.
 Option added to check updates to all installed packages, which have counterparts available in SBo.
+
+0.9.9 (13/11/14)
+Check for package extension when installing/upgrading.
+Create directory parent(s) when setting up repo in custom location.
+Documentation updates.
