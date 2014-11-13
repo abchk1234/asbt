@@ -404,8 +404,8 @@ install-package () {
 
 upgrade-package () {
 	# Check if package present
-	if [[ `ls "$outdir/$package"*.t?z 2> /dev/null` ]] || [[ `ls "/tmp/$package"*.t?z 2> /dev/null` ]]; then
-		pkgpath=`ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1`
+	if [[ $(ls "$outdir/$package"*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"*.t?z 2> /dev/null) ]]; then
+		pkgpath=$(ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1)
 		echo "Upgrading $package"
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else

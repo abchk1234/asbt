@@ -20,7 +20,7 @@ It supports following functions/options:
 14. query installed packages (-q)
 15. view all packages installed from SBo (-q --sbo)
 16. update the local git repo of slackbuilds (-u)
-17. check for upgrades to installed packages (-c)
+17. check for updates to installed packages (-c)
 18. view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
 19. track the source and built package for specified package (-t) 
 20. enlist all packages which have given package in their .info file (-e)
@@ -70,7 +70,7 @@ The variables used are:
  # Editor for viewing/editing slackbuilds.
 
 6) buildflags=""
- # Build flags specified while building a package
+ # Common build flags specified while building packages
 
 Samples for these variables are present in the script itself.
 
@@ -93,7 +93,7 @@ asbt -S
 This checks if the slackbuilds repository is present, and is not empty.
 If it is empty, it prompts to set it up by cloning the slackbuilds.org git repository.
 
-Further it asks to set the variables in the configuration file /etc/asbt/asbt.conf
+Further it asks to set the variables in the configuration file "/etc/asbt/asbt.conf"
 
 # Usage:
 
