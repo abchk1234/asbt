@@ -83,7 +83,7 @@ check-config () {
 check-repo () {
 	if [[ ! -d "$repodir" ]] || [[ $(ls "$repodir" | wc -w) -eq 0 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
-		echo "To setup the slackbuilds repository `asbt -S` can be used."
+		echo "To setup the slackbuilds repository 'asbt -S' can be used."
 		exit 1
 	fi
 }
@@ -376,9 +376,9 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -k CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -ki CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -k OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -ki OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
