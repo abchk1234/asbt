@@ -220,7 +220,7 @@ get-path() {
 	fi
 	# Check path (if directory exists)
 	if [[ ! -d "$path" ]]; then
-		echo "Directory: $repodir/$package N/A"
+		echo "$package in $repodir N/A"
 		exit 1
 	fi
 }
@@ -231,7 +231,7 @@ get-info () {
 		. "$path/$package.info"
 		echo "asbt: $path/$package.info sourced."
 	else
-		echo "asbt: $path/$package.info N/A"
+		echo "asbt: $package.info in $path N/A"
 		exit 1
 	fi
 }
@@ -490,8 +490,9 @@ readme|-r)
 	check-repo
 	get-path
 	get-content "$path/README"
-	echo
+	echo ""
 	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware"
+	[ -f "$path/README.SLACKWARE" ] && cat "$path/README.SLACKWARE"
 	;;
 view|-v)
 	check-input "$#"
