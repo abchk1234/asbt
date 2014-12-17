@@ -97,11 +97,11 @@ asbt -S
 This checks if the slackbuilds repository is present, and is not empty.
 If it is empty, it prompts to set it up by cloning the slackbuilds.org git repository.
 
-Further it asks to set the variables in the configuration file "/etc/asbt/asbt.conf"
+Further it asks to set the variables in the configuration file /etc/asbt/asbt.conf (or $HOME/.asbt.conf if present).
 
 # Usage:
 
-asbt option [package]
+asbt [option] [package]
 
 # Examples:
 
