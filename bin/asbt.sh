@@ -93,13 +93,22 @@ check-repo () {
 }
 
 edit-config () {
-	echo "Enter your password to view or edit the configuration file $config"
+	if [ ! -e "$altconfig" ]; then
+		# Root priviliges required to edit global config file
+		SUDO="sudo -k"
+		echo "Enter your password to view or edit the configuration file $config"
+	else
+		# Root priviliges not required to edit config in $HOME folder
+		SUDO=""
+		config="$altconfig"
+	fi
+
 	if [ -e $editor ]; then
-	       sudo -k $editor $config
+		$SUDO $editor $config
 	elif [ -e /usr/bin/nano ]; then
-	       sudo -k nano $config
+		$SUDO nano $config
 	elif [ -e /usr/bin/vim ]; then
-		sudo -k vim $config
+		$SUDO vim $config
 	else
 	       echo "Unable to find editor to edit the configuration file $config"
 	       exit 1
