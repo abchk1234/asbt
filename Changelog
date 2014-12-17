@@ -121,8 +121,9 @@ Check for package extension when installing/upgrading.
 Create directory parent(s) when setting up repo in custom location.
 Documentation updates.
 
-0.9.9.1 (17/12/14)
+1.0 (17/12/14)
 Fix mistaken command substitution
 Use sudo -i to simulate root environemnt while building
 Fix config file to use $HOME instead of /home/$USER/ (which fails for root)
+Add -P -u option to update all packages
 

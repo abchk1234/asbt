@@ -25,6 +25,8 @@ It supports following functions/options:
 19. track the source and built package for specified package (-t) 
 20. enlist all packages which have given package in their .info file (-e)
 21. tidy the source and package directories by removing old entries (-T)
+22. process packages (-P), equivalent to get + build + install/upgrade
+23. check and process updates to packages (-P --upgrade)
 
 It uses the following Slackware tools:
 
@@ -39,9 +41,9 @@ displaying information about the packages, getting and building them,
 checking updates to the packages, and viewing details about the installed packages, etc.
 
 When root access is required, for example, when installing or removing packages,
-sudo is used to gain the root privelege. This ensures demarcation between
-informational activites like searching or viewing information, and activites which
-change the system state, like installing or removing packages.
+sudo is used to gain the root privelege (if one is already root this does not matter).
+
+This ensures demarcation between informational activites like searching or viewing information, and activites which change the system state, like installing or removing packages.
 
 asbt is designed with simplicity in mind; 
 some complex cases are not handled and are left to the user's discretion.
@@ -113,7 +115,8 @@ asbt -q dosbox  # query whether dosbox is installed
 asbt -q --sbo  # query all SBo intalled packages
 asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the repo
-asbt -c all # check all installed packages for updates to packages from the repo
+asbt -c all # check all installed packages for updates to packages from repo
+asbt -P --upgrade # check for and upgrade out of date packages
 
 # Notes:
 
@@ -194,4 +197,8 @@ In such a case, expand the name of package to install, so that it can differenti
   asbt -P $(asbt -c | cut -f 1 -d ":")  # updates all installed SBo packages
 
   Note that while upgrading a package, reading its README is recommended as its dependencies could have changed.
+
+* From version 1.0, to update all packages, the following can be used:
+
+  asbt -P -u
 

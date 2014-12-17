@@ -1,6 +1,6 @@
 .\" Manpage for asbt.
 .\" Contact aaditya_gnulinux@zoho.com.
-.TH ASBT 1 "13 Nov 2014" "0.9.9" "asbt man page"
+.TH ASBT 1 "17 Dec 2014" "1.0" "asbt man page"
 .SH NAME
 asbt \- a tool to manage packages in your local slackbuilds repository
 .SH SYNOPSIS
@@ -9,7 +9,7 @@ asbt <option> [package]
 asbt acts like a package manager for your local copy of slackbuilds,
 which can be obtained from http://slackbuilds.org (SBo).
 
-It supports searching a package in your repository, viewing details about that package, installing or removing it, and other options.
+It supports searching for packages in the repository, viewing details about packages, installing or removing them, and other options.
 
 Using the package path instead of the package name is also possible.
 .SH OPTIONS
@@ -71,7 +71,10 @@ Using the package path instead of the package name is also possible.
 [process,-P] <pkg1> <pkg2> ..
 	process = get + build + install/upgrade the package(s).
 
-[tidy,-T] [--dry-run] <src|pkg>
+[process,-P] --upgrade,-u
+	process and update all outdated packages
+
+[tidy,-T] [--dry-run] src/pkg
 	Tidy the srcdir or pkgdir, ie, remove old source or built packages.
 .fi
 .PP
@@ -144,6 +147,8 @@ asbt update (update git repository of slackbuilds)
 asbt --all (view all packages installed from the slackbuilds repository)
 asbt --check (check for updates to installed packages from SBo)
 asbt --check all (check all packages for updates to packages from SBo)
+asbt -P --upgrade # check for and update out of date packages
+asbt tidy --dry-run src # check for old source packages
 .fi
 .SH SEE ALSO
 installpkg(8),upgradepkg(8),removepkg(8),sudo(8)

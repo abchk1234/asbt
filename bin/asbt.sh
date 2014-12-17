@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.9.1 (dated: 17 December 2014)" # Version
+ver="1.0 (dated: 17 December 2014)" # Version
 
 # Variables used:
 
@@ -655,6 +655,16 @@ process|-P)
 	check-option "$2"
 	check-config
 	check-repo
+	if [ "$2" == "--upgrade" ] || [ "$2" == "-u" ]; then
+		# Call the script itself with new parameters
+		for i in $("$0" -c | cut -f 1 -d ":"); do
+			# The above command checks for outdated packages
+			if [ -n "$i" ]; then
+				"$0" -P "$i"
+			fi
+		done
+		exit 0
+	fi
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
 		echo 

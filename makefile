@@ -1,5 +1,5 @@
 NAME = asbt
-VER = 0.9.9.1
+VER = 1.0
 install = /usr/bin/install
 rm = /usr/bin/rm
 shell = /bin/bash
