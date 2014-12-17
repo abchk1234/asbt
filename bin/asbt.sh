@@ -17,20 +17,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="0.9.9 (dated: 13 November 2014)" # Version
+ver="0.9.9.1 (dated: 17 December 2014)" # Version
 
 # Variables used:
 
-repodir="/home/$USER/git/slackbuilds" # Repository for slackbuilds. Required.
+repodir="$HOME/git/slackbuilds" # Repository for slackbuilds. Required.
 #repodir="/home/$USER/slackbuilds" # Alternate repository for slackbuilds.
 
-srcdir="/home/$USER/src" # Where the downloaded source is to be placed.
+srcdir="$HOME/src" # Where the downloaded source is to be placed.
 #srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
 
-outdir="/home/$USER/packages" # Where the built package will be placed.
+outdir="$HOME/packages" # Where the built package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 
-gitdir="/home/$USER/git/slackbuilds/.git" # Slackbuilds git repo directory.
+gitdir="$HOME/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #gitdir"/home/$USER/slackbuilds/.git" # Alternate git repo directory.
 
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
@@ -40,7 +40,7 @@ buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 #buildflags="" # No buildflags by default
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
-#config="/home/$USER/.asbt.conf" # Alternate config file.
+altconfig="$HOME/.asbt.conf" # Alternate config file which overrides above config.
 
 #--------------------------------------------------------------------------------------#
 
@@ -74,14 +74,18 @@ check-option () {
 
 # Check for the configuration file 
 check-config () {
-	if [[ -e "$config" ]]; then
-		. "$config"
+	if [ -e "$config" ]; then
+		source "$config"
+	fi
+	# Check for alternate config
+	if [ -e "$altconfig" ]; then
+		source "$altconfig"
 	fi
 }
 
 # Check the repo directory
 check-repo () {
-	if [[ ! -d "$repodir" ]] || [[ $(ls "$repodir" | wc -w) -eq 0 ]]; then
+	if [[ ! -d "$repodir" ]] || [[ $(ls -L "$repodir" | wc -w) -le 1 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
 		echo "To setup the slackbuilds repository 'asbt -S' can be used."
 		exit 1
@@ -137,48 +141,51 @@ create-git-repo () {
 # Setup function
 setup () {
 	if [ ! -d "$repodir" ]; then
-		echo "Slackbuild repository not present."
+		echo "Slackbuild repository $repodir not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
 		if [ "$ch" == "n" ] || [ "$ch" == "N" ]; then
 			exit 1
 		else
-			echo "Default Slackbuilds directory: /home/$USER/slackbuilds"
+			echo "Selected Slackbuilds directory: $repodir"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
 			if [ "$ch1" == "n" ] || [ "$ch1" == "N" ]; then
 				echo "Enter path of existing directory to use, or path of new dirctory to create: "
-				read repopath
-				if [ -d $repopath ]; then
+				read -e repopath
+				if [ -d "$repopath" ]; then
 					repodir="$repopath"
 				else
 					mkdir -p "$repopath" || exit 1
 					repodir="$repopath"
 				fi
 			else
-				# Default configuration
-				if [ ! -d /home/$USER/slackbuilds ]; then
-					mkdir /home/$USER/slackbuilds
-					repodir="/home/$USER/slackbuilds"
+				# Use what was set before
+				if [ ! -d "$repodir" ]; then
+					mkdir -p "$repodir"
 				fi
 			fi
 		fi
 		
+		# Edit the config file to reflect above changes
+		if [ -e "$altconfig" ]; then
+			sed -i "s|repodir=.*|repodir=\"${repodir}\"|" "$altconfig"
+		else
+			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$config" >> "$altconfig"
+		fi
+
 		# Now create git repo from upstream
-		if [ $(ls "$repodir" | wc -w) -le 0 ]; then
+		if [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
 			echo "Slackbuild repository seems to be empty."
 			create-git-repo
 		fi	
-
-		# Edit the config file to reflect above changes
-		edit-config
 
 		# Re-read the config file and check repo
 		check-config
 		check-repo
 		
-	elif [ $(ls "$repodir" | wc -w) -le 0 ]; then
-		echo "Slackbuild repository seems to be empty."
+	elif [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
+		echo "Slackbuild repository $repodir seems to be empty."
 		create-git-repo
 	else
 		edit-config || exit 1
