@@ -430,6 +430,29 @@ upgrade-package () {
 	fi 
 }
 
+check-new-pkg () {
+	pkgn="$1" # Package name is first argument
+	pkgv="$2" # Package ver is second argument
+
+	# Make an exception for virtualbox-kernel package
+	if [[ "$pkgn" == "virtualbox-kernel" ]] || [[ "$pkgn" == "virtualbox-kernel-addons" ]]; then
+		pkgv=$(echo $pkgv | cut -d "_" -f 1)
+	fi
+
+	path=$(find -L "$repodir" -maxdepth 2 -type d -name "$pkgn")
+
+	if [[ -f "$path/$pkgn.info" ]]; then
+		. "$path/$pkgn.info"
+	else
+		# For packages not present in slackbuilds repo
+		VERSION="$pkgv"
+	fi
+
+	if [[ ! "$pkgv" == "$VERSION" ]]; then
+		printf "%20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+	fi
+}
+
 # Program options
 # (Modular approach is used by calling functions for each task)
 
@@ -758,46 +781,14 @@ tidy|-T)
 		for i in /var/log/packages/*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			# Make an exception for virtualbox-kernel package
-			if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
- 				pkgver=$(echo $pkgver | cut -d "_" -f 1)
-			fi
-			
-			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
-			
-			if [[ -f "$path/$package.info" ]]; then
-				. "$path/$package.info"
-			else
-				# For packages not present in slackbuilds repo
-				VERSION="$pkgver"
-			fi
-			
-			if [[ ! "$pkgver" == "$VERSION" ]]; then
-				printf "%20s %10s -> %-10s\n" "$package" "$pkgver" "$VERSION"
-			fi
+			check-new-pkg $package $pkgver
 		done
 	else
 		# Only SBo packages
 		for i in /var/log/packages/*_SBo*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			# Make an exception for virtualbox-kernel package
-			if [[ "$package" == "virtualbox-kernel" ]] || [[ "$package" == "virtualbox-kernel-addons" ]]; then
- 				pkgver=$(echo $pkgver | cut -d "_" -f 1)
-			fi
-			
-			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
-			
-			if [[ -f "$path/$package.info" ]]; then
-				. "$path/$package.info"
-			else
-				# For packages not present in slackbuilds repo
-				VERSION="$pkgver"
-			fi
-			
-			if [[ ! "$pkgver" == "$VERSION" ]]; then
-				printf "%20s %10s -> %-10s\n" "$package" "$pkgver" "$VERSION"
-			fi
+			check-new-pkg $package $pkgver
 		done
 	fi
 	;;
