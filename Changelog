@@ -126,4 +126,6 @@ Fix mistaken command substitution
 Use sudo -i to simulate root environemnt while building
 Fix config file to use $HOME instead of /home/$USER/ (which fails for root)
 Add -P -u option to update all packages
+Check for README.SLACKWARE
+Other minor bugfixes
 

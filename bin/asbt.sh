@@ -722,7 +722,7 @@ tidy|-T)
 		done
 	elif [ "$2" == "pkg" ]; then
 		check-out-dir
-		for i in $(find "$outdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+		for i in $(find "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			if [ $flag -eq 1 ]; then
 				# Dry-run
 				ls -td -1 "$outdir/$i"* | tail -n +4
