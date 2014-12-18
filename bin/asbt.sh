@@ -773,7 +773,7 @@ tidy|-T)
 			fi
 			
 			if [[ ! "$pkgver" == "$VERSION" ]]; then
-				printf "$package:\t$pkgver -> $VERSION\n"
+				printf "%20s %10s -> %-10s\n" "$package" "$pkgver" "$VERSION"
 			fi
 		done
 	else
@@ -796,7 +796,7 @@ tidy|-T)
 			fi
 			
 			if [[ ! "$pkgver" == "$VERSION" ]]; then
-				printf "$package:\t$pkgver -> $VERSION\n"
+				printf "%20s %10s -> %-10s\n" "$package" "$pkgver" "$VERSION"
 			fi
 		done
 	fi
