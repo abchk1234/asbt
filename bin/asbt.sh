@@ -250,7 +250,7 @@ get-content () {
 get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]] && [[ -n "$MD5SUM_x86_64" ]]; then
+	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]]; then
 		link="$DOWNLOAD_x86_64"
 		arch="x86_64"
 	else
