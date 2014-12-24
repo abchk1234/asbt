@@ -40,7 +40,7 @@ buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 #buildflags="" # No buildflags by default
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
-altconfig="$HOME/.asbt.conf" # Alternate config file which overrides above config.
+altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
 
 #--------------------------------------------------------------------------------------#
 
@@ -434,6 +434,11 @@ check-new-pkg () {
 	pkgn="$1" # Package name is first argument
 	pkgv="$2" # Package ver is second argument
 
+	# Skip if package is in ignore list
+	if [ $(echo "$ignore" | grep $pkgn) ]; then
+		return
+	fi
+
 	# Make an exception for virtualbox-kernel package
 	if [[ "$pkgn" == "virtualbox-kernel" ]] || [[ "$pkgn" == "virtualbox-kernel-addons" ]]; then
 		pkgv=$(echo $pkgv | cut -d "_" -f 1)
@@ -449,7 +454,7 @@ check-new-pkg () {
 	fi
 
 	if [[ ! "$pkgv" == "$VERSION" ]]; then
-		printf "%20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+		printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
 	fi
 }
 
