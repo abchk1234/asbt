@@ -77,6 +77,10 @@ echo "./bin/asbt.sh -d asbt asbt"
 
 echo
 
+echo "./bin/asbt.sh -c"
+./bin/asbt.sh -c
+echo
+
 echo "./bin/asbt.sh"
 ./bin/asbt.sh
 
