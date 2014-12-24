@@ -689,9 +689,7 @@ process|-P)
 		for i in $("$0" -c | cut -f 1 -d " "); do
 			# The above command checks for outdated packages
 			if [ -n "$i" ]; then
-				echo "$i"
 				"$0" -P "$i"
-				exit
 			fi
 		done
 		exit 0
