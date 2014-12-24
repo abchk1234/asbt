@@ -768,8 +768,9 @@ tidy|-T)
 		echo "Git directory not specified." && exit 1
 	fi
 	if [ -d "$gitdir" ]; then
+		echo "Performing git stash"
+		cd "$gitdir/.." && git stash
 		echo "Updating git repo $gitdir"
-		cd "$gitdir/.." && git stash --quiet
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
 		echo "Git directory $gitdir doesnt exist.." && exit 1
