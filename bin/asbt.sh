@@ -512,7 +512,7 @@ readme|-r)
 	check-config
 	check-repo
 	get-path
-	get-content "$path/README"
+	[ -f "$path/README" ] && cat "$path/README"
 	echo ""
 	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware"
 	[ -f "$path/README.SLACKWARE" ] && cat "$path/README.SLACKWARE"
