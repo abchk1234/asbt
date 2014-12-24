@@ -454,7 +454,7 @@ check-new-pkg () {
 	fi
 
 	if [[ ! "$pkgv" == "$VERSION" ]]; then
-		printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+		printf "%-12s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
 	fi
 }
 
@@ -686,10 +686,12 @@ process|-P)
 	check-repo
 	if [ "$2" == "--upgrade" ] || [ "$2" == "-u" ]; then
 		# Call the script itself with new parameters
-		for i in $("$0" -c | cut -f 1 -d ":"); do
+		for i in $("$0" -c | cut -f 1 -d " "); do
 			# The above command checks for outdated packages
 			if [ -n "$i" ]; then
+				echo "$i"
 				"$0" -P "$i"
+				exit
 			fi
 		done
 		exit 0
@@ -782,6 +784,8 @@ tidy|-T)
 	
 	# Check if --all option was specified
 	if [ "$2" == "all" ] || [ "$2" == "--all" ]; then
+		# Ignore/unset the ignore variable
+		unset ignore
 		# Check all installed packages
 		for i in /var/log/packages/*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
