@@ -135,3 +135,4 @@ Bugfix: no need to check if md5sum is empty when checking for DOWNLOAD-x86_64
 Bugfix: dont fail if README not found
 Add option in config file to ignore specified packages when cheking updates
 Change config file location from $HOME/.asbt.conf to $HOME/.config/asbt.conf
+Add message about performing git stash when updating repo
