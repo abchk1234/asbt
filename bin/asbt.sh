@@ -435,7 +435,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if [ $(echo "$ignore" | grep $pkgn) ]; then
+	if [ "$(echo "$ignore" | grep $pkgn)" ]; then
 		return
 	fi
 
