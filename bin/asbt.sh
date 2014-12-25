@@ -50,7 +50,7 @@ altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides abov
 # Double brackets [[ ]] are used to optimise condition checking,
 # as they are a bash built-in compared to [ ] (test instruction).
 # But as they can reduce portability to the bourne shell sh,
-# so its used only where a function is called many times.
+# so their use has been minimized.
 
 package="$2" # Name of package input by the user.
 # Since version 0.9.5, this is default for options that take a single argument;
@@ -133,7 +133,7 @@ check-out-dir () {
 create-git-repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
-	if [ "$ch2" == "n" ] || [ "ch2" == "N" ]; then
+	if [ "$ch2" == "n" ] || [ "$ch2" == "N" ]; then
 		exit 1
 	else
 		# A workaround has to be applied to clone the git directory as the basename of the repodir
