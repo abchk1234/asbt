@@ -548,6 +548,8 @@ list|-l)
 	check-config
 	check-repo
 	get-path
+	# Echo path too so thats its easier to navigate if required
+	echo "($path)"
 	ls $path
 	;;
 longlist|-L)
@@ -556,6 +558,8 @@ longlist|-L)
 	check-config
 	check-repo
 	get-path
+	# Echo path too so thats its easier to navigate if required
+	echo "($path)"
 	ls -l $path
 	;;
 enlist|-e)
@@ -586,7 +590,7 @@ goto|-g)
 	check-repo
 	get-path
 	if [ "$TERM" == "linux" ]; then
-		echo "Goto: N/A"
+		echo "Goto on console N/A"
 		exit 1
 	fi
 	if [ -e /usr/bin/xfce4-terminal ]; then
@@ -596,7 +600,7 @@ goto|-g)
 	elif [ -e /usr/bin/xterm ]; then
 		xterm -e 'cd "$path" && /bin/bash'
 	else
-		echo "Goto: N/A"
+		echo "Could not find a suitable terminal emulator, goto N/A"
 		exit 1
 	fi
 	;;
