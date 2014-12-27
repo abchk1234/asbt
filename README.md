@@ -54,7 +54,7 @@ without trying to hinder the user with excess verbiage.
 
 The variables used are:
 
-<pre>
+~~~
 1) repodir=""
  # Repository for slackbuilds.
 
@@ -77,7 +77,7 @@ The variables used are:
 
 7) ignore=""
  # Packages to ignore when checking for updates.
-</pre>
+~~~
 
 Samples for these variables are present in the script itself.
 
@@ -108,7 +108,7 @@ asbt [option] [package]
 
 # Examples:
 
-<pre>
+~~~
 asbt -s dosbox  # search for package dosbox
 asbt -i dosbox  # read the info file for dosbox
 asbt -v dosbox  # view / edit slackbuild
@@ -123,7 +123,7 @@ asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the repo
 asbt -c all # check all installed packages for updates to packages from repo
 asbt -P --upgrade # check for and upgrade out of date packages
-</pre>
+~~~
 
 # Notes:
 
