@@ -127,18 +127,18 @@ asbt -P --upgrade # check for and upgrade out of date packages
 
 # Notes:
 
-* When searching, a *(wildcard) at both ends is implied.
+* When searching, a `*`(wildcard) at both ends is implied.
 
   For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
 instead of `asbt search '*xfce*'`
 
 * When querying, if the package(s) is/are installed, they will they displayed,
-else no output. A *(wildcard) at both ends is also implied when querying.
+else no output. A `*`(wildcard) at both ends is also implied when querying.
 
 * Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
   Installing virtualbox-kernel
-  /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
+  /usr/bin/asbt: line 135: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
   N/A
 
   This could be because there are 2 packages virtualbox-kernel, while it can process only one.
@@ -160,7 +160,7 @@ In such a case, expand the name of package to install, so that it can differenti
 
 * Build flags in the config file are passed to each package while building. 
 
-  The default flags that are specified are: "MAKEFLAGS=-j2" (means use 2 CPU cores while building).
+  The default flags that are specified are: `MAKEFLAGS=-j2` (means use 2 CPU cores while building).
 
   However, some packages can fail to build on multiple cores (for example, webkitgtk).
 
@@ -179,7 +179,6 @@ In such a case, expand the name of package to install, so that it can differenti
 * If you use other tools like [sbopkg](http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
   chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
-
   Enter your password to take ownership of the slackbuild.
 
   In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
