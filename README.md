@@ -73,15 +73,15 @@ The variables used are:
  # Editor for viewing/editing slackbuilds.
 
 6) buildflags=""
- # Common build flags specified while building packages
+ # Common build flags specified while building packages.
 
 7) ignore=""
- # Packages to ignore when checking for updates
+ # Packages to ignore when checking for updates.
 </pre>
 
 Samples for these variables are present in the script itself.
 
-These can be overrided by specifying the options provided in the configuration file "/etc/asbt/asbt.conf"
+These can be overrided by specifying the options provided in the configuration file `/etc/asbt/asbt.conf`
 
 # Installation:
 
@@ -89,7 +89,7 @@ Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
 
 Or, (as root)
-make install
+`make install`
 
 # Post Installation:
 
@@ -100,7 +100,7 @@ asbt can be setup using the command:
 This checks if the slackbuilds repository is present, and is not empty.
 If it is empty, it prompts to set it up by cloning the slackbuilds.org git repository.
 
-Further it asks to set the variables in the configuration file /etc/asbt/asbt.conf (or $HOME/.asbt.conf if present).
+Further it asks to set the variables in the configuration file `/etc/asbt/asbt.conf` (or `$HOME/.config/asbt.conf` if present).
 
 # Usage:
 
@@ -176,7 +176,7 @@ In such a case, expand the name of package to install, so that it can differenti
   To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
   To know more about git stash, read the git-stash man page.
 
-* If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
+* If you use other tools like [sbopkg](http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
   chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
   Enter your password to take ownership of the slackbuild.
