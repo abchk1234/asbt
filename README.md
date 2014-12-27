@@ -34,7 +34,7 @@ It uses the following Slackware tools:
 2. upgradepkg
 3. removepkg
 
-# Ideology:
+# Ideology
 
 asbt runs as a normal application, and aids in package management of SBo packages by
 displaying information about the packages, getting and building them,
@@ -83,7 +83,7 @@ Samples for these variables are present in the script itself.
 
 These can be overrided by specifying the options provided in the configuration file `/etc/asbt/asbt.conf`
 
-# Installation:
+# Installation
 
 Via SBo,
 http://slackbuilds.org/repository/14.1/system/asbt/
@@ -91,7 +91,7 @@ http://slackbuilds.org/repository/14.1/system/asbt/
 Or, (as root)
 `make install`
 
-# Post Installation:
+# Post Installation
 
 asbt can be setup using the command:
 
@@ -102,11 +102,11 @@ If it is empty, it prompts to set it up by cloning the slackbuilds.org git repos
 
 Further it asks to set the variables in the configuration file `/etc/asbt/asbt.conf` (or `$HOME/.config/asbt.conf` if present).
 
-# Usage:
+# Usage
 
 asbt [option] [package]
 
-# Examples:
+# Examples
 
 ~~~
 asbt -s dosbox  # search for package dosbox
@@ -125,7 +125,7 @@ asbt -c all # check all installed packages for updates to packages from repo
 asbt -P --upgrade # check for and upgrade out of date packages
 ~~~
 
-# Notes:
+# Notes
 
 * When searching, a `*`(wildcard) at both ends is implied.
 
