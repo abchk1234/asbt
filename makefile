@@ -22,7 +22,7 @@ install:
 	$(install) -m644 doc/Examples $(DESTDIR)$(DOCDIR)
 	$(install) -m644 makefile $(DESTDIR)$(DOCDIR)
 	$(install) -m644 man/asbt.1 $(DESTDIR)$(MANDIR)
-	$(install) -m644 etc/asbt.conf $(DESTDIR)$(CONDIR)
+	$(install) -m644 conf/asbt.conf $(DESTDIR)$(CONDIR)
 
 uninstall: 
 	$(rm) $(DESTDIR)$(BINDIR)/$(NAME)
