@@ -95,7 +95,7 @@ make install
 
 asbt can be setup using the command:
 
-asbt -S
+`asbt -S`
 
 This checks if the slackbuilds repository is present, and is not empty.
 If it is empty, it prompts to set it up by cloning the slackbuilds.org git repository.
@@ -137,11 +137,9 @@ else no output. A *(wildcard) at both ends is also implied when querying.
 
 * Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
-<pre>
   Installing virtualbox-kernel
-/usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
-N/A
-</pre>
+  /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
+  N/A
 
   This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
@@ -180,10 +178,8 @@ In such a case, expand the name of package to install, so that it can differenti
 
 * If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
-<pre>
   chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
   Enter your password to take ownership of the slackbuild.
-</pre>
 
   In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
 
