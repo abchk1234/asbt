@@ -74,6 +74,9 @@ The variables used are:
 
 6) buildflags=""
  # Common build flags specified while building packages
+
+7) ignore=""
+ # Packages to ignore when checking for updates
 </pre>
 
 Samples for these variables are present in the script itself.
@@ -134,24 +137,26 @@ else no output. A *(wildcard) at both ends is also implied when querying.
 
 * Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
+<pre>
   Installing virtualbox-kernel
 /usr/bin/asbt: line 135: [: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
 N/A
+</pre>
 
   This could be because there are 2 packages virtualbox-kernel, while it can process only one.
 In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
 
-  asbt install virtualbox-kernel-4.3.4_3.10.28
+  `asbt install virtualbox-kernel-4.3.4_3.10.28`
 
 * Giving package path instead of package supports installation of package from custom folder. For example,
 
-  asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1
+  `asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1`
 
   Here the above path is the folder which contains the source and slackbuild and related files.
 
 * While building packages, options can also be passed. For example,
 
-  asbt -B volumeicon NOTIFY=yes
+  `asbt -B volumeicon NOTIFY=yes`
 
   These build options are different for every package, and can be found out by reading the package's README or Slackbuild.
 
@@ -163,7 +168,7 @@ In such a case, expand the name of package to install, so that it can differenti
 
   For such packages, while building, the buildargs can be overrided. For example,
 
-  asbt -B webkitgtk MAKEFLAGS=-j1
+  `asbt -B webkitgtk MAKEFLAGS=-j1`
 
 * asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
   This change is reverted after building the package.
@@ -175,22 +180,24 @@ In such a case, expand the name of package to install, so that it can differenti
 
 * If you use other tools like sbopkg (http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
+<pre>
   chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
   Enter your password to take ownership of the slackbuild.
+</pre>
 
   In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
 
-  sudo chown -R $USER /home/$USER/slackbuilds
+  `sudo chown -R $USER /home/$USER/slackbuilds`
 
 * Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
   The --dry-run option can be used to see which entries are going to be deleted. For example,
 
-  asbt -T --dry-run pkg
+  `asbt -T --dry-run pkg`
 
 * Since version 0.9.5, multiple packages can be specified for some options, like get (-G), install (-I), upgrade (-U), remove (-R), and process (-P). For example,
 
-  asbt -P i3 i3status
+  `asbt -P i3 i3status`
 
   The packages are processed in the order they are specified.
 
@@ -198,11 +205,11 @@ In such a case, expand the name of package to install, so that it can differenti
 
 * For updating all SBo packages, the following command could be used:
 
-  asbt -P $(asbt -c | cut -f 1 -d ":")  # updates all installed SBo packages
+  `asbt -P $(asbt -c | cut -f 1 -d ":")  # updates all installed SBo packages`
 
   Note that while upgrading a package, reading its README is recommended as its dependencies could have changed.
 
 * From version 1.0, to update all packages, the following can be used:
 
-  asbt -P -u
+  `asbt -P -u`
 
