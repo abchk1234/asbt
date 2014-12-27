@@ -179,6 +179,7 @@ In such a case, expand the name of package to install, so that it can differenti
 * If you use other tools like [sbopkg](http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
 
   chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
+
   Enter your password to take ownership of the slackbuild.
 
   In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
