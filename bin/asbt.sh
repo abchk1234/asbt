@@ -353,7 +353,7 @@ check-built-package () {
 		VERSION="UNKNOWN"
 	fi
 	# Check if package has already been built
-	if [[ $(ls -t "/tmp/$package"*-"$VERSION"* 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"* 2> /dev/null) ]]; then
+	if [[ $(ls -t "/tmp/$package"*-"$VERSION"*.t?z 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"*.t?z 2> /dev/null) ]]; then
 		built=1
 		echo "Package: $package($VERSION) already built."
 	else
@@ -578,9 +578,9 @@ track|-t)
 	check-option "$2"
 	check-config
 	echo "Source:"
-	find "$srcdir" -maxdepth 1 -type f -iname "$package*"
+	find -L "$srcdir" -maxdepth 1 -type f -iname "$package*"
 	echo -e "\nBuilt:"
-	find "$outdir" -maxdepth 1 -type f -iname "$package*"
+	find -L "$outdir" -maxdepth 1 -type f -iname "$package*"
 	find "/tmp" -maxdepth 1 -type f -iname "$package*"
 	;;
 goto|-g)
@@ -703,8 +703,8 @@ process|-P)
 		echo 
 		get-path
 		echo "Processing $package..."
-		get-package || exit 1
-		process-built-package || exit 1
+		get-package || break
+		process-built-package || break
 		# Check if package is already installed
 		if [[ -f "/var/log/packages/$package"* ]]; then
 			upgrade-package
