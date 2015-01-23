@@ -413,8 +413,7 @@ install-package () {
 			sudo -k /sbin/installpkg "$pkgpath"
 		fi
 	else
-		echo "Package $package: N/A"
-		#exit 1
+		echo "Unable to install $package: N/A"
 	fi 
 }
 
@@ -425,8 +424,7 @@ upgrade-package () {
 		echo "Upgrading $package"
 		sudo -k /sbin/upgradepkg "$pkgpath"
 	else
-		echo "Package $package: N/A"
-		#exit 1
+		echo "Unable to upgrade $package: N/A"
 	fi 
 }
 
