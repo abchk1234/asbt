@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.1 (dated: 24 December 2014)" # Version
+ver="1.2 (dated: 23 January 2015)" # Version
 
 # Variables used:
 
@@ -809,7 +809,7 @@ tidy|-T)
 	setup
 	;;
 --version|-V)
-        echo -e "asbt version-$ver" ;;
+        echo -e "asbt version $ver" ;;
 --changelog|-C)
 	check-config
 	check-repo
