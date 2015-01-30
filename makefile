@@ -17,7 +17,6 @@ install:
 	$(install) -m755 bin/asbt.sh $(DESTDIR)$(BINDIR)/asbt
 	$(install) -m644 README.md $(DESTDIR)$(DOCDIR)
 	$(install) -m644 COPYING $(DESTDIR)$(DOCDIR)
-	$(install) -m644 AUTHORS $(DESTDIR)$(DOCDIR)
 	$(install) -m644 Changelog $(DESTDIR)$(DOCDIR)
 	$(install) -m644 doc/Examples $(DESTDIR)$(DOCDIR)
 	$(install) -m644 makefile $(DESTDIR)$(DOCDIR)
