@@ -417,17 +417,6 @@ install-package () {
 	fi 
 }
 
-upgrade-package () {
-	# Check if package present
-	if [[ $(ls "$outdir/$package"*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"*.t?z 2> /dev/null) ]]; then
-		pkgpath=$(ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1)
-		echo "Upgrading $package"
-		sudo -k /sbin/upgradepkg "$pkgpath"
-	else
-		echo "Unable to upgrade $package: N/A"
-	fi 
-}
-
 check-new-pkg () {
 	pkgn="$1" # Package name is first argument
 	pkgv="$2" # Package ver is second argument
@@ -647,7 +636,7 @@ build|-B)
 	get-path
 	build-package
 	;;
-install|-I)
+install|-I|upgrade|-U)
 	check-option "$2"
 	check-config
 	for i in $(echo $* | cut -f 2- -d " "); do
@@ -656,15 +645,6 @@ install|-I)
 		install-package
 	done
 	;;
-upgrade|-U)
-	check-option "$2"
-	check-config
-	for i in $(echo $* | cut -f 2- -d " "); do
-		package="$i"
-		echo
-		upgrade-package
-	done
-	;; 
 remove|-R)
 	check-option "$2"
 	for i in $(echo $* | cut -f 2- -d " "); do
@@ -703,14 +683,7 @@ process|-P)
 		echo "Processing $package..."
 		get-package || break
 		process-built-package || break
-		# Check if package is already installed
-		if [[ -f "/var/log/packages/$package"* ]]; then
-			upgrade-package
-		elif [[ ! -f "/var/log/packages/$package"* ]]; then
-			install-package
-		else
-			echo "Failed to install $i"
-		fi
+		install-package
 	done
 	;;
 details|-D)
