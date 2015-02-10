@@ -1,6 +1,7 @@
 1.3 (04/02/14)
 Remove redundant upgrade-package function.
 Display from which package we are installing/upgrading.
+Display full package name while removing.
 
 1.2 (23/01/14)
 Use break instead of exit in process option (to be checked)

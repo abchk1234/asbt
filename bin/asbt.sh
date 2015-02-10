@@ -652,8 +652,8 @@ remove|-R)
 		echo
 		# Check if package is installed 
 		if [ -f "/var/log/packages/$package"* ]; then
-			echo "Removing $package"
-			rpkg=`ls "/var/log/packages/$package"*`
+			rpkg=$(ls "/var/log/packages/$package"*)
+			echo "Removing $(echo $rpkg | cut -f 5 -d '/')"
 			sudo -k /sbin/removepkg "$rpkg"
 		elif [ $? -eq 1 ]; then
 			echo "Package $i: N/A"
