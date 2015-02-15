@@ -1,9 +1,10 @@
-1.3 (04/02/14)
+1.3 (04/02/15)
 Remove redundant upgrade-package function.
 Display from which package we are installing/upgrading.
 Display full package name while removing.
+Follow symlinks with find when tidying packages.
 
-1.2 (23/01/14)
+1.2 (23/01/15)
 Use break instead of exit in process option (to be checked)
 Follow symlinks with find when tracking packages
 Check for package format (*.t?z) when checking formats

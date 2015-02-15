@@ -714,7 +714,7 @@ tidy|-T)
 	if [ "$2" == "src" ]; then
 		check-src-dir
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries
-		for i in $(find "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
+		for i in $(find -L "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
 			if [ $flag -eq 1 ]; then
 				# Dry-run; only display packages to be deleted
@@ -725,7 +725,7 @@ tidy|-T)
 		done
 	elif [ "$2" == "pkg" ]; then
 		check-out-dir
-		for i in $(find "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			if [ $flag -eq 1 ]; then
 				# Dry-run
 				ls -td -1 "$outdir/$i"* | tail -n +4
