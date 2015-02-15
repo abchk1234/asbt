@@ -1,8 +1,9 @@
-1.3 (04/02/15)
+1.3 (15/02/15)
 Remove redundant upgrade-package function.
 Display from which package we are installing/upgrading.
 Display full package name while removing.
 Follow symlinks with find when tidying packages.
+Dont use --color with -e option.
 
 1.2 (23/01/15)
 Use break instead of exit in process option (to be checked)
