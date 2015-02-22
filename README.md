@@ -24,7 +24,7 @@ It supports following functions/options:
 17. check for updates to installed packages (-c)
 18. view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
 19. track the source and built package for specified package (-t) 
-20. enlist all packages which have given package in their .info file (-e)
+20. enlist all packages which have given keyword in their .info file (-e)
 21. tidy the source and package directories by removing old entries (-T)
 22. process packages (-P), equivalent to get + build + install/upgrade
 23. check and process updates to packages (-P --upgrade)
@@ -105,7 +105,7 @@ Further it asks to set the variables in the configuration file `/etc/asbt/asbt.c
 
 # Usage
 
-asbt [option] [package]
+`asbt [option] [package]`
 
 # Examples
 
