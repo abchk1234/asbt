@@ -1,7 +1,7 @@
 #!/bin/bash
 # asbt : A tool to manage packages in a local slackbuilds repository.
 ##
-# Copyright (C) 2014 Aaditya Bagga <aaditya_gnulinux@zoho.com>
+# Copyright (C) 2014-2015 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.3 (dated: 15 Feb 2015)" # Version
+ver="1.4 (dated: 04 Mar 2015)" # Version
 
 # Variables used:
 
@@ -445,6 +445,19 @@ check-new-pkg () {
 	fi
 }
 
+print_items () {
+	array=$* # array is passed as argument
+	if [ -z $array ]; then
+		echo "No items found" && return 1
+	else
+		# Print the array
+		for i in ${array[*]}; do
+			echo $i
+		done
+	fi
+}
+
+
 # Program options
 # (Modular approach is used by calling functions for each task)
 
@@ -454,7 +467,8 @@ search|-s)
 	check-option "$2"
 	check-config
 	check-repo
-	find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"
+	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"))
+	print_items ${items[*]}
 	;;
 query|-q)
 	check-input "$#"
@@ -472,7 +486,8 @@ query|-q)
 		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
 	else
 		# Query specified package
-		find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort
+		items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort))
+		print_items ${items[*]}
 	fi
 	;;
 find|-f)
