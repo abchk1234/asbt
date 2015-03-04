@@ -258,13 +258,13 @@ get-source-data () {
 	src=$(basename "$link")	# Name of source file
 	
 	# Check for source in various locations
-	if [ -f "$srcdir/$src" ]; then
+	if [[ -f "$srcdir/$src" ]]; then
 		md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
-	elif [ -f "$srcdir/$PRGNAM-$src" ]; then
+	elif [[ -f "$srcdir/$PRGNAM-$src" ]]; then
 		md5=$(md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " ")
-	elif [ -e "$path/$src" ]; then
+	elif [[ -e "$path/$src" ]]; then
 		md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
-	elif [ -e "$path/$PRGNAM-$src" ]; then
+	elif [[ -e "$path/$PRGNAM-$src" ]]; then
 		md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
 	fi
 }
@@ -272,10 +272,10 @@ get-source-data () {
 check-source () {
 	get-source-data
 	# Check if source has already been downloaded
-	if [ -e "$path/$src" ]; then
+	if [[ -e "$path/$src" ]]; then
 		# Check validity of downloaded source
-		if [ "$arch" == "x86_64" ]; then
-			if [ "$md5" == "$MD5SUM_x86_64" ]; then
+		if [[ "$arch" == "x86_64" ]]; then
+			if [[ "$md5" == "$MD5SUM_x86_64" ]]; then
 				valid=1
 				echo "asbt: md5sum matched."
 			else
@@ -283,7 +283,7 @@ check-source () {
 			fi
 		else
 			# Normal package for all arch
-			if [ "$md5" == "$MD5SUM" ]; then
+			if [[ "$md5" == "$MD5SUM" ]]; then
 				valid=1
 				echo "asbt: md5sum matched."
 			else
@@ -292,16 +292,16 @@ check-source () {
 		fi
 
 	# Check if source present but not linked
-	elif [ -f "$srcdir/$src" ]; then
+	elif [[ -f "$srcdir/$src" ]]; then
 		# Check validity of downloaded source
-		if [ "$arch" == "x86_64" ]; then
-			if [ "$md5" == "$MD5SUM_x86_64" ]; then
+		if [[ "$arch" == "x86_64" ]]; then
+			if [[ "$md5" == "$MD5SUM_x86_64" ]]; then
 				ln -svf "$srcdir/$src" "$path" && valid=1
 			else
 				valid=0
 			fi
 		else
-			if [ "$md5" == "$MD5SUM" ]; then
+			if [[ "$md5" == "$MD5SUM" ]]; then
 				ln -svf "$srcdir/$src" "$path" && valid=1
 			else
 				valid=0
@@ -316,9 +316,13 @@ download-source () {
 	echo "Downloading $src"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		wget --tries=5 --directory-prefix="$path" -N "$link" || exit 1
+		for i in $link; do
+			wget --tries=5 --directory-prefix="$path" -N "$i" || exit 1
+		done
 	else
-		wget --tries=5 --directory-prefix="$srcdir" -N "$link" || exit 1
+		for i in $link; do
+			wget --tries=5 --directory-prefix="$srcdir" -N "$i" || exit 1
+		done
 		# Check if downloaded package contains the package name or not
 		if [ ! $(echo "$src" | grep "$PRGNAM") ] && [ $(echo "$src" | wc -c) -le 15 ]; then
 			# Rename it and link it
@@ -420,7 +424,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if [ "$(echo "$ignore" | grep $pkgn)" ]; then
+	if [[ "$(echo "$ignore" | grep $pkgn)" ]]; then
 		return
 	fi
 
