@@ -59,16 +59,14 @@ package="$2" # Name of package input by the user.
 # Check the no of input parameters
 check-input () {
 	if [[ "$1" -gt 2 ]] ; then
-		echo "Invalid syntax. Type asbt -h for more info."
-		exit 1
+		echo "Invalid syntax. Type asbt -h for more info." && exit 1
 	fi
 }
 
 # Check number of arguments 
 check-option () {
 	if [[ ! "$1" ]]; then
-		echo "Additional parameter required for this option. Type asbt -h for more info."
-		exit 1
+		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
 	fi
 }
 

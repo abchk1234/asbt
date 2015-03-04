@@ -1,31 +1,60 @@
+#!/bin/bash
 # Some test cases for asbt
 
+# Colors
+BOLD="\e[1m"
+CLR="\e[0m"
+
+check_fail () {
+	if [ $? -eq 1 ]; then
+		echo -e $BOLD "Test passed." $CLR
+	else
+		echo -e $BOLD "Test failed." $CLR
+	fi
+}
+
+check_pass () {
+	if [ $? -eq 0 ]; then
+		echo -e $BOLD "Test passed." $CLR
+	else
+		echo -e $BOLD "Test failed." $CLR
+	fi
+}
+
+# Valid use cases
+
 echo "./bin/asbt.sh"
-./bin/asbt.sh
+./bin/asbt.sh; check_pass; echo
 
-echo
-
-echo "./bin/asbt.sh -s"
-./bin/asbt.sh -s; echo
 echo "./bin/asbt.sh -s asbt"
-./bin/asbt.sh -s asbt; echo
-echo "./bin/asbt.sh -s asbtasbt"
-./bin/asbt.sh -s asbtasbt; echo
-echo "./bin/asbt.sh -s asbt asbt"
-./bin/asbt.sh -s asbt asbt
+./bin/asbt.sh -s asbt; check_pass; echo
 
-echo 
+# Invalid use cases
+echo "./bin/asbt.sh -s"
+./bin/asbt.sh -s; check_fail; echo
+
+echo "./bin/asbt.sh -s asbtasbt"
+./bin/asbt.sh -s asbtasbt; check_fail; echo
+
+echo "./bin/asbt.sh -s asbt asbt"
+./bin/asbt.sh -s asbt asbt; check_fail; echo 
+
+# Similarly for other options
 
 echo "./bin/asbt.sh -q"
-./bin/asbt.sh -q; echo
-echo "./bin/asbt.sh -q asbt"
-./bin/asbt.sh -q asbt; echo
-echo "./bin/asbt.sh -q asbtasbt"
-./bin/asbt.sh -q asbtasbt; echo
-echo "./bin/asbt.sh -q asbt asbt"
-./bin/asbt.sh -q asbt asbt
+./bin/asbt.sh -q; check_fail; echo
 
-echo 
+echo "./bin/asbt.sh -q asbt"
+./bin/asbt.sh -q asbt; check_pass; echo
+
+echo "./bin/asbt.sh -q asbtasbt"
+./bin/asbt.sh -q asbtasbt; check_fail; echo
+
+echo "./bin/asbt.sh -q asbt asbt"
+./bin/asbt.sh -q asbt asbt; check_fail; echo
+
+#
+exit
 
 echo "./bin/asbt.sh -f"
 ./bin/asbt.sh -f; echo
