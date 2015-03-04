@@ -447,7 +447,7 @@ check-new-pkg () {
 
 print_items () {
 	array=$* # array is passed as argument
-	if [ -z $array ]; then
+	if [ -z "$array" ]; then
 		echo "No items found" && return 1
 	else
 		# Print the array
@@ -833,26 +833,5 @@ EOF
        ;;
 esac
 
-# Cleanup
-unset repodir
-unset package
-unset path
-unset srcdir
-unset outdir
-unset pkgname
-unset pkgpath
-unset link
-unset arch
-unset conf
-unset src
-unset pkgnam
-unset md5
-unset valid
-unset built
-unset editor
-unset choice
-unset buildflags
-unset flags
-
-exit 0
-
+# Exit with exit status of last executed statement
+exit $?
