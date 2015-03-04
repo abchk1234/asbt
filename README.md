@@ -133,7 +133,7 @@ asbt -P --upgrade # check for and upgrade out of date packages
   For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
 instead of `asbt search '*xfce*'`
 
-  A `*`(wildcard) at both ends is also implied when querying.
+  A wildcard at both ends is also implied when querying.
 
 * Giving package path instead of package supports installation of package from custom folder. For example,
 
