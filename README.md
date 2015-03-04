@@ -133,8 +133,7 @@ asbt -P --upgrade # check for and upgrade out of date packages
   For example, if one wants to search for all packages which have the word "xfce", one can use `asbt search xfce`
 instead of `asbt search '*xfce*'`
 
-* When querying, if the package(s) is/are installed, they will they displayed,
-else no output. A `*`(wildcard) at both ends is also implied when querying.
+* A `*`(wildcard) at both ends is also implied when querying.
 
 * Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
 
