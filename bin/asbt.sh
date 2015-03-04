@@ -465,7 +465,7 @@ search|-s)
 	check-option "$2"
 	check-config
 	check-repo
-	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n"))
+	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n" | sort))
 	print_items ${items[*]}
 	;;
 query|-q)
