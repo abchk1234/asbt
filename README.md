@@ -135,17 +135,6 @@ instead of `asbt search '*xfce*'`
 
 * A `*`(wildcard) at both ends is also implied when querying.
 
-* Suppose that you want to install a built package virtualbox-kernel (asbt install virtualbox-kernel), and you get something like:
-
-  Installing virtualbox-kernel
-  /usr/bin/asbt: line 135: /home/aaditya/packages/virtualbox-kernel-4.3.4_3.10.17-x86_64-1_SBo.tgz: binary operator expected
-  N/A
-
-  This could be because there are 2 packages virtualbox-kernel, while it can process only one.
-In such a case, expand the name of package to install, so that it can differentiate between the package versions, eg, 
-
-  `asbt install virtualbox-kernel-4.3.4_3.10.28`
-
 * Giving package path instead of package supports installation of package from custom folder. For example,
 
   `asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1`
