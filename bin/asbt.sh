@@ -72,11 +72,11 @@ check-option () {
 
 # Check for the configuration file 
 check-config () {
-	if [ -e "$config" ]; then
+	if [[ -e "$config" ]]; then
 		source "$config"
 	fi
 	# Check for alternate config
-	if [ -e "$altconfig" ]; then
+	if [[ -e "$altconfig" ]]; then
 		source "$altconfig"
 	fi
 }
@@ -683,11 +683,11 @@ process|-P)
 	check-option "$2"
 	check-config
 	check-repo
-	if [ "$2" == "--upgrade" ] || [ "$2" == "-u" ]; then
+	if [[ "$2" == "--upgrade" ]] || [[ "$2" == "-u" ]]; then
 		# Call the script itself with new parameters
 		for i in $("$0" -c | cut -f 1 -d " "); do
 			# The above command checks for outdated packages
-			if [ -n "$i" ]; then
+			if [[ -n "$i" ]]; then
 				"$0" -P "$i"
 			fi
 		done
@@ -774,7 +774,7 @@ tidy|-T)
 	check-repo
 	
 	# Check if --all option was specified
-	if [ "$2" == "all" ] || [ "$2" == "--all" ]; then
+	if [[ "$2" == "all" ]] || [[ "$2" == "--all" ]]; then
 		# Ignore/unset the ignore variable
 		unset ignore
 		# Check all installed packages
