@@ -394,9 +394,11 @@ build-package () {
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
 	if [ -z "$outdir" ]; then
-		sudo -ki CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		pause_for_input
+		sudo -i CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
-		sudo -ki OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		pause_for_input
+		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	fi 
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
@@ -409,10 +411,12 @@ install-package () {
 		# Check if package is installed 
 		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
 			echo -e "Upgrading $package \n(from $pkgpath)\n"
-			sudo -k /sbin/upgradepkg --reinstall "$pkgpath"
+			pause_for_input
+			sudo /sbin/upgradepkg --reinstall "$pkgpath"
 		else
 			echo -e "Installing $package \n(from $pkgpath)\n"
-			sudo -k /sbin/installpkg "$pkgpath"
+			pause_for_input
+			sudo /sbin/installpkg "$pkgpath"
 		fi
 	else
 		echo "Unable to install $package: N/A"
@@ -459,6 +463,16 @@ print_items () {
 	fi
 }
 
+# Colors
+BOLD="\e[1m"
+CLR="\e[0m"
+
+pause_for_input () {
+	# Check for override
+	if [[ ! "$PAUSE" == "no" ]]; then
+		echo -e $BOLD "$(gettext 'Press any to continue...')" $CLR &&	read
+	fi
+}
 
 # Program options
 # (Modular approach is used by calling functions for each task)
@@ -671,7 +685,8 @@ remove|-R)
 		if [ -f "/var/log/packages/$package"* ]; then
 			rpkg=$(ls "/var/log/packages/$package"*)
 			echo "Removing $(echo $rpkg | cut -f 5 -d '/')"
-			sudo -k /sbin/removepkg "$rpkg"
+			pause_for_input
+			sudo /sbin/removepkg "$rpkg"
 		elif [ $? -eq 1 ]; then
 			echo "Package $i: N/A"
 		else
@@ -756,10 +771,10 @@ tidy|-T)
 	;;
 --update|-u)
 	check-config
-	if [ -z "$gitdir" ]; then
+	if [[ -z "$gitdir" ]]; then
 		echo "Git directory not specified." && exit 1
 	fi
-	if [ -d "$gitdir" ]; then
+	if [[ -d "$gitdir" ]]; then
 		echo "Performing git stash"
 		cd "$gitdir/.." && git stash
 		echo "Updating git repo $gitdir"
@@ -810,7 +825,7 @@ tidy|-T)
 	;;
 --help|-h|*)
 	check-config
-	if [ -d "$repodir" ]; then
+	if [[ -d "$repodir" ]]; then
 		repo="$repodir"
 	else
 		repo="N/A"
@@ -831,7 +846,6 @@ Options-
 Using repository: $repo
 For more info, see the man page and/or the README.
 EOF
-	unset repo
        ;;
 esac
 
