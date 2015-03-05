@@ -1,5 +1,5 @@
 #!/bin/bash
-# asbt : A tool to manage packages in a local slackbuilds repository.
+# asbt: A tool to manage packages in a local slackbuilds repository.
 ##
 # Copyright (C) 2014-2015 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
@@ -39,8 +39,7 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 #buildflags="" # No buildflags by default
 
-# Pause for input when using superuser priviliges.
-pause="yes"
+pause="yes" # Pause for input when using superuser priviliges.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
@@ -59,6 +58,10 @@ package="$2" # Name of package input by the user.
 # Since version 0.9.5, this is default for options that take a single argument;
 # else $package is modified in a loop for processing multiple packages.
 
+# Colors
+BOLD="\e[1m"
+CLR="\e[0m"
+
 # Check the no of input parameters
 check-input () {
 	if [[ "$1" -gt 2 ]] ; then
@@ -70,6 +73,13 @@ check-input () {
 check-option () {
 	if [[ ! "$1" ]]; then
 		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
+	fi
+}
+
+pause_for_input () {
+	# Check for override
+	if [[ ! "$pause" == "no" ]]; then
+		echo -e $BOLD "Press any to continue..." $CLR && read
 	fi
 }
 
@@ -293,10 +303,8 @@ check-source () {
 				valid=0
 			fi
 		fi
-
-	# Check if source present but not linked
 	elif [[ -f "$srcdir/$src" ]]; then
-		# Check validity of downloaded source
+		# Check if source present but not linked
 		if [[ "$arch" == "x86_64" ]]; then
 			if [[ "$md5" == "$MD5SUM_x86_64" ]]; then
 				ln -svf "$srcdir/$src" "$path" && valid=1
@@ -454,6 +462,7 @@ check-new-pkg () {
 	fi
 }
 
+# Print the items in specified array
 print_items () {
 	array=$* # array is passed as argument
 	if [ -z "$array" ]; then
@@ -463,17 +472,6 @@ print_items () {
 		for i in ${array[*]}; do
 			echo $i
 		done
-	fi
-}
-
-# Colors
-BOLD="\e[1m"
-CLR="\e[0m"
-
-pause_for_input () {
-	# Check for override
-	if [[ ! "$pause" == "no" ]]; then
-		echo -e $BOLD "Press any to continue..." $CLR && read
 	fi
 }
 
