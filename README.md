@@ -78,6 +78,10 @@ The variables used are:
 
 7) ignore=""
  # Packages to ignore when checking for updates.
+
+8) pause="yes"
+ # Pause for input when using superuser priviliges.
+
 ~~~
 
 Samples for these variables are present in the script itself.
@@ -197,4 +201,8 @@ instead of `asbt search '*xfce*'`
 * From version 1.0, to update all packages, the following can be used:
 
   `asbt -P -u`
+
+* From version 1.4, pauses for input when using superuser privileges.
+
+  To override this behaviour `pause=no` can be used in the config.
 

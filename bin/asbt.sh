@@ -39,6 +39,9 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 #buildflags="" # No buildflags by default
 
+# Pause for input when using superuser priviliges.
+pause="yes"
+
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
 
@@ -469,8 +472,8 @@ CLR="\e[0m"
 
 pause_for_input () {
 	# Check for override
-	if [[ ! "$PAUSE" == "no" ]]; then
-		echo -e $BOLD "$(gettext 'Press any to continue...')" $CLR &&	read
+	if [[ ! "$pause" == "no" ]]; then
+		echo -e $BOLD "Press any to continue..." $CLR && read
 	fi
 }
 

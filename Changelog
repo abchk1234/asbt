@@ -3,6 +3,7 @@ Search and query options state "no items found" when no matches are found.
 Correct/improve test cases.
 Update documentation.
 Try to support multi-line link download.
+Pause for input before using sudo (can be overrided).
 
 1.3 (15/02/15)
 Remove redundant upgrade-package function.
