@@ -715,7 +715,7 @@ process|-P)
 		package="$i"
 		echo 
 		get-path
-		echo "Processing $package..."
+		echo -e $BOLD "Processing $package..." $CLR
 		get-package || break
 		process-built-package || break
 		install-package
