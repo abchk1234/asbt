@@ -365,6 +365,8 @@ $ asbt -T --dry-run src
 21) Update the git repository
 
 $ asbt -u
+Performing git stash
+No local changes to save
 Updating git repo /home/aaditya/git/slackbuilds/.git
 From git://slackbuilds.org/slackbuilds
  * branch            master     -> FETCH_HEAD
