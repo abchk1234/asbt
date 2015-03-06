@@ -324,7 +324,7 @@ download-source () {
 	local linki=$2	# Link of src item
 	# Check for unsupported url
 	if [[ "$linki" == "UNSUPPORTED" ]] || [[ "$linki" == "UNTESTED" ]]; then
-		echo "Unsupported src in info file" && exit 1
+		echo "Unsupported source in info file" && exit 1
 	fi
 	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
@@ -348,6 +348,7 @@ download-source () {
 }
 
 get-package () {
+	local re=$1	# Whether to re-download or not passed as arg
 	get-source-data
 	for ((i=0; i<${#src[*]}; i++)); do
 		# Check source for each source item
@@ -357,10 +358,13 @@ get-package () {
 			download-source ${src[$i]} ${link[$i]}
 		else
 			echo "Source: ${src[$i]} present."
-			echo -n "Re-download? [y/N]: "
-			read -e choice
-			if [ "$choice" == y ] || [ "$choice" == Y ]; then
-				download-source ${src[$i]} ${link[$i]}
+			# Check if re-download arg was specified
+			if [[ -n "$re" ]]; then
+				echo -n "Re-download? [y/N]: "
+				read -e choice
+				if [ "$choice" == y ] || [ "$choice" == Y ]; then
+					download-source ${src[$i]} ${link[$i]}
+				fi
 			fi
 		fi
 	done
@@ -642,7 +646,7 @@ get|-G)
 		package="$i"
 		echo
 		get-path
-		get-package
+		get-package "redownload"
 	done
 	;;
 build|-B)
@@ -717,8 +721,8 @@ process|-P)
 		echo 
 		get-path
 		echo -e $BOLD "Processing $package..." $CLR
-		get-package || break
-		process-built-package || break
+		get-package || continue
+		process-built-package || continue
 		install-package
 	done
 	;;
