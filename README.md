@@ -46,13 +46,6 @@ sudo is used to gain the root privelege (if one is already root this does not ma
 
 This ensures demarcation between informational activites like searching or viewing information, and activites which change the system state, like installing or removing packages.
 
-asbt is designed with simplicity in mind; 
-some complex cases are not handled and are left to the user's discretion.
-Rather, it aids and automates functions like searching for packages, downloading the source, building the packages,
-and installing / upgading them, while following rules like where to store these source and built packages,
-and displays information about the process in a transparent way, 
-without trying to hinder the user with excess verbiage.
-
 The variables used are:
 
 ~~~
