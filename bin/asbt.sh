@@ -46,14 +46,6 @@ altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides abov
 
 #--------------------------------------------------------------------------------------#
 
-# Exit on error(s) - optional - as most errors are manually handled.
-#set -e
-
-# Double brackets [[ ]] are used to optimise condition checking,
-# as they are a bash built-in compared to [ ] (test instruction).
-# But as they can reduce portability to the bourne shell sh,
-# so their use has been minimized.
-
 package="$2" # Name of package input by the user.
 # Since version 0.9.5, this is default for options that take a single argument;
 # else $package is modified in a loop for processing multiple packages.
