@@ -296,7 +296,7 @@ check-source () {
 	if [[ -e "$path/$srci" ]]; then
 		# Check validity of downloaded source
 		if [[ "$md5i" == "$MD5" ]]; then
-			valid=1 && echo -e "asbt: md5sum matched."
+			valid=1 && echo "asbt: md5sum matched."
 		else
 			valid=0
 		fi
@@ -515,7 +515,7 @@ find|-f)
 	check-option "$2"
 	check-config
 	check-repo
-	echo -e "In slackbuilds repository:"
+	echo "In slackbuilds repository:"
 	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
 		# Get version
 		. "$repodir/$i"/*.info 2> /dev/null 
@@ -809,7 +809,7 @@ tidy|-T)
 	setup
 	;;
 --version|-V)
-        echo -e "asbt version $ver" ;;
+        echo "asbt version $ver" ;;
 --changelog|-C)
 	check-config
 	check-repo
