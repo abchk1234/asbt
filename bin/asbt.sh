@@ -315,6 +315,10 @@ check-source () {
 download-source () {
 	local srci=$1	# Source item passed as argument
 	local linki=$2	# Link of src item
+	# Check for untested url
+	if [[ "$linki" == "UNSUPPORTED" ]] || [[ "$linki" == "UNTESTED" ]]; then
+		echo "Unsupported src in info file" && exit 1
+	fi
 	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
