@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.4 (dated: 04 Mar 2015)" # Version
+ver="1.5 (dated: 06 Mar 2015)" # Version
 
 # Variables used:
 
@@ -42,6 +42,7 @@ buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 pause="yes" # Pause for input when using superuser priviliges.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
+
 altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
 
 #--------------------------------------------------------------------------------------#

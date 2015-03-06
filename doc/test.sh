@@ -55,3 +55,12 @@ for i in ${options[*]}; do
 	echo "./bin/asbt.sh $i ~/builds/asbt/asbt"
 	./bin/asbt.sh $i ~/builds/asbt/asbt; check_pass; echo
 done
+
+# State changing operations
+options=('-G' '-B' '-U')
+for i in ${options[*]}; do
+	echo -e "Checking success...\n"
+
+	echo "./bin/asbt.sh $i asbt"
+	./bin/asbt.sh $i asbt; check_pass; echo
+done
