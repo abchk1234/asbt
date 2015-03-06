@@ -307,6 +307,13 @@ check-source () {
 		else
 			valid=0
 		fi
+	elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
+		# When src was renamed while saving
+		if [[ "$md5i" == "$MD5" ]]; then
+			ln -svf "$srcdir/$PRGNAM-$srci" "$path/$srci" && valid=1
+		else
+			valid=0
+		fi
 	else
 		valid=0
 	fi
@@ -315,7 +322,7 @@ check-source () {
 download-source () {
 	local srci=$1	# Source item passed as argument
 	local linki=$2	# Link of src item
-	# Check for untested url
+	# Check for unsupported url
 	if [[ "$linki" == "UNSUPPORTED" ]] || [[ "$linki" == "UNTESTED" ]]; then
 		echo "Unsupported src in info file" && exit 1
 	fi
