@@ -268,9 +268,13 @@ get-source-data () {
 		link="$DOWNLOAD"
 	fi
 
-	src=$(basename "$link")	# Name of source file
-	
+	# Since links can be multi line, so use a src array..
+	for i in ${link[*]}; do
+		src+=($(basename "$i"))	# Name of source files
+	done
+
 	# Check for source in various locations
+	# (does not support multiline downloads currently)
 	if [[ -f "$srcdir/$src" ]]; then
 		md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
 	elif [[ -f "$srcdir/$PRGNAM-$src" ]]; then
@@ -334,17 +338,21 @@ download-source () {
 		for i in $link; do
 			wget --tries=5 --directory-prefix="$srcdir" -N "$i" || exit 1
 		done
-		# Check if downloaded package contains the package name or not
-		if [ ! $(echo "$src" | grep "$PRGNAM") ] && [ $(echo "$src" | wc -c) -le 15 ]; then
-			# Rename it and link it
-			echo "Renaming $src"
-			mv -v "$srcdir/$src" "$srcdir/$PRGNAM-$src"
-			ln -sf "$srcdir/$PRGNAM-$src" "$path/$src" || exit 1
-			echo  # Give a line break
-		else
-			# Only linking required
-			ln -sf "$srcdir/$src" "$path" || exit 1
-		fi
+
+		# Check if downloaded src package(s) contains the package name or not
+		for srci in ${src[*]}; do
+			# Rename only if src item does not contain program name and is short
+			if [ ! $(echo "$srci" | grep "$PRGNAM") ] && [ $(echo "$srci" | wc -c) -le 15 ]; then
+				# Rename it and link it
+				echo "Renaming $srci"
+				mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
+				ln -sf "$srcdir/$PRGNAM-$srci" "$path/$srci" || exit 1
+				echo  # Give a line break
+			else
+				# Only linking required
+				ln -sf "$srcdir/$srci" "$path" || exit 1
+			fi
+		done
 	fi
 }
 
