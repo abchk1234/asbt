@@ -343,13 +343,13 @@ download-source () {
 get-package () {
 	get-source-data
 	for ((i=0; i<${#src[*]}; i++)); do
-		# check-source for source item, md5sum in info file, and calculated md5
+		# Check source for each source item
 		check-source ${src[$i]} ${MD5[$i]} ${md5[$i]}
 		if [ $valid -ne 1 ]; then
 			# Download the source
 			download-source ${src[$i]} ${link[$i]}
 		else
-			echo -e "Source: ${src[$i]} present."
+			echo "Source: ${src[$i]} present."
 			echo -n "Re-download? [y/N]: "
 			read -e choice
 			if [ "$choice" == y ] || [ "$choice" == Y ]; then
@@ -357,7 +357,7 @@ get-package () {
 			fi
 		fi
 	done
-	# Some variables will need to be unset
+	# Some variables will need to be unset if this function is to be called again
 	unset src md5
 }
 
