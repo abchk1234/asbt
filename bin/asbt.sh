@@ -262,65 +262,50 @@ get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
 	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]]; then
-		link="$DOWNLOAD_x86_64"
 		arch="x86_64"
+		link=($DOWNLOAD_x86_64)
+		MD5=($MD5SUM_x86_64)
 	else
-		link="$DOWNLOAD"
+		link=($DOWNLOAD)
+		MD5=($MD5SUM)
 	fi
-
 	# Since links can be multi line, so use a src array..
-	for i in ${link[*]}; do
-		src+=($(basename "$i"))	# Name of source files
+	for linki in ${link[*]}; do
+		src+=($(basename "$linki"))	# Name of source files
 	done
-
+	# Calculate md5sum of downloaded source
 	# Check for source in various locations
-	# (does not support multiline downloads currently)
-	if [[ -f "$srcdir/$src" ]]; then
-		md5=$(md5sum "$srcdir/$src" | cut -f 1 -d " ")
-	elif [[ -f "$srcdir/$PRGNAM-$src" ]]; then
-		md5=$(md5sum "$srcdir/$PRGNAM-$src" | cut -f 1 -d " ")
-	elif [[ -e "$path/$src" ]]; then
-		md5=$(md5sum "$path/$src" | cut -f 1 -d " ")
-	elif [[ -e "$path/$PRGNAM-$src" ]]; then
-		md5=$(md5sum "$path/$PRGNAM-$src" | cut -f 1 -d " ")
-	fi
+	for srci in ${src[*]}; do
+		if [[ -f "$srcdir/$srci" ]]; then
+			md5+=($(md5sum "$srcdir/$srci" | cut -f 1 -d " "))
+		elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
+			md5+=($(md5sum "$srcdir/$PRGNAM-$srci" | cut -f 1 -d " "))
+		elif [[ -e "$path/$srci" ]]; then
+			md5+=($(md5sum "$path/$srci" | cut -f 1 -d " "))
+		elif [[ -e "$path/$PRGNAM-$srci" ]]; then
+			md5+=($(md5sum "$path/$PRGNAM-$srci" | cut -f 1 -d " "))
+		fi
+	done
 }
 
 check-source () {
-	get-source-data
+	local srci=$1	# Source item passed as argument
+	local MD5=$2	# MD5 of src item
+	local md5i=$3	# Calculated md5sum
 	# Check if source has already been downloaded
-	if [[ -e "$path/$src" ]]; then
+	if [[ -e "$path/$srci" ]]; then
 		# Check validity of downloaded source
-		if [[ "$arch" == "x86_64" ]]; then
-			if [[ "$md5" == "$MD5SUM_x86_64" ]]; then
-				valid=1
-				echo "asbt: md5sum matched."
-			else
-				valid=0	
-			fi
+		if [[ "$md5i" == "$MD5" ]]; then
+			valid=1 && echo -e "asbt: md5sum matched."
 		else
-			# Normal package for all arch
-			if [[ "$md5" == "$MD5SUM" ]]; then
-				valid=1
-				echo "asbt: md5sum matched."
-			else
-				valid=0
-			fi
+			valid=0
 		fi
-	elif [[ -f "$srcdir/$src" ]]; then
+	elif [[ -f "$srcdir/$srci" ]]; then
 		# Check if source present but not linked
-		if [[ "$arch" == "x86_64" ]]; then
-			if [[ "$md5" == "$MD5SUM_x86_64" ]]; then
-				ln -svf "$srcdir/$src" "$path" && valid=1
-			else
-				valid=0
-			fi
+		if [[ "$md5i" == "$MD5" ]]; then
+			ln -svf "$srcdir/$srci" "$path" && valid=1
 		else
-			if [[ "$md5" == "$MD5SUM" ]]; then
-				ln -svf "$srcdir/$src" "$path" && valid=1
-			else
-				valid=0
-			fi
+			valid=0
 		fi
 	else
 		valid=0
@@ -328,42 +313,48 @@ check-source () {
 }
 
 download-source () {
-	echo "Downloading $src"
+	local srci=$1	# Source item passed as argument
+	local linki=$2	# Link of src item
+	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [ -z "$srcdir" ]; then
-		for i in $link; do
-			wget --tries=5 --directory-prefix="$path" -N "$i" || exit 1
-		done
+		wget --tries=5 --directory-prefix="$path" -N "$linki" || exit 1
 	else
-		for i in $link; do
-			wget --tries=5 --directory-prefix="$srcdir" -N "$i" || exit 1
-		done
-
-		# Check if downloaded src package(s) contains the package name or not
-		for srci in ${src[*]}; do
-			# Rename only if src item does not contain program name and is short
-			if [ ! $(echo "$srci" | grep "$PRGNAM") ] && [ $(echo "$srci" | wc -c) -le 15 ]; then
-				# Rename it and link it
-				echo "Renaming $srci"
-				mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
-				ln -sf "$srcdir/$PRGNAM-$srci" "$path/$srci" || exit 1
-				echo  # Give a line break
-			else
-				# Only linking required
-				ln -sf "$srcdir/$srci" "$path" || exit 1
-			fi
-		done
+		wget --tries=5 --directory-prefix="$srcdir" -N "$linki" || exit 1
+	fi
+	# Check if downloaded src package(s) contains the package name or not
+	# Rename only if src item does not contain program name and is short
+	if [ ! $(echo "$srci" | grep "$PRGNAM") ] && [ $(echo "$srci" | wc -c) -le 15 ]; then
+		# Rename it and link it
+		echo "Renaming $srci"
+		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
+		ln -sf "$srcdir/$PRGNAM-$srci" "$path/$srci" || exit 1
+		echo  # Give a line break
+	else
+		# Only linking required
+		ln -sf "$srcdir/$srci" "$path" || exit 1
 	fi
 }
 
 get-package () {
-	check-source
-	if [ $valid -ne 1 ]; then
-		# Download the source
-		download-source
-	else
-		echo "Source: $src present."
-	fi
+	get-source-data
+	for ((i=0; i<${#src[*]}; i++)); do
+		# check-source for source item, md5sum in info file, and calculated md5
+		check-source ${src[$i]} ${MD5[$i]} ${md5[$i]}
+		if [ $valid -ne 1 ]; then
+			# Download the source
+			download-source ${src[$i]} ${link[$i]}
+		else
+			echo -e "Source: ${src[$i]} present."
+			echo -n "Re-download? [y/N]: "
+			read -e choice
+			if [ "$choice" == y ] || [ "$choice" == Y ]; then
+				download-source ${src[$i]} ${link[$i]}
+			fi
+		fi
+	done
+	# Some variables will need to be unset
+	unset src md5
 }
 
 check-built-package () {
@@ -641,13 +632,6 @@ get|-G)
 		echo
 		get-path
 		get-package
-		if [ $valid -eq 1 ]; then
-			echo -n "Re-download? [y/N]: "
-			read -e choice
-			if [ "$choice" == y ] || [ "$choice" == Y ]; then
-				download-source
-			fi
-		fi
 	done
 	;;
 build|-B)
