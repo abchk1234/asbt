@@ -381,23 +381,20 @@ check-built-package () {
 	fi
 	# Check if package has already been built
 	if [[ $(ls -t "/tmp/$package"*-"$VERSION"*.t?z 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"*.t?z 2> /dev/null) ]]; then
-		built=1
+		built=0
 		echo "Package: $package($VERSION) already built."
 	else
-		built=0
-	fi
-}
-
-process-built-package () {
-	# This process-built-package function is used with the process option
-	check-built-package
-	if [ $built -eq 0 ]; then
-		build-package
+		built=1
 	fi
 }
 
 build-package () {
+	local rebuild=$1	# Whether to rebuild or not passed as argument
 	check-built-package	
+	# Check if package was already built and if we dont need to rebuild
+	if [[ $built ]] && [[ -z $rebuild ]]; then
+		return 0
+	fi
 	# Check for SlackBuild
 	if [ -f "$path/$package.SlackBuild" ]; then
 		chmod +x "$path/$package.SlackBuild"
@@ -410,7 +407,7 @@ build-package () {
 		exit 1
 	fi
 	# Check for built package
-	if [ $built -eq 1 ]; then
+	if [[ $built ]]; then
 		echo "Re-building $package"
 	else	
 		echo "Building $package"
@@ -673,7 +670,7 @@ build|-B)
 		OPTIONS=""
 	fi
 	get-path
-	build-package
+	build-package "rebuild"
 	;;
 install|-I|upgrade|-U)
 	check-option "$2"
@@ -722,7 +719,7 @@ process|-P)
 		get-path
 		echo -e $BOLD "Processing $package..." $CLR
 		get-package || continue
-		process-built-package || continue
+		build-package || continue
 		install-package
 	done
 	;;
