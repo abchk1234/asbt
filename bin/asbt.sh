@@ -289,7 +289,7 @@ check-source () {
 	if [[ -e "$path/$srci" ]]; then
 		# Check validity of downloaded source
 		if [[ "$md5i" == "$MD5" ]]; then
-			valid=1 && echo "asbt: md5sum matched."
+			valid=1
 		else
 			valid=0
 		fi
@@ -350,7 +350,7 @@ get-package () {
 			# Download the source
 			download-source ${src[$i]} ${link[$i]}
 		else
-			echo "Source: ${src[$i]} present."
+			echo "Source: ${src[$i]} present and md5sum matched."
 			# Check if re-download arg was specified
 			if [[ -n "$re" ]]; then
 				echo -n "Re-download? [y/N]: "
