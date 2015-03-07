@@ -609,8 +609,11 @@ enlist|-e)
 		print_items ${items[*]}
 	else
 		check-option "$2"
-		echo -e "Grepping for $package in the slackbuild repository...\n"
 		for i in $(find -L "$repodir" -type f -name "*.info"); do
+			# Skip the case for the package itself
+			if [[ "$(basename $i)" == "$package".info ]]; then
+				continue
+			fi
 			grep -H "$package" "$i"
 		done
 	fi
