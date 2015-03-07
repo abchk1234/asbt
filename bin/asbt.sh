@@ -434,7 +434,7 @@ install-package () {
 			sudo /sbin/installpkg "$pkgpath"
 		fi
 	else
-		echo "Unable to install $package: N/A"
+		echo "Unable to install $package: N/A" && return 1
 	fi 
 }
 
