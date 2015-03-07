@@ -597,14 +597,15 @@ enlist|-e)
 		check-option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
-		from_sbo=$($0 -q --sbo | head -n -2 | rev | cut -f 4- -d "-" | rev)
+		from_sbo=$($0 -q 'SBo' | rev | cut -f 4- -d "-" | rev)
 		# Represent them in a form in which they can be concurrently searched using grep
 		words=$(echo ${from_sbo[*]} | tr ' ' '|' | sed "s/$package|//")
 		# The first pipe returns the info file paths and contents which matches the package to be searched for;
 		# The second pipe limits it to only the info file paths;
 		# The third pipe greps for installed packages on the output of second pipe;
 		# Together they give list of packages which depend on specified package (reverse dependencies)
-		$0 -e $package | cut -f 1 -d ":" | grep -E -w $words
+		items=($($0 -e $package | cut -f 1 -d ":" | grep -E -w $words))
+		print_items ${items[*]}
 	else
 		check-option "$2"
 		echo -e "Grepping for $package in the slackbuild repository...\n"
