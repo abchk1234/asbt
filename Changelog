@@ -1,6 +1,8 @@
 1.5 (06/03/15)
 Fix renaming of src for multi-line download link.
 Add md5sum checking support for multi-line download link.
+Fix checking when source was renamed after downloading.
+Add suboption --rev to -e option to check reverse deps of a package.
 
 1.4 (04/03/15)
 Search and query options state "no items found" when no matches are found.

@@ -149,23 +149,30 @@ Built:
 
 
 12) Enlist the packages which have the package name in their info file
-    (Useful for finding which packages depend on given package)
-    (This option can take some time to complete)
 
 $ asbt -e libiso
 Grepping for libiso in the slackbuild repository...
 
-REQUIRES="libburn libisofs"
-@ /home/aaditya/slackbuilds/system/xfburn/xfburn.info
+/home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:PRGNAM="libisofs"
+/home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:DOWNLOAD="http://files.libburnia-project.org/releases/libisofs-1.3.8.tar.gz"
+/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:PRGNAM="libisoburn"
+/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:DOWNLOAD="http://files.libburnia-project.org/releases/libisoburn-1.3.8.tar.gz"
+/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:REQUIRES="libburn libisofs"
+/home/aaditya/slackbuilds/system/xfburn/xfburn.info:REQUIRES="libburn libisofs"
 
-PRGNAM="libisofs"
-DOWNLOAD="http://files.libburnia-project.org/releases/libisofs-1.3.6.tar.gz"
-@ /home/aaditya/slackbuilds/libraries/libisofs/libisofs.info
 
-PRGNAM="libisoburn"
-DOWNLOAD="http://files.libburnia-project.org/releases/libisoburn-1.3.6.pl01.tar.gz"
-REQUIRES="libisofs libburn"
-@ /home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info
+12-b) Enlist reverse dependencies for a package, ie
+      List all installed SBo packages which depend on given package
+      (This option can take some time to complete)
+
+$ asbt -e --rev gtkmm
+
+/home/aaditya/slackbuilds/libraries/atkmm/atkmm.info
+/home/aaditya/slackbuilds/libraries/pangomm/pangomm.info
+/home/aaditya/slackbuilds/libraries/glibmm/glibmm.info
+/home/aaditya/slackbuilds/desktop/nitrogen/nitrogen.info
+/home/aaditya/slackbuilds/system/gparted/gparted.info
+/home/aaditya/slackbuilds/development/mm-common/mm-common.info
 
 
 13) Get (download) the source

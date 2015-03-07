@@ -119,8 +119,9 @@ asbt -q dosbox  # query whether dosbox is installed
 asbt -q --sbo  # query all SBo intalled packages
 asbt -q --all  # query all installed packages
 asbt -c  # check for updates to packages installed from the repo
-asbt -c all # check all installed packages for updates to packages from repo
-asbt -P --upgrade # check for and upgrade out of date packages
+asbt -c all  # check all installed packages for updates to packages from repo
+asbt -P --upgrade  # check for and upgrade out of date packages
+asbt -e --rev gtkmm  # list installed SBo packages which depend on gtkmm
 ~~~
 
 # Notes

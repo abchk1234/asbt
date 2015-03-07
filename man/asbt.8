@@ -1,6 +1,6 @@
 .\" Manpage for asbt.
 .\" Contact aaditya_gnulinux@zoho.com.
-.TH ASBT 8 "4 Mar 2015" "1.4" "asbt man page"
+.TH ASBT 8 "6 Mar 2015" "1.5" "asbt man page"
 .SH NAME
 asbt \- a tool to manage packages in your local slackbuilds repository
 .SH SYNOPSIS
@@ -44,7 +44,7 @@ Using the package path instead of the package name is also possible.
 [longlist,-L] <pkg>
 	List more details about the files inside the package folder.
 
-[enlist,-e] <pkg>
+[enlist,-e] [--rev] <pkg>
 	Enlist all packages which have given package in their .info file
 
 [track,-t] <pkg>
@@ -98,7 +98,7 @@ Using the package path instead of the package name is also possible.
 	View the ChangeLog.txt file in the slackbuilds repository.
 .fi
 .SH VARIABLES
-The following variables are used (in the script) :
+The following variables are used in the script:
 .PP
 .nf
 1) repodir="$HOME/slackbuilds"
@@ -155,6 +155,7 @@ asbt --check (check for updates to installed packages from SBo)
 asbt --check all (check all packages for updates to packages from SBo)
 asbt -P --upgrade # check for and update out of date packages
 asbt tidy --dry-run src # check for old source packages
+asbt enlist --rev gtkmm # list installed SBo packages which depend on gtkmm
 .fi
 .SH SEE ALSO
 installpkg(8),upgradepkg(8),removepkg(8),sudo(8)
