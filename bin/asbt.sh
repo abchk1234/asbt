@@ -609,11 +609,8 @@ enlist|-e)
 		print_items ${items[*]}
 	else
 		check-option "$2"
-		for i in $(find -L "$repodir" -type f -name "*.info"); do
-			# Skip the case for the package itself
-			if [[ "$(basename $i)" == "$package".info ]]; then
-				continue
-			fi
+		# The case for the package itself is skipped using -not -name in find
+		for i in $(find -L "$repodir" -type f -name "*.info" -not -name "$package.info"); do
 			grep -H "$package" "$i"
 		done
 	fi
