@@ -25,9 +25,10 @@ It supports following functions/options:
 18. view the ChangeLog.txt from the local copy of the slackbuilds repo (-C)
 19. track the source and built package for specified package (-t) 
 20. enlist all packages which have given keyword in their .info file (-e)
-21. tidy the source and package directories by removing old entries (-T)
-22. process packages (-P), equivalent to get + build + install/upgrade
-23. check and process updates to packages (-P --upgrade)
+21. enlist installed SBo packages which depend on given package (-e --rev)
+22. tidy the source and package directories by removing old entries (-T)
+23. process packages (-P), equivalent to get + build + install/upgrade
+24. check and process updates to packages (-P --upgrade)
 
 It uses the following Slackware tools:
 
