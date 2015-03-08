@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.5 (dated: 06 Mar 2015)" # Version
+ver="1.5.1 (dated: 08 Mar 2015)" # Version
 
 # Variables used:
 
@@ -373,11 +373,11 @@ check-built-package () {
 		VERSION="UNKNOWN"
 	fi
 	# Check if package has already been built
-	if [[ $(ls -t "/tmp/$package"*-"$VERSION"*.t?z 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"*-"$VERSION"*.t?z 2> /dev/null) ]]; then
-		built=0
+	if [[ $(ls -t "/tmp/$package"-"$VERSION"*.t?z 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"-"$VERSION"*.t?z 2> /dev/null) ]]; then
+		built=1
 		echo "Package: $package($VERSION) already built."
 	else
-		built=1
+		built=0
 	fi
 }
 
@@ -385,7 +385,7 @@ build-package () {
 	local rebuild=$1	# Whether to rebuild or not passed as argument
 	check-built-package	
 	# Check if package was already built and if we dont need to rebuild
-	if [[ $built ]] && [[ -z $rebuild ]]; then
+	if [[ $built -eq 1 ]] && [[ -z "$rebuild" ]]; then
 		return 0
 	fi
 	# Check for SlackBuild
@@ -400,7 +400,7 @@ build-package () {
 		exit 1
 	fi
 	# Check for built package
-	if [[ $built ]]; then
+	if [[ $built -eq 1 ]]; then
 		echo "Re-building $package"
 	else	
 		echo "Building $package"
@@ -423,9 +423,11 @@ install-package () {
 	# Check if package present
 	if [[ $(ls "$outdir/$package"*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"*.t?z 2> /dev/null) ]]; then
 		pkgpath=$(ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1)
+		local pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package*" -printf "%f\n")
+		local pkg_ver=$(basename $pkg | rev | cut -f 3 -d "-" | rev)
 		# Check if package is installed 
 		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
-			echo -e "Upgrading $package \n(from $pkgpath)\n"
+			echo -e "Upgrading $package($pkg_ver) using: \n$pkgpath\n"
 			pause_for_input
 			sudo /sbin/upgradepkg --reinstall "$pkgpath"
 		else
@@ -462,7 +464,7 @@ check-new-pkg () {
 	fi
 
 	if [[ ! "$pkgv" == "$VERSION" ]]; then
-		printf "%-12s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+		printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
 	fi
 }
 

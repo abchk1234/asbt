@@ -149,10 +149,9 @@ Built:
 
 
 12) Enlist the packages which have the package name in their info file
+    (This option can take some time to complete)
 
 $ asbt -e libiso
-Grepping for libiso in the slackbuild repository...
-
 /home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:PRGNAM="libisofs"
 /home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:DOWNLOAD="http://files.libburnia-project.org/releases/libisofs-1.3.8.tar.gz"
 /home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:PRGNAM="libisoburn"
@@ -166,7 +165,6 @@ Grepping for libiso in the slackbuild repository...
       (This option can take some time to complete)
 
 $ asbt -e --rev gtkmm
-
 /home/aaditya/slackbuilds/libraries/atkmm/atkmm.info
 /home/aaditya/slackbuilds/libraries/pangomm/pangomm.info
 /home/aaditya/slackbuilds/libraries/glibmm/glibmm.info
