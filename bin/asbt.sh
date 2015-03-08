@@ -57,39 +57,39 @@ CLR="\e[0m"
 
 # Check the no of input parameters
 check-input () {
-	if [[ "$1" -gt 2 ]] ; then
+	if [[ $1 -gt 2 ]] ; then
 		echo "Invalid syntax. Type asbt -h for more info." && exit 1
 	fi
 }
 
 # Check number of arguments 
 check-option () {
-	if [[ ! "$1" ]]; then
+	if [[ -z $1 ]]; then
 		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
 	fi
 }
 
 pause_for_input () {
 	# Check for override
-	if [[ ! "$pause" == "no" ]]; then
+	if [[ ! $pause = no ]]; then
 		echo -e $BOLD "Press any to continue..." $CLR && read
 	fi
 }
 
 # Check for the configuration file 
 check-config () {
-	if [[ -e "$config" ]]; then
+	if [[ -e $config ]]; then
 		source "$config"
 	fi
 	# Check for alternate config
-	if [[ -e "$altconfig" ]]; then
+	if [[ -e $altconfig ]]; then
 		source "$altconfig"
 	fi
 }
 
 # Check the repo directory
 check-repo () {
-	if [[ ! -d "$repodir" ]] || [[ $(ls -L "$repodir" | wc -w) -le 1 ]]; then
+	if [[ ! -d $repodir ]] || [[ $(ls -L "$repodir" | wc -w) -le 1 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
 		echo "To setup the slackbuilds repository 'asbt -S' can be used."
 		exit 1
@@ -99,7 +99,7 @@ check-repo () {
 edit-config () {
 	if [ ! -e "$altconfig" ]; then
 		# Root priviliges required to edit global config file
-		SUDO="sudo -k"
+		SUDO="sudo"
 		echo "Enter your password to view or edit the configuration file $config"
 	else
 		# Root priviliges not required to edit config in $HOME folder
@@ -107,7 +107,7 @@ edit-config () {
 		config="$altconfig"
 	fi
 
-	if [ -e $editor ]; then
+	if [ -e "$editor" ]; then
 		$SUDO $editor $config
 	elif [ -e /usr/bin/nano ]; then
 		$SUDO nano $config
@@ -137,16 +137,16 @@ check-out-dir () {
 create-git-repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
-	if [ "$ch2" == "n" ] || [ "$ch2" == "N" ]; then
+	if [ "$ch2" = n ] || [ "$ch2" = N ]; then
 		exit 1
 	else
 		# A workaround has to be applied to clone the git directory as the basename of the repodir
-		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty $(basename "$repodir") && git clone git://slackbuilds.org/slackbuilds.git $(basename "$repodir")
+		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty "$(basename "$repodir")" && git clone git://slackbuilds.org/slackbuilds.git "$(basename "$repodir")"
 		# Now check if the git repo was cloned successfully or the directory was just removed
 		if [ ! -d "$repodir" ]; then
 			# Again try to clone the git repo
 			cd "$repodir/.." || exit 1
-			git clone git://slackbuilds.org/slackbuilds.git $(basename "$repodir")
+			git clone git://slackbuilds.org/slackbuilds.git "$(basename "$repodir")"
 		fi
 	fi
 }
@@ -157,13 +157,13 @@ setup () {
 		echo "Slackbuild repository $repodir not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
-		if [ "$ch" == "n" ] || [ "$ch" == "N" ]; then
+		if [ "$ch" = n ] || [ "$ch" = N ]; then
 			exit 1
 		else
 			echo "Selected Slackbuilds directory: $repodir"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
-			if [ "$ch1" == "n" ] || [ "$ch1" == "N" ]; then
+			if [ "$ch1" = n ] || [ "$ch1" = N ]; then
 				echo "Enter path of existing directory to use, or path of new dirctory to create: "
 				read -e repopath
 				if [ -d "$repopath" ]; then
@@ -179,24 +179,20 @@ setup () {
 				fi
 			fi
 		fi
-		
 		# Edit the config file to reflect above changes
 		if [ -e "$altconfig" ]; then
 			sed -i "s|repodir=.*|repodir=\"${repodir}\"|" "$altconfig"
 		else
 			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$config" >> "$altconfig"
 		fi
-
 		# Now create git repo from upstream
 		if [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
 			echo "Slackbuild repository seems to be empty."
 			create-git-repo
 		fi	
-
 		# Re-read the config file and check repo
 		check-config
 		check-repo
-		
 	elif [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
 		echo "Slackbuild repository $repodir seems to be empty."
 		create-git-repo
@@ -209,7 +205,7 @@ setup () {
 # Get the full path of a package
 get-path() {
 	# Check if path to package is specified instead of package name
-	if [[ -d "$package" ]]; then
+	if [[ -d $package ]]; then
 		path=$(readlink -f "$package")
 		# Get the name of the package
 		if [ -f "$path"/*.SlackBuild ]; then
@@ -223,7 +219,7 @@ get-path() {
 		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 	fi
 	# Check path (if directory exists)
-	if [[ ! -d "$path" ]]; then
+	if [[ ! -d $path ]]; then
 		echo "$package in $repodir N/A"
 		exit 1
 	fi
@@ -285,30 +281,23 @@ check-source () {
 	local srci=$1	# Source item passed as argument
 	local MD5=$2	# MD5 of src item
 	local md5i=$3	# Calculated md5sum
+	valid=0		# Guilty untill proven otherwise ;)
 	# Check if source has already been downloaded
 	if [[ -e "$path/$srci" ]]; then
 		# Check validity of downloaded source
 		if [[ "$md5i" == "$MD5" ]]; then
 			valid=1
-		else
-			valid=0
 		fi
 	elif [[ -f "$srcdir/$srci" ]]; then
 		# Check if source present but not linked
 		if [[ "$md5i" == "$MD5" ]]; then
 			ln -svf "$srcdir/$srci" "$path" && valid=1
-		else
-			valid=0
 		fi
 	elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
 		# When src was renamed while saving
 		if [[ "$md5i" == "$MD5" ]]; then
 			ln -svf "$srcdir/$PRGNAM-$srci" "$path/$srci" && valid=1
-		else
-			valid=0
 		fi
-	else
-		valid=0
 	fi
 }
 
@@ -317,7 +306,8 @@ download-source () {
 	local linki=$2	# Link of src item
 	# Check for unsupported url
 	if [[ "$linki" == "UNSUPPORTED" ]] || [[ "$linki" == "UNTESTED" ]]; then
-		echo "Unsupported source in info file" && exit 1
+		echo "Unsupported source in info file"
+		exit 1
 	fi
 	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
@@ -438,7 +428,8 @@ install-package () {
 			sudo /sbin/installpkg "$pkgpath"
 		fi
 	else
-		echo "Unable to install $package: N/A" && return 1
+		echo "Unable to install $package: N/A"
+		return 1
 	fi 
 }
 
@@ -474,13 +465,21 @@ check-new-pkg () {
 print_items () {
 	array=$* # array is passed as argument
 	if [ -z "$array" ]; then
-		echo "No items found" && return 1
+		echo "No items found"
+		return 1
 	else
 		# Print the array
 		for i in ${array[*]}; do
 			echo $i
 		done
 	fi
+}
+
+query-installed () {
+	local pkg=$1	# pkg to be searched for
+	# Get list of package items in /var/log/packages that match and print them
+	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	print_items ${items[@]}
 }
 
 # Program options
@@ -511,8 +510,7 @@ query|-q)
 		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
 	else
 		# Query specified package
-		items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*" -printf "%f\n" | sort))
-		print_items ${items[*]}
+		query-installed "$package"
 	fi
 	;;
 find|-f)
@@ -593,7 +591,8 @@ enlist|-e)
 	# Check arguments
 	if [ $# -gt 3 ]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
-		echo "asbt -e [--rev] <pkg>" && exit 1
+		echo "asbt -e [--rev] <pkg>"
+		exit 1
 	fi
 	check-config
 	check-repo
@@ -601,7 +600,7 @@ enlist|-e)
 		check-option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
-		from_sbo=$($0 -q 'SBo' | rev | cut -f 4- -d "-" | rev)
+		from_sbo=$(query-installed 'SBo' | rev | cut -f 4- -d "-" | rev)
 		# Represent them in a form in which they can be concurrently searched using grep
 		# The package we are searching for is removed from this list using sed
 		words=$(echo ${from_sbo[*]} | tr ' ' '|' | sed "s/$package|//")
@@ -745,7 +744,8 @@ details|-D)
 	if [ -f /var/log/packages/$package* ]; then
 		less /var/log/packages/$package*
 	else
-		echo "Details of package $package: N/A" && exit 1
+		echo "Details of package $package: N/A"
+		exit 1
 	fi
 	;;
 tidy|-T)
@@ -753,7 +753,8 @@ tidy|-T)
 	# Check arguments
 	if [ $# -gt 3 ]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
-		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>" && exit 1
+		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>"
+		exit 1
 	fi
 
 	if [ "$2" == "--dry-run" ]; then
@@ -787,13 +788,15 @@ tidy|-T)
 			fi
 		done
 	else
-		echo "Unrecognised option for tidy. See the man page for more info." && exit 1
+		echo "Unrecognised option for tidy. See the man page for more info."
+		exit 1
 	fi
 	;;
 --update|-u)
 	check-config
 	if [[ -z "$gitdir" ]]; then
-		echo "Git directory not specified." && exit 1
+		echo "Git directory not specified."
+		exit 1
 	fi
 	if [[ -d "$gitdir" ]]; then
 		echo "Performing git stash"
@@ -801,7 +804,8 @@ tidy|-T)
 		echo "Updating git repo $gitdir"
 		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
 	else
-		echo "Git directory $gitdir doesnt exist.." && exit 1
+		echo "Git directory $gitdir doesnt exist.."
+		exit 1
 	fi
 	;;
 --check|-c)
