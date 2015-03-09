@@ -774,7 +774,7 @@ tidy|-T)
 				# Dry-run; only display packages to be deleted
 				ls -td -1 "$srcdir/$i"* | tail -n +4
 			else
-				rm -v $(ls -td -1 "$srcdir/$i"* | tail -n +4) 2>/dev/null
+				rm -vf $(ls -td -1 "$srcdir/$i"* | tail -n +4) 2>/dev/null
 			fi
 		done
 	elif [ "$2" == "pkg" ]; then
