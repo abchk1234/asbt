@@ -478,7 +478,7 @@ print_items () {
 query-installed () {
 	local pkg=$1	# pkg to be searched for
 	# Get list of package items in /var/log/packages that match and print them
-	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	print_items ${items[@]}
 }
 
@@ -500,14 +500,12 @@ query|-q)
 	# Check if special options were specified
 	if [ "$2" == "--all" ]; then
 		# Query all packages
-		find "/var/log/packages" -name "*" -printf "%f\n" | sort 
-		echo -ne "\nTotal: "
-		find "/var/log/packages" -name "*" -printf "%f\n" | wc -l
+		query-installed '*'
+		echo -e "\nTotal: ${#items[@]}"
 	elif [ "$2" == "--sbo" ]; then
 		# Query SBo packages
-		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | sort 
-		echo -ne "\nTotal: "
-		find "/var/log/packages" -name "*_SBo*" -printf "%f\n" | wc -l
+		query-installed '_SBo'
+		echo -e "\nTotal: ${#items[@]}"
 	else
 		# Query specified package
 		query-installed "$package"
