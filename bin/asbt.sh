@@ -151,6 +151,50 @@ create-git-repo () {
 	fi
 }
 
+# Get the full path of a package
+get-path() {
+	# Check if path to package is specified instead of package name
+	if [[ -d $package ]]; then
+		path=$(readlink -f "$package")
+		# Get the name of the package
+		if [ -f "$path"/*.SlackBuild ]; then
+			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
+		else
+			echo "asbt: Unable to process $package; SlackBuild not found."
+			exit 1
+		fi
+	else
+		# Search in the slackbuilds repo
+		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
+	fi
+	# Check path (if directory exists)
+	if [[ ! -d $path ]]; then
+		echo "$package in $repodir N/A"
+		exit 1
+	fi
+}
+
+get-info () {
+	# Source the .info file to get the package details
+	if [[ -f "$path/$package.info" ]]; then
+		. "$path/$package.info"
+		echo "asbt: $path/$package.info sourced."
+	else
+		echo "asbt: $package.info in $path N/A"
+		exit 1
+	fi
+}
+
+get-content () {
+	if [[ -f "$1" ]]; then
+		# Return the content of the argument passed.
+		cat "$1"
+	else
+		echo "File: $1 N/A"
+		exit 1
+	fi
+}
+
 # Setup function
 setup () {
 	if [ ! -d "$repodir" ]; then
@@ -199,50 +243,6 @@ setup () {
 	else
 		edit-config || exit 1
 		check-config
-	fi
-}
-
-# Get the full path of a package
-get-path() {
-	# Check if path to package is specified instead of package name
-	if [[ -d $package ]]; then
-		path=$(readlink -f "$package")
-		# Get the name of the package
-		if [ -f "$path"/*.SlackBuild ]; then
-			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
-		else
-			echo "asbt: Unable to process $package; SlackBuild not found."
-			exit 1
-		fi
-	else
-		# Search in the slackbuilds repo
-		path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
-	fi
-	# Check path (if directory exists)
-	if [[ ! -d $path ]]; then
-		echo "$package in $repodir N/A"
-		exit 1
-	fi
-}
-
-get-info () {
-	# Source the .info file to get the package details
-	if [[ -f "$path/$package.info" ]]; then
-		. "$path/$package.info"
-		echo "asbt: $path/$package.info sourced."
-	else
-		echo "asbt: $package.info in $path N/A"
-		exit 1
-	fi
-}
-
-get-content () {
-	if [[ -f "$1" ]]; then
-		# Return the content of the argument passed.
-		cat "$1"
-	else
-		echo "File: $1 N/A"
-		exit 1
 	fi
 }
 
@@ -739,8 +739,8 @@ process|-P)
 details|-D)
 	check-input "$#"
 	check-option "$2"
-	if [ -f /var/log/packages/$package* ]; then
-		less /var/log/packages/$package*
+	if [ -f /var/log/packages/$package-[0-9]* ]; then
+		less /var/log/packages/$package-[0-9]*
 	else
 		echo "Details of package $package: N/A"
 		exit 1
