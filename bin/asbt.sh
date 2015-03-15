@@ -250,7 +250,7 @@ get-content () {
 get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) == "x86_64" ]] && [[ -n "$DOWNLOAD_x86_64" ]]; then
+	if [[ $(uname -m) == "x86_64" ]] && [[ $DOWNLOAD_x86_64 ]]; then
 		arch="x86_64"
 		link=($DOWNLOAD_x86_64)
 		MD5=($MD5SUM_x86_64)
@@ -443,7 +443,7 @@ check-new-pkg () {
 	fi
 
 	# Make an exception for virtualbox-kernel package
-	if [[ "$pkgn" == "virtualbox-kernel" ]] || [[ "$pkgn" == "virtualbox-kernel-addons" ]]; then
+	if [[ $pkgn = "virtualbox-kernel" ]] || [[ $pkgn = "virtualbox-kernel-addons" ]]; then
 		pkgv=$(echo $pkgv | cut -d "_" -f 1)
 	fi
 
@@ -456,7 +456,7 @@ check-new-pkg () {
 		VERSION="$pkgv"
 	fi
 
-	if [[ ! "$pkgv" == "$VERSION" ]]; then
+	if [[ ! $pkgv = "$VERSION" ]]; then
 		printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
 	fi
 }
