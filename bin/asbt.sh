@@ -700,8 +700,8 @@ remove|-R)
 		package="$i"
 		echo
 		# Check if package is installed 
-		if [ -f "/var/log/packages/$package"* ]; then
-			rpkg=$(ls "/var/log/packages/$package"*)
+		if [ -f "/var/log/packages/$package"-[0-9]* ]; then
+			rpkg=$(ls "/var/log/packages/$package"-[0-9]*)
 			echo "Removing $(echo $rpkg | cut -f 5 -d '/')"
 			pause_for_input
 			sudo /sbin/removepkg "$rpkg"
