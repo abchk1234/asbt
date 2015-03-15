@@ -411,12 +411,12 @@ build-package () {
 
 install-package () {
 	# Check if package present
-	if [[ $(ls "$outdir/$package"*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"*.t?z 2> /dev/null) ]]; then
-		pkgpath=$(ls -t "/tmp/$package"*.t?z "$outdir/$package"*.t?z 2> /dev/null | head -n 1)
+	if [[ $(ls "$outdir/$package"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"-[0-9]*.t?z 2> /dev/null) ]]; then
+		pkgpath=$(ls -t "/tmp/$package"-[0-9]*.t?z "$outdir/$package"-[0-9]*.t?z 2> /dev/null | head -n 1)
 		# Check if package is installed 
-		if [[ $(ls -t "/var/log/packages/$package"* 2> /dev/null) ]]; then
+		if [[ $(ls -t "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 			# Get version of installed package
-			local pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package*" -printf "%f\n")
+			local pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package-[0-9]*" -printf "%f\n")
 			local pkg_ver=$(basename $pkg | rev | cut -f 3 -d "-" | rev)
 			# Upgrade the package
 			echo -e "Upgrading $package($pkg_ver) using: \n$pkgpath\n"
