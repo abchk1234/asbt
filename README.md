@@ -187,15 +187,11 @@ instead of `asbt search '*xfce*'`
 
   However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
 
-* For updating all SBo packages, the following command could be used:
+* From version 1.0, to update all SBo packages, the following command could be used:
 
-  `asbt -P $(asbt -c | cut -f 1 -d ":")  # updates all installed SBo packages`
+  `asbt -P -u  # updates all installed SBo packages`
 
-  Note that while upgrading a package, reading its README is recommended as its dependencies could have changed.
-
-* From version 1.0, to update all packages, the following can be used:
-
-  `asbt -P -u`
+  While upgrading a package, reading its README is recommended though as its dependencies could have changed.
 
 * From version 1.4, pauses for input when using superuser privileges.
 

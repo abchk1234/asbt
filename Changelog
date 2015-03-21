@@ -1,6 +1,6 @@
 1.6 (21/03/15)
-Better package detection when installing/removing.
-Syntax changes under the hood.
+Better package detection when installing/removing packages.
+Changes under the hood.
 
 1.5.1 (08/03/15)
 Fix incorrect built package detection.
