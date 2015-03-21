@@ -171,7 +171,7 @@ instead of `asbt search '*xfce*'`
 
   In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
 
-  `sudo chown -R $USER /home/$USER/slackbuilds`
+  `sudo chown -R $USER $HOME/slackbuilds`
 
 * Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
@@ -187,9 +187,9 @@ instead of `asbt search '*xfce*'`
 
   However, multiple packages cannot be specified for the build (-B) option, since the build option takes the extra arguments as build arguments for that package.
 
-* From version 1.0, to update all SBo packages, the following command could be used:
+* From version 1.0, to update all SBo packages, the following command can be used:
 
-  `asbt -P -u  # updates all installed SBo packages`
+  `asbt -P -u`
 
   While upgrading a package, reading its README is recommended though as its dependencies could have changed.
 
