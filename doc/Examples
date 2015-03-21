@@ -23,7 +23,7 @@ $ asbt -s dosbox
 system/dosbox
 
 $ asbt -s kabutar
-No items found
+(No output if no package found)
 
 
 2-a) Query installed package

@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.5.1 (dated: 08 Mar 2015)" # Version
+ver="1.6 (dated: 21 Mar 2015)" # Version
 
 # Variables used:
 
@@ -465,7 +465,7 @@ check-new-pkg () {
 print_items () {
 	array=$* # array is passed as argument
 	if [ -z "$array" ]; then
-		echo "No items found"
+		# No items found
 		return 1
 	else
 		# Print the array
