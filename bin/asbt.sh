@@ -716,7 +716,7 @@ process|-P)
 	check-option "$2"
 	check-config
 	check-repo
-	if [[ "$2" == "--upgrade" ]] || [[ "$2" == "-u" ]]; then
+	if [[ $2 = "--upgrade" ]] || [[ $2 = "-u" ]]; then
 		# Call the script itself with new parameters
 		for i in $("$0" -c | cut -f 1 -d " "); do
 			# The above command checks for outdated packages
@@ -755,7 +755,7 @@ tidy|-T)
 		exit 1
 	fi
 
-	if [ "$2" == "--dry-run" ]; then
+	if [ "$2" = "--dry-run" ]; then
 		flag=1
 		# Shift argument left so that cleanup is handled same whether dry-run is specified or not.
 		shift
@@ -781,9 +781,9 @@ tidy|-T)
 		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			if [ "$flag" -eq 1 ]; then
 				# Dry-run
-				ls -td -1 "$outdir/$i"* | tail -n +4
+				ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4
 			else
-				rm -vf $(ls -td -1 "$outdir/$i"* | tail -n +4) 2>/dev/null
+				rm -vf $(ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4) 2>/dev/null
 			fi
 		done
 	else
