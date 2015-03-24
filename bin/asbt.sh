@@ -478,7 +478,7 @@ print_items () {
 query-installed () {
 	local pkg=$1	# pkg to be searched for
 	# Get list of package items in /var/log/packages that match and print them
-	items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	print_items ${items[@]}
 }
 
