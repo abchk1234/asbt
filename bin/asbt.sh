@@ -604,7 +604,8 @@ enlist|-e)
 		words=$(echo ${from_sbo[*]} | tr ' ' '|' | sed "s/$package|//")
 		# The first pipe returns the info file paths and contents which matches the package to be searched for;
 		# The second pipe limits it to only the info file paths;
-		# The third pipe greps for installed packages on the output of second pipe;
+		# The third pipe greps for installed packages on the output of second pipe,
+		# ie, it checks for packages that contain the specified package in their info file, and are installed.
 		# Together they give list of packages which depend on specified package (reverse dependencies)
 		items=($($0 -e $package | cut -f 1 -d ":" | grep -E -w $words))
 		print_items ${items[*]}
