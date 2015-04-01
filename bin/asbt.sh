@@ -97,7 +97,7 @@ check-repo () {
 }
 
 edit-config () {
-	if [ ! -e "$altconfig" ]; then
+	if [[ ! -e $altconfig ]]; then
 		# Root priviliges required to edit global config file
 		SUDO="sudo"
 		echo "Enter your password to view or edit the configuration file $config"
@@ -107,11 +107,11 @@ edit-config () {
 		config="$altconfig"
 	fi
 
-	if [ -e "$editor" ]; then
+	if [[ -e $editor ]]; then
 		$SUDO $editor $config
-	elif [ -e /usr/bin/nano ]; then
+	elif [[ -e /usr/bin/nano ]]; then
 		$SUDO nano $config
-	elif [ -e /usr/bin/vim ]; then
+	elif [[ -e /usr/bin/vim ]]; then
 		$SUDO vim $config
 	else
 	       echo "Unable to find editor to edit the configuration file $config"
@@ -121,13 +121,13 @@ edit-config () {
 
 # Check the src and output(package) directories
 check-src-dir () {
-	if [ ! -d "$srcdir" ]; then
+	if [[ ! -d $srcdir ]]; then
 		echo "Source directory $srcdir does not exist."
 		exit 1
 	fi
 }
 check-out-dir () {
-	if [ ! -d "$outdir" ]; then
+	if [[ ! -d $outdir ]]; then
 		echo "Output directory $outdir does not exist."
 		exit 1
 	fi
@@ -137,13 +137,13 @@ check-out-dir () {
 create-git-repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
-	if [ "$ch2" = n ] || [ "$ch2" = N ]; then
+	if [[ $ch2 = n ]] || [[ $ch2 = N ]]; then
 		exit 1
 	else
 		# A workaround has to be applied to clone the git directory as the basename of the repodir
 		cd "$repodir/.." && rmdir --ignore-fail-on-non-empty "$(basename "$repodir")" && git clone git://slackbuilds.org/slackbuilds.git "$(basename "$repodir")"
 		# Now check if the git repo was cloned successfully or the directory was just removed
-		if [ ! -d "$repodir" ]; then
+		if [[ ! -d $repodir ]]; then
 			# Again try to clone the git repo
 			cd "$repodir/.." || exit 1
 			git clone git://slackbuilds.org/slackbuilds.git "$(basename "$repodir")"
@@ -197,20 +197,20 @@ get-content () {
 
 # Setup function
 setup () {
-	if [ ! -d "$repodir" ]; then
+	if [[ ! -d $repodir ]]; then
 		echo "Slackbuild repository $repodir not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
-		if [ "$ch" = n ] || [ "$ch" = N ]; then
+		if [[ $ch = n ]] || [[ $ch = N ]]; then
 			exit 1
 		else
 			echo "Selected Slackbuilds directory: $repodir"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
-			if [ "$ch1" = n ] || [ "$ch1" = N ]; then
+			if [[ $ch1 = n ]] || [[ $ch1 = N ]]; then
 				echo "Enter path of existing directory to use, or path of new dirctory to create: "
 				read -e repopath
-				if [ -d "$repopath" ]; then
+				if [[ -d $repopath ]]; then
 					repodir="$repopath"
 				else
 					mkdir -p "$repopath" || exit 1
@@ -218,13 +218,13 @@ setup () {
 				fi
 			else
 				# Use what was set before
-				if [ ! -d "$repodir" ]; then
+				if [[ ! -d $repodir ]]; then
 					mkdir -p "$repodir"
 				fi
 			fi
 		fi
 		# Edit the config file to reflect above changes
-		if [ -e "$altconfig" ]; then
+		if [[ -e $altconfig ]]; then
 			sed -i "s|repodir=.*|repodir=\"${repodir}\"|" "$altconfig"
 		else
 			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$config" >> "$altconfig"
