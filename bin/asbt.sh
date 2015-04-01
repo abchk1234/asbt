@@ -62,7 +62,7 @@ check-input () {
 	fi
 }
 
-# Check number of arguments 
+# Check number of arguments
 check-option () {
 	if [[ -z $1 ]]; then
 		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
@@ -76,7 +76,7 @@ pause_for_input () {
 	fi
 }
 
-# Check for the configuration file 
+# Check for the configuration file
 check-config () {
 	if [[ -e $config ]]; then
 		source "$config"
@@ -233,7 +233,7 @@ setup () {
 		if [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
 			echo "Slackbuild repository seems to be empty."
 			create-git-repo
-		fi	
+		fi
 		# Re-read the config file and check repo
 		check-config
 		check-repo
@@ -356,7 +356,7 @@ get-package () {
 }
 
 check-built-package () {
-	# Source the .info file to get the package version 
+	# Source the .info file to get the package version
 	if [ -f "$path/$package.info" ]; then
 		. "$path/$package.info"
 	else
@@ -373,7 +373,7 @@ check-built-package () {
 
 build-package () {
 	local rebuild=$1	# Whether to rebuild or not passed as argument
-	check-built-package	
+	check-built-package
 	# Check if package was already built and if we dont need to rebuild
 	if [[ $built -eq 1 ]] && [[ -z "$rebuild" ]]; then
 		return 0
@@ -392,7 +392,7 @@ build-package () {
 	# Check for built package
 	if [[ $built -eq 1 ]]; then
 		echo "Re-building $package"
-	else	
+	else
 		echo "Building $package"
 	fi
 	# Fix CWD to include path to package
@@ -404,7 +404,7 @@ build-package () {
 	else
 		pause_for_input
 		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
-	fi 
+	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
 }
@@ -413,7 +413,7 @@ install-package () {
 	# Check if package present
 	if [[ $(ls "$outdir/$package"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"-[0-9]*.t?z 2> /dev/null) ]]; then
 		pkgpath=$(ls -t "/tmp/$package"-[0-9]*.t?z "$outdir/$package"-[0-9]*.t?z 2> /dev/null | head -n 1)
-		# Check if package is installed 
+		# Check if package is installed
 		if [[ $(ls -t "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 			# Get version of installed package
 			local pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package-[0-9]*" -printf "%f\n")
@@ -430,7 +430,7 @@ install-package () {
 	else
 		echo "Unable to install $package: N/A"
 		return 1
-	fi 
+	fi
 }
 
 check-new-pkg () {
@@ -519,7 +519,7 @@ find|-f)
 	echo "In slackbuilds repository:"
 	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
 		# Get version
-		. "$repodir/$i"/*.info 2> /dev/null 
+		. "$repodir/$i"/*.info 2> /dev/null
 		# Display package and version
 		echo "$i($VERSION)"
 	done
@@ -700,7 +700,7 @@ remove|-R)
 	for i in $(echo $* | cut -f 2- -d " "); do
 		package="$i"
 		echo
-		# Check if package is installed 
+		# Check if package is installed
 		if [ -f "/var/log/packages/$package"-[0-9]* ]; then
 			rpkg=$(ls "/var/log/packages/$package"-[0-9]*)
 			echo "Removing $(echo $rpkg | cut -f 5 -d '/')"
@@ -812,7 +812,6 @@ tidy|-T)
 	check-input "$#"
 	check-config
 	check-repo
-	
 	# Check if --all option was specified
 	if [[ "$2" == "all" ]] || [[ "$2" == "--all" ]]; then
 		# Ignore/unset the ignore variable
@@ -855,7 +854,7 @@ tidy|-T)
 	else
 		repo="N/A"
 	fi
-	cat << EOF 
+	cat << EOF
 Usage: asbt <option> [package]
 Options-
 	[search,-s]	[query,-q]	[find,-f]
@@ -866,8 +865,8 @@ Options-
 	[upgrade,-U]	[remove,-R]	[process,-P]
 	[details,-D]	[tidy,-T]	[--update,-u]
 	[--check,-c]	[--help,-h]	[--changelog,-C]
-	[--version,-V]	[--setup,-S]	
-	
+	[--version,-V]	[--setup,-S]
+
 Using repository: $repo
 For more info, see the man page and/or the README.
 EOF
