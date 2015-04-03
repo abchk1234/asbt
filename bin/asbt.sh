@@ -477,9 +477,12 @@ print_items () {
 }
 
 query-installed () {
-	local pkg=$1	# pkg to be searched for
+	# query-installed $1
+	local pkg
+	local items
+	pkg=$1	# pkg to be searched for passed as first arg
 	# Get list of package items in /var/log/packages that match and print them
-	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	print_items "${items[@]}"
 }
 
@@ -654,7 +657,7 @@ get|-G)
 	check-config
 	check-repo
 	# Run a loop for getting all the packages
-	for i in $(echo "$@" | cut -f 2- -d " "); do
+	for i in $(echo "$*" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		get-path
