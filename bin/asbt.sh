@@ -72,7 +72,7 @@ check-option () {
 pause_for_input () {
 	# Check for override
 	if [[ ! $pause = no ]]; then
-		echo -e $BOLD "Press any to continue..." $CLR && read
+		echo -e "$BOLD" "Press any to continue..." "$CLR"; read
 	fi
 }
 
@@ -89,7 +89,7 @@ check-config () {
 
 # Check the repo directory
 check-repo () {
-	if [[ ! -d $repodir ]] || [[ $(ls -L "$repodir" | wc -w) -le 1 ]]; then
+	if [[ ! -d $repodir ]] || [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
 		echo "To setup the slackbuilds repository 'asbt -S' can be used."
 		exit 1
@@ -108,11 +108,11 @@ edit-config () {
 	fi
 
 	if [[ -e $editor ]]; then
-		$SUDO $editor $config
+		$SUDO $editor "$config"
 	elif [[ -e /usr/bin/nano ]]; then
-		$SUDO nano $config
+		$SUDO nano "$config"
 	elif [[ -e /usr/bin/vim ]]; then
-		$SUDO vim $config
+		$SUDO vim "$config"
 	else
 	       echo "Unable to find editor to edit the configuration file $config"
 	       exit 1
@@ -157,10 +157,9 @@ get-path() {
 	if [[ -d $package ]]; then
 		path=$(readlink -f "$package")
 		# Get the name of the package
-		if [ -f "$path"/*.SlackBuild ]; then
-			package=$(find "$path" -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
-		else
-			echo "asbt: Unable to process $package; SlackBuild not found."
+		package=$(find "$path" -maxdepth 1 -type f -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
+		if [[ -z $package ]]; then
+			echo "asbt: Unable to process $path; SlackBuild not found."
 			exit 1
 		fi
 	else
@@ -230,14 +229,14 @@ setup () {
 			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$config" >> "$altconfig"
 		fi
 		# Now create git repo from upstream
-		if [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
+		if [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 			echo "Slackbuild repository seems to be empty."
 			create-git-repo
 		fi
 		# Re-read the config file and check repo
 		check-config
 		check-repo
-	elif [ $(ls -L "$repodir" | wc -w) -le 1 ]; then
+	elif [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 		echo "Slackbuild repository $repodir seems to be empty."
 		create-git-repo
 	else
@@ -251,7 +250,6 @@ get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
 	if [[ $(uname -m) == "x86_64" ]] && [[ $DOWNLOAD_x86_64 ]]; then
-		arch="x86_64"
 		link=($DOWNLOAD_x86_64)
 		MD5=($MD5SUM_x86_64)
 	else
@@ -318,7 +316,7 @@ download-source () {
 	fi
 	# Check if downloaded src package(s) contains the package name or not
 	# Rename only if src item does not contain program name and is short
-	if [ ! $(echo "$srci" | grep "$PRGNAM") ] && [ $(echo "$srci" | wc -c) -le 15 ]; then
+	if [[ ! $(echo "$srci" | grep -q "$PRGNAM") ]] && [[ $(echo "$srci" | wc -c) -le 15 ]]; then
 		# Rename it and link it
 		echo "Renaming $srci"
 		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
@@ -335,18 +333,18 @@ get-package () {
 	get-source-data
 	for ((i=0; i<${#src[*]}; i++)); do
 		# Check source for each source item
-		check-source ${src[$i]} ${MD5[$i]} ${md5[$i]}
+		check-source "${src[$i]}" "${MD5[$i]}" "${md5[$i]}"
 		if [ $valid -ne 1 ]; then
 			# Download the source
-			download-source ${src[$i]} ${link[$i]}
+			download-source "${src[$i]}" "${link[$i]}"
 		else
 			echo "Source: ${src[$i]} present and md5sum matched."
 			# Check if re-download arg was specified
 			if [[ -n "$re" ]]; then
 				echo -n "Re-download? [y/N]: "
 				read -e choice
-				if [ "$choice" == y ] || [ "$choice" == Y ]; then
-					download-source ${src[$i]} ${link[$i]}
+				if [[ $choice = y ]] || [[ $choice = Y ]]; then
+					download-source "${src[$i]}" "${link[$i]}"
 				fi
 			fi
 		fi
@@ -383,7 +381,7 @@ build-package () {
 		chmod +x "$path/$package.SlackBuild"
 		if [ $? -eq 1 ]; then
 		# Chmod as normal user failed
-			echo "Enter your password to take ownership of the slackbuild." && sudo -k chown $USER "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
+			echo "Enter your password to take ownership of the slackbuild." && sudo -k chown "$USER" "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
 		fi
 	else
 		echo "asbt: $path/$package.SlackBuild N/A"
@@ -410,14 +408,16 @@ build-package () {
 }
 
 install-package () {
+	local pkg
+	local pkg_ver
 	# Check if package present
 	if [[ $(ls "$outdir/$package"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$package"-[0-9]*.t?z 2> /dev/null) ]]; then
 		pkgpath=$(ls -t "/tmp/$package"-[0-9]*.t?z "$outdir/$package"-[0-9]*.t?z 2> /dev/null | head -n 1)
 		# Check if package is installed
 		if [[ $(ls -t "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 			# Get version of installed package
-			local pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package-[0-9]*" -printf "%f\n")
-			local pkg_ver=$(basename $pkg | rev | cut -f 3 -d "-" | rev)
+			pkg=$(find "/var/log/packages" -maxdepth 1 -type f -name "$package-[0-9]*" -printf "%f\n")
+			pkg_ver=$(basename "$pkg" | rev | cut -f 3 -d "-" | rev)
 			# Upgrade the package
 			echo -e "Upgrading $package($pkg_ver) using: \n$pkgpath\n"
 			pause_for_input
@@ -438,13 +438,13 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if [[ "$(echo "$ignore" | grep $pkgn)" ]]; then
+	if [[ $(echo "$ignore" | grep -q "$pkgn") ]]; then
 		return
 	fi
 
 	# Make an exception for virtualbox-kernel package
 	if [[ $pkgn = "virtualbox-kernel" ]] || [[ $pkgn = "virtualbox-kernel-addons" ]]; then
-		pkgv=$(echo $pkgv | cut -d "_" -f 1)
+		pkgv=$(echo "$pkgv" | cut -d "_" -f 1)
 	fi
 
 	path=$(find -L "$repodir" -maxdepth 2 -type d -name "$pkgn")
@@ -463,14 +463,16 @@ check-new-pkg () {
 
 # Print the items in specified array
 print_items () {
+	local array
+	local item
 	array=$* # array is passed as argument
 	if [ -z "$array" ]; then
 		# No items found
 		return 1
 	else
 		# Print the array
-		for i in ${array[*]}; do
-			echo $i
+		for item in ${array[*]}; do
+			echo "$item"
 		done
 	fi
 }
@@ -479,7 +481,7 @@ query-installed () {
 	local pkg=$1	# pkg to be searched for
 	# Get list of package items in /var/log/packages that match and print them
 	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
-	print_items ${items[@]}
+	print_items "${items[@]}"
 }
 
 # Program options
@@ -492,7 +494,7 @@ search|-s)
 	check-config
 	check-repo
 	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n" | sort))
-	print_items ${items[*]}
+	print_items "${items[*]}"
 	;;
 query|-q)
 	check-input "$#"
@@ -573,7 +575,7 @@ list|-l)
 	get-path
 	# Echo path too so thats its easier to navigate if required
 	echo "($path)"
-	ls $path
+	ls "$path"
 	;;
 longlist|-L)
 	check-input "$#"
@@ -583,7 +585,7 @@ longlist|-L)
 	get-path
 	# Echo path too so thats its easier to navigate if required
 	echo "($path)"
-	ls -l $path
+	ls -l "$path"
 	;;
 enlist|-e)
 	# Check arguments
@@ -601,19 +603,19 @@ enlist|-e)
 		from_sbo=$(query-installed 'SBo' | rev | cut -f 4- -d "-" | rev)
 		# Represent them in a form in which they can be concurrently searched using grep
 		# The package we are searching for is removed from this list using sed
-		words=$(echo ${from_sbo[*]} | tr ' ' '|' | sed "s/$package|//")
+		words=$(echo "${from_sbo[@]}" | tr ' ' '|' | sed "s/$package|//")
 		# The first pipe returns the info file paths and contents which matches the package to be searched for;
 		# The second pipe limits it to only the info file paths;
 		# The third pipe greps for installed packages on the output of second pipe,
 		# ie, it checks for packages that contain the specified package in their info file, and are installed.
 		# Together they give list of packages which depend on specified package (reverse dependencies)
-		items=($($0 -e $package | cut -f 1 -d ":" | grep -E -w $words))
-		print_items ${items[*]}
+		items=($($0 -e "$package" | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
+		print_items "${items[@]}"
 	else
 		check-option "$2"
 		# The case for the package itself is skipped using -not -name in find
-		for i in $(find -L "$repodir" -type f -name "*.info" -not -name "$package.info"); do
-			grep -H "$package" "$i"
+		for file in $(find -L "$repodir" -type f -name "*.info"); do
+			grep -H -w "$package" "$file"
 		done
 	fi
 	;;
@@ -653,7 +655,7 @@ get|-G)
 	check-config
 	check-repo
 	# Run a loop for getting all the packages
-	for i in $(echo $* | cut -f 2- -d " "); do
+	for i in $(echo "$@" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		get-path
@@ -666,16 +668,17 @@ build|-B)
 	check-repo
 	# Check arguments
 	if [ $# -gt 2 ]; then
-		OPTIONS=$(echo $@ | cut -d " " -f 3-) # Build options
+		OPTIONS=$(echo "$@" | cut -d " " -f 3-) # Build options
 		# Save package name for later.
 		pname="$package"
 		# Try to check that the arguments specified do not specify multiple packages
-		for i in $(echo $* | cut -f 3- -d " "); do
+		for i in $(echo "$@" | cut -f 3- -d " "); do
 			package="$i"
 			#get-path
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 			if [[ -d "$path" ]]; then
-				echo "Only one package can be built at a time." && exit 1
+				echo "Only one package can be built at a time."
+				exit 1
 			fi
 		done
 		# Revert package name, as it could have been changed while checking the arguments.
@@ -689,7 +692,7 @@ build|-B)
 install|-I|upgrade|-U)
 	check-option "$2"
 	check-config
-	for i in $(echo $* | cut -f 2- -d " "); do
+	for i in $(echo "$@" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		install-package
@@ -697,13 +700,13 @@ install|-I|upgrade|-U)
 	;;
 remove|-R)
 	check-option "$2"
-	for i in $(echo $* | cut -f 2- -d " "); do
+	for i in $(echo "$@" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		# Check if package is installed
 		if [ -f "/var/log/packages/$package"-[0-9]* ]; then
 			rpkg=$(ls "/var/log/packages/$package"-[0-9]*)
-			echo "Removing $(echo $rpkg | cut -f 5 -d '/')"
+			echo "Removing $(echo "$rpkg" | cut -f 5 -d '/')"
 			pause_for_input
 			sudo /sbin/removepkg "$rpkg"
 		elif [ $? -eq 1 ]; then
@@ -727,11 +730,11 @@ process|-P)
 		done
 		exit 0
 	fi
-	for i in $(echo $* | cut -f 2- -d " "); do
+	for i in $(echo "$@" | cut -f 2- -d " "); do
 		package="$i"
 		echo 
 		get-path
-		echo -e $BOLD "Processing $package..." $CLR
+		echo -e "$BOLD" "Processing $package..." "$CLR"
 		get-package || continue
 		build-package || continue
 		install-package
@@ -740,8 +743,8 @@ process|-P)
 details|-D)
 	check-input "$#"
 	check-option "$2"
-	if [ -f /var/log/packages/$package-[0-9]* ]; then
-		less /var/log/packages/$package-[0-9]*
+	if [ -f /var/log/packages/"$package"-[0-9]* ]; then
+		less /var/log/packages/"$package"-[0-9]*
 	else
 		echo "Details of package $package: N/A"
 		exit 1
@@ -774,7 +777,7 @@ tidy|-T)
 				# Dry-run; only display packages to be deleted
 				ls -td -1 "$srcdir/$i"* | tail -n +4
 			else
-				rm -vf $(ls -td -1 "$srcdir/$i"* | tail -n +4) 2>/dev/null
+				rm -vf "$(ls -td -1 "$srcdir/$i"* | tail -n +4)" 2>/dev/null
 			fi
 		done
 	elif [ "$2" = pkg ]; then
@@ -784,7 +787,7 @@ tidy|-T)
 				# Dry-run
 				ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4
 			else
-				rm -vf $(ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4) 2>/dev/null
+				rm -vf "$(ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4)" 2>/dev/null
 			fi
 		done
 	else
@@ -820,14 +823,14 @@ tidy|-T)
 		for i in /var/log/packages/*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			check-new-pkg $package $pkgver
+			check-new-pkg "$package" "$pkgver"
 		done
 	else
 		# Only SBo packages
 		for i in /var/log/packages/*_SBo*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			check-new-pkg $package $pkgver
+			check-new-pkg "$package" "$pkgver"
 		done
 	fi
 	;;
