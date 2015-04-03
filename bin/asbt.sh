@@ -705,15 +705,17 @@ remove|-R)
 		package="$i"
 		echo
 		# Check if package is installed
-		if [ -f "/var/log/packages/$package"-[0-9]* ]; then
+		if [[ $(ls "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 			rpkg=$(ls "/var/log/packages/$package"-[0-9]*)
 			echo "Removing $(echo "$rpkg" | cut -f 5 -d '/')"
 			pause_for_input
 			sudo /sbin/removepkg "$rpkg"
-		elif [ $? -eq 1 ]; then
+		elif [[ $? -eq 1 ]]; then
 			echo "Package $i: N/A"
+			exit 1
 		else
 			echo "Unable to remove $i"
+			exit 1
 		fi
 	done
 	;;
@@ -744,7 +746,7 @@ process|-P)
 details|-D)
 	check-input "$#"
 	check-option "$2"
-	if [ -f /var/log/packages/"$package"-[0-9]* ]; then
+	if [[ $(ls "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 		less /var/log/packages/"$package"-[0-9]*
 	else
 		echo "Details of package $package: N/A"
