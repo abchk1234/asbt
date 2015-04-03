@@ -754,13 +754,13 @@ details|-D)
 tidy|-T)
 	check-config
 	# Check arguments
-	if [ $# -gt 3 ]; then
+	if [[ $# -gt 3 ]]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
 		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>"
 		exit 1
 	fi
 
-	if [ "$2" = "--dry-run" ]; then
+	if [[ $2 = --dry-run ]]; then
 		flag=1
 		# Shift argument left so that cleanup is handled same whether dry-run is specified or not.
 		shift
@@ -768,7 +768,7 @@ tidy|-T)
 		flag=0
 	fi
 
-	if [ "$2" = src ]; then
+	if [[ $2 = src ]]; then
 		check-src-dir
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries
 		# We are assuming the format of the source as name-version.extension which could be incorrect
@@ -781,7 +781,7 @@ tidy|-T)
 				rm -vf "$(ls -td -1 "$srcdir/$i"* | tail -n +4)" 2>/dev/null
 			fi
 		done
-	elif [ "$2" = pkg ]; then
+	elif [[ $2 = pkg ]]; then
 		check-out-dir
 		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			if [ "$flag" -eq 1 ]; then
@@ -817,7 +817,7 @@ tidy|-T)
 	check-config
 	check-repo
 	# Check if --all option was specified
-	if [[ "$2" == "all" ]] || [[ "$2" == "--all" ]]; then
+	if [[ $2 = all ]] || [[ $2 = --all ]]; then
 		# Ignore/unset the ignore variable
 		unset ignore
 		# Check all installed packages
