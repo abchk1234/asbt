@@ -667,11 +667,11 @@ build|-B)
 	check-repo
 	# Check arguments
 	if [ $# -gt 2 ]; then
-		OPTIONS=$(echo "$@" | cut -d " " -f 3-) # Build options
+		OPTIONS=$(echo "$*" | cut -d " " -f 3-) # Build options
 		# Save package name for later.
 		pname="$package"
 		# Try to check that the arguments specified do not specify multiple packages
-		for i in $(echo "$@" | cut -f 3- -d " "); do
+		for i in $(echo "$*" | cut -f 3- -d " "); do
 			package="$i"
 			#get-path
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
@@ -691,7 +691,7 @@ build|-B)
 install|-I|upgrade|-U)
 	check-option "$2"
 	check-config
-	for i in $(echo "$@" | cut -f 2- -d " "); do
+	for i in $(echo "$*" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		install-package
@@ -699,7 +699,7 @@ install|-I|upgrade|-U)
 	;;
 remove|-R)
 	check-option "$2"
-	for i in $(echo "$@" | cut -f 2- -d " "); do
+	for i in $(echo "$*" | cut -f 2- -d " "); do
 		package="$i"
 		echo
 		# Check if package is installed
@@ -731,7 +731,7 @@ process|-P)
 		done
 		exit 0
 	fi
-	for i in $(echo "$@" | cut -f 2- -d " "); do
+	for i in $(echo "$*" | cut -f 2- -d " "); do
 		package="$i"
 		echo 
 		get-path
