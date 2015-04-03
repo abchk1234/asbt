@@ -466,7 +466,7 @@ check-new-pkg () {
 print_items () {
 	local array
 	local item
-	array=$* # array is passed as argument
+	array="$*" # array is passed as argument
 	if [ -z "$array" ]; then
 		# No items found
 		return 1
@@ -482,7 +482,7 @@ query-installed () {
 	local pkg=$1	# pkg to be searched for
 	# Get list of package items in /var/log/packages that match and print them
 	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
-	print_items "${items[@]}"
+	print_items "${items[*]}"
 }
 
 # Program options
@@ -611,12 +611,12 @@ enlist|-e)
 		# ie, it checks for packages that contain the specified package in their info file, and are installed.
 		# Together they give list of packages which depend on specified package (reverse dependencies)
 		items=($($0 -e "$package" | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
-		print_items "${items[@]}"
+		print_items "${items[*]}"
 	else
 		check-option "$2"
 		# The case for the package itself is skipped using -not -name in find
 		for file in $(find -L "$repodir" -type f -name "*.info"); do
-			grep -H -w "$package" "$file"
+			grep -H "$package" "$file"
 		done
 	fi
 	;;
