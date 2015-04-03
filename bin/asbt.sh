@@ -316,7 +316,7 @@ download-source () {
 	fi
 	# Check if downloaded src package(s) contains the package name or not
 	# Rename only if src item does not contain program name and is short
-	if [[ ! $(echo "$srci" | grep -q "$PRGNAM") ]] && [[ $(echo "$srci" | wc -c) -le 15 ]]; then
+	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ $(echo "$srci" | wc -c) -le 15 ]]; then
 		# Rename it and link it
 		echo "Renaming $srci"
 		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
@@ -381,7 +381,8 @@ build-package () {
 		chmod +x "$path/$package.SlackBuild"
 		if [ $? -eq 1 ]; then
 		# Chmod as normal user failed
-			echo "Enter your password to take ownership of the slackbuild." && sudo -k chown "$USER" "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
+			echo "Enter your password to take ownership of the slackbuild."
+			sudo -k chown "$USER" "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
 		fi
 	else
 		echo "asbt: $path/$package.SlackBuild N/A"
@@ -438,7 +439,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if [[ $(echo "$ignore" | grep -q "$pkgn") ]]; then
+	if [[ $(echo "$ignore" | grep "$pkgn") ]]; then
 		return
 	fi
 
