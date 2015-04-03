@@ -358,10 +358,10 @@ check-built-package () {
 	if [ -f "$path/$package.info" ]; then
 		. "$path/$package.info"
 	else
-		VERSION="UNKNOWN"
+		VERSION=""
 	fi
 	# Check if package has already been built
-	if [[ $(ls -t "/tmp/$package"-"$VERSION"*.t?z 2> /dev/null) ]] || [[ $(ls -t "$outdir/$package"-"$VERSION"*.t?z 2> /dev/null) ]]; then
+	if [[ $(ls -t "/tmp/${package}-${VERSION}"*.t?z 2> /dev/null) ]] || [[ $(ls -t "${outdir}/${package}-${VERSION}"*.t?z 2> /dev/null) ]]; then
 		built=1
 		echo "Package: $package($VERSION) already built."
 	else
@@ -615,10 +615,8 @@ enlist|-e)
 		print_items "${items[@]}"
 	else
 		check-option "$2"
-		# The case for the package itself is skipped using -not -name in find
-		for file in $(find -L "$repodir" -type f -name "*.info"); do
-			grep -H "$package" "$file"
-		done
+		# Find files which contain specified keyword
+		find -L "$repodir" -type f -name "*.info" -exec grep -H "$package" {} \;
 	fi
 	;;
 track|-t)
