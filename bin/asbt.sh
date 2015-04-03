@@ -604,7 +604,7 @@ enlist|-e)
 		from_sbo=$(query-installed 'SBo' | rev | cut -f 4- -d "-" | rev)
 		# Represent them in a form in which they can be concurrently searched using grep
 		# The package we are searching for is removed from this list using sed
-		words=$(echo "${from_sbo[@]}" | tr ' ' '|' | sed "s/$package|//")
+		words=$(echo ${from_sbo[*]} | tr ' ' '|' | sed "s/$package|//")
 		# The first pipe returns the info file paths and contents which matches the package to be searched for;
 		# The second pipe limits it to only the info file paths;
 		# The third pipe greps for installed packages on the output of second pipe,
