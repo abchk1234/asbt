@@ -281,19 +281,19 @@ check-source () {
 	local md5i=$3	# Calculated md5sum
 	valid=0		# Guilty untill proven otherwise ;)
 	# Check if source has already been downloaded
-	if [[ -e "$path/$srci" ]]; then
+	if [[ -e $path/$srci ]]; then
 		# Check validity of downloaded source
-		if [[ "$md5i" == "$MD5" ]]; then
+		if [[ $md5i = "$MD5" ]]; then
 			valid=1
 		fi
 	elif [[ -f "$srcdir/$srci" ]]; then
 		# Check if source present but not linked
-		if [[ "$md5i" == "$MD5" ]]; then
+		if [[ $md5i = "$MD5" ]]; then
 			ln -svf "$srcdir/$srci" "$path" && valid=1
 		fi
 	elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
 		# When src was renamed while saving
-		if [[ "$md5i" == "$MD5" ]]; then
+		if [[ $md5i = "$MD5" ]]; then
 			ln -svf "$srcdir/$PRGNAM-$srci" "$path/$srci" && valid=1
 		fi
 	fi
@@ -303,13 +303,13 @@ download-source () {
 	local srci=$1	# Source item passed as argument
 	local linki=$2	# Link of src item
 	# Check for unsupported url
-	if [[ "$linki" == "UNSUPPORTED" ]] || [[ "$linki" == "UNTESTED" ]]; then
+	if [[ $linki = UNSUPPORTED ]] || [[ $linki = UNTESTED ]]; then
 		echo "Unsupported source in info file"
 		exit 1
 	fi
 	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
-	if [ -z "$srcdir" ]; then
+	if [[ -z $srcdir ]]; then
 		wget --tries=5 --directory-prefix="$path" -N "$linki" || exit 1
 	else
 		wget --tries=5 --directory-prefix="$srcdir" -N "$linki" || exit 1
@@ -546,8 +546,8 @@ readme|-r)
 	get-path
 	[ -f "$path/README" ] && cat "$path/README"
 	echo ""
-	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware" && exit
-	[ -f "$path/README.SLACKWARE" ] && cat "$path/README.SLACKWARE" && exit
+	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware"
+	[ -f "$path/README.SLACKWARE" ] && cat "$path/README.SLACKWARE"
 	;;
 view|-v)
 	check-input "$#"
