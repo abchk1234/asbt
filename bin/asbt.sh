@@ -176,7 +176,7 @@ get-path() {
 get-info () {
 	# Source the .info file to get the package details
 	if [[ -f "$path/$package.info" ]]; then
-		. "$path/$package.info"
+		source "$path/$package.info"
 		echo "asbt: $path/$package.info sourced."
 	else
 		echo "asbt: $package.info in $path N/A"
@@ -523,7 +523,7 @@ find|-f)
 	echo "In slackbuilds repository:"
 	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
 		# Get version
-		. "$repodir/$i"/*.info 2> /dev/null
+		source "$repodir/$i"/*.info 2> /dev/null
 		# Display package and version
 		echo "$i($VERSION)"
 	done
