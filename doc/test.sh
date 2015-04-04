@@ -26,7 +26,7 @@ echo "./bin/asbt.sh"
 ./bin/asbt.sh; check_pass; echo
 
 # Some common options
-options=('-s' '-q' '-f' '-i' '-r' '-d')
+options=('-s' '-q' '-i' '-r' '-d')
 for i in ${options[*]}; do
 	# Valid use cases
 	echo -e "Checking success...\n"
