@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.6 (dated: 21 Mar 2015)" # Version
+ver="1.6.1 (dated: 05 Apr 2015)" # Version
 
 # Variables used:
 
@@ -72,7 +72,7 @@ check-option () {
 pause_for_input () {
 	# Check for override
 	if [[ ! $pause = no ]]; then
-		echo -e "$BOLD" "Press any to continue..." "$CLR"; read
+		echo -e "$BOLD" "Press enter to continue..." "$CLR"; read
 	fi
 }
 

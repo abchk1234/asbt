@@ -1,3 +1,8 @@
+1.6.1 (05/04/15)
+More changes under the hood (convert to bash, remove bashishs).
+Improve package detection in tidy option.
+Use same package detection in remove option as in install.
+
 1.6 (21/03/15)
 Better package detection when installing/removing packages.
 Changes under the hood.
