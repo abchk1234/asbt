@@ -355,8 +355,8 @@ get-package () {
 
 check-built-package () {
 	# Source the .info file to get the package version
-	if [ -f "$path/$package.info" ]; then
-		. "$path/$package.info"
+	if [[ -f $path/$package.info ]]; then
+		source "$path/$package.info"
 	else
 		VERSION=""
 	fi
@@ -377,9 +377,9 @@ build-package () {
 		return 0
 	fi
 	# Check for SlackBuild
-	if [ -f "$path/$package.SlackBuild" ]; then
+	if [[ -f $path/$package.SlackBuild ]]; then
 		chmod +x "$path/$package.SlackBuild"
-		if [ $? -eq 1 ]; then
+		if [[ $? -eq 1 ]]; then
 		# Chmod as normal user failed
 			echo "Enter your password to take ownership of the slackbuild."
 			sudo -k chown "$USER" "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
@@ -397,7 +397,7 @@ build-package () {
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
-	if [ -z "$outdir" ]; then
+	if [[ -z $outdir ]]; then
 		pause_for_input
 		sudo -i CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
 	else
