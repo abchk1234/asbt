@@ -27,7 +27,7 @@ repodir="$HOME/git/slackbuilds" # Repository for slackbuilds. Required.
 srcdir="$HOME/src" # Where the downloaded source is to be placed.
 #srcdir="" # Leave blank for saving it in the same directory as the slackbuild.
 
-outdir="$HOME/packages" # Where the built package will be placed.
+outdir="$HOME/pkg" # Where the built package will be placed.
 #outdir="" # Leave it blank for putting built package(s) in /tmp.
 
 gitdir="$HOME/git/slackbuilds/.git" # Slackbuilds git repo directory.
