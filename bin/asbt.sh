@@ -616,7 +616,7 @@ enlist|-e)
 	else
 		check-option "$2"
 		# Find files which contain specified keyword
-		find -L "$repodir" -type f -name "*.info" -exec grep -H "$package" {} \;
+		find -L "$repodir" -type f -name "*.info" -exec grep -H -w "$package" {} \;
 	fi
 	;;
 track|-t)
