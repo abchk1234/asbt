@@ -611,7 +611,7 @@ enlist|-e)
 		# The third pipe greps for installed packages on the output of second pipe,
 		# ie, it checks for packages that contain the specified package in their info file, and are installed.
 		# Together they give list of packages which depend on specified package (reverse dependencies)
-		items=($($0 -e "$package" | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
+		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
 		print_items "${items[@]}"
 	else
 		check-option "$2"
