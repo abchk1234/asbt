@@ -249,7 +249,7 @@ setup () {
 get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) == "x86_64" ]] && [[ $DOWNLOAD_x86_64 ]]; then
+	if [[ $(uname -m) = x86_64 ]] && [[ $DOWNLOAD_x86_64 ]]; then
 		link=($DOWNLOAD_x86_64)
 		MD5=($MD5SUM_x86_64)
 	else
@@ -334,7 +334,7 @@ get-package () {
 	for ((i=0; i<${#src[*]}; i++)); do
 		# Check source for each source item
 		check-source "${src[$i]}" "${MD5[$i]}" "${md5[$i]}"
-		if [ $valid -ne 1 ]; then
+		if [[ $valid -ne 1 ]]; then
 			# Download the source
 			download-source "${src[$i]}" "${link[$i]}"
 		else
@@ -502,11 +502,11 @@ query|-q)
 	check-input "$#"
 	check-option "$2"
 	# Check if special options were specified
-	if [ "$2" == "--all" ]; then
+	if [[ $2 = --all ]]; then
 		# Query all packages
 		query-installed '*'
 		echo -e "\nTotal: ${#items[@]}"
-	elif [ "$2" == "--sbo" ]; then
+	elif [[ $2 = --sbo ]]; then
 		# Query SBo packages
 		query-installed '_SBo'
 		echo -e "\nTotal: ${#items[@]}"
@@ -544,10 +544,10 @@ readme|-r)
 	check-config
 	check-repo
 	get-path
-	[ -f "$path/README" ] && cat "$path/README"
+	[[ -f $path/README ]] && cat "$path/README"
 	echo ""
-	[ -f "$path/README.Slackware" ] && cat "$path/README.Slackware" && exit $?
-	[ -f "$path/README.SLACKWARE" ] && cat "$path/README.SLACKWARE"
+	[[ -f $path/README.Slackware ]] && cat "$path/README.Slackware" && exit $?
+	[[ -f $path/README.SLACKWARE ]] && cat "$path/README.SLACKWARE"
 	;;
 view|-v)
 	check-input "$#"
@@ -591,14 +591,14 @@ longlist|-L)
 	;;
 enlist|-e)
 	# Check arguments
-	if [ $# -gt 3 ]; then
+	if [[ $# -gt 3 ]]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
 		echo "asbt -e [--rev] <pkg>"
 		exit 1
 	fi
 	check-config
 	check-repo
-	if [[ "$2" == "--rev" ]]; then
+	if [[ $2 = --rev ]]; then
 		check-option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
@@ -635,15 +635,15 @@ goto|-g)
 	check-config
 	check-repo
 	get-path
-	if [ "$TERM" == "linux" ]; then
+	if [[ $TERM = linux ]]; then
 		echo "Goto on console N/A"
 		exit 1
 	fi
-	if [ -e /usr/bin/xfce4-terminal ]; then
+	if [[ -e /usr/bin/xfce4-terminal ]]; then
         	xfce4-terminal --working-directory="$path"
-	elif [ -e /usr/bin/konsole ]; then
+	elif [[ -e /usr/bin/konsole ]]; then
 		konsole --workdir "$path"
-	elif [ -e /usr/bin/xterm ]; then
+	elif [[ -e /usr/bin/xterm ]]; then
 		xterm -e 'cd "$path" && /bin/bash'
 	else
 		echo "Could not find a suitable terminal emulator, goto N/A"
@@ -667,7 +667,7 @@ build|-B)
 	check-config
 	check-repo
 	# Check arguments
-	if [ $# -gt 2 ]; then
+	if [[ $# -gt 2 ]]; then
 		OPTIONS=$(echo "$*" | cut -d " " -f 3-) # Build options
 		# Save package name for later.
 		pname="$package"
@@ -775,7 +775,7 @@ tidy|-T)
 		# We are assuming the format of the source as name-version.extension which could be incorrect
 		for i in $(find -L "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
-			if [ "$flag" -eq 1 ]; then
+			if [[ $flag -eq 1 ]]; then
 				# Dry-run; only display packages to be deleted
 				ls -td -1 "$srcdir/$i"* | tail -n +4
 			else
@@ -785,7 +785,7 @@ tidy|-T)
 	elif [[ $2 = pkg ]]; then
 		check-out-dir
 		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
-			if [ "$flag" -eq 1 ]; then
+			if [[ $flag -eq 1 ]]; then
 				# Dry-run
 				ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4
 			else
@@ -799,11 +799,11 @@ tidy|-T)
 	;;
 --update|-u)
 	check-config
-	if [[ -z "$gitdir" ]]; then
+	if [[ -z $gitdir ]]; then
 		echo "Git directory not specified."
 		exit 1
 	fi
-	if [[ -d "$gitdir" ]]; then
+	if [[ -d $gitdir ]]; then
 		echo "Performing git stash"
 		cd "$gitdir/.." && git stash
 		echo "Updating git repo $gitdir"
@@ -845,7 +845,7 @@ tidy|-T)
 --changelog|-C)
 	check-config
 	check-repo
-	if [ -f "$repodir/ChangeLog.txt" ]; then
+	if [[ -f $repodir/ChangeLog.txt ]]; then
 		less "$repodir/ChangeLog.txt"
 	else
 		echo "$repodir/ChangeLog.txt N/A"
