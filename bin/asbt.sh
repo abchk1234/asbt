@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.6.1 (dated: 05 Apr 2015)" # Version
+ver="1.6.2 (dated: 18 Apr 2015)" # Version
 
 # Variables used:
 

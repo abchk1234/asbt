@@ -1,3 +1,6 @@
+1.6.2 (18/04/15)
+Improvements to -e option.
+
 1.6.1 (05/04/15)
 More changes under the hood (convert to bash, remove bashishs).
 Improve package detection in tidy option.
