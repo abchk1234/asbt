@@ -316,7 +316,7 @@ download-source () {
 	fi
 	# Check if downloaded src package(s) contains the package name or not
 	# Rename only if src item does not contain program name and is short
-	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ $(echo "$srci" | wc -c) -le 15 ]]; then
+	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ ${#srci} -le 15 ]]; then
 		# Rename it and link it
 		echo "Renaming $srci"
 		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
