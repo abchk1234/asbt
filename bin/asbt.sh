@@ -257,12 +257,12 @@ get-source-data () {
 		MD5=($MD5SUM)
 	fi
 	# Since links can be multi line, so use a src array..
-	for linki in ${link[*]}; do
+	for linki in ${link[@]}; do
 		src+=($(basename "$linki"))	# Name of source files
 	done
 	# Calculate md5sum of downloaded source
 	# Check for source in various locations
-	for srci in ${src[*]}; do
+	for srci in ${src[@]}; do
 		if [[ -f "$srcdir/$srci" ]]; then
 			md5+=($(md5sum "$srcdir/$srci" | cut -f 1 -d " "))
 		elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
