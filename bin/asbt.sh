@@ -316,7 +316,7 @@ download-source () {
 	fi
 	# Check if downloaded src package(s) contains the package name or not
 	# Rename only if src item does not contain program name and is short
-	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ ${#srci} -le 15 ]]; then
+	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ ${#srci} -le 18 ]]; then
 		# Rename it and link it
 		echo "Renaming $srci"
 		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
@@ -606,11 +606,11 @@ enlist|-e)
 		# Represent them in a form in which they can be concurrently searched using grep
 		# The package we are searching for is removed from this list using sed
 		words=$(echo "${from_sbo[*]}" | tr ' ' '|' | sed "s/$package|//")
-		# The first pipe returns the info file paths and contents which matches the package to be searched for;
-		# The second pipe limits it to only the info file paths;
-		# The third pipe greps for installed packages on the output of second pipe,
+		# The first two pipes returns the info file paths and REQUIRES line which matches the package to be searched for;
+		# The next pipe limits it to only the info file paths;
+		# The next pipe greps for installed packages on the output of previous pipe,
 		# ie, it checks for packages that contain the specified package in their info file, and are installed.
-		# Together they give list of packages which depend on specified package (reverse dependencies)
+		# Together they a unique give list of packages which depend on specified package (reverse dependencies).
 		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
 		print_items "${items[@]}"
 	else
