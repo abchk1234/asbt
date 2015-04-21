@@ -134,7 +134,7 @@ instead of `asbt search '*xfce*'`
 
   A wildcard at both ends is also implied when querying.
 
-* Giving package path instead of package supports installation of package from custom folder. For example,
+* Giving package path instead of package name is also supported for some options. For example,
 
   `asbt -B ~/builds/thermal_daemon/thermal_daemon-1.1`
 
