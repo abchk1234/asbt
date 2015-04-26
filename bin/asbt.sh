@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.6.2 (dated: 18 Apr 2015)" # Version
+ver="1.7 (dated: 26 Apr 2015)" # Version
 
 # Variables used:
 
@@ -377,14 +377,7 @@ build-package () {
 		return 0
 	fi
 	# Check for SlackBuild
-	if [[ -f $path/$package.SlackBuild ]]; then
-		chmod +x "$path/$package.SlackBuild"
-		if [[ $? -eq 1 ]]; then
-		# Chmod as normal user failed
-			echo "Enter your password to take ownership of the slackbuild."
-			sudo -k chown "$USER" "$path/$package.SlackBuild" && chmod +x "$path/$package.SlackBuild" || exit 1
-		fi
-	else
+	if [[ ! -f $path/$package.SlackBuild ]]; then
 		echo "asbt: $path/$package.SlackBuild N/A"
 		exit 1
 	fi
@@ -399,10 +392,10 @@ build-package () {
 	# Check if outdir is present (if yes, built package is saved there)
 	if [[ -z $outdir ]]; then
 		pause_for_input
-		sudo -i CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -i CWD="$path" $buildflags $OPTIONS /bin/sh "$path/$package.SlackBuild" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS "$path/$package.SlackBuild" || exit 1
+		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS /bin/sh "$path/$package.SlackBuild" || exit 1
 	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"

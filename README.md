@@ -164,15 +164,6 @@ instead of `asbt search '*xfce*'`
   To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
   To know more about git stash, read the git-stash man page.
 
-* If you use other tools like [sbopkg](http://sbopkg.org/) to synchronise your git repository, and if these tools are meant to be run as root (like sbopkg), then they can change ownership of the slackbuilds git repository, and you can get messages like:
-
-  chmod: changing permissions of /home/aaditya/slackbuilds/desktop/screenfetch/screenfetch.SlackBuild: Operation not permitted
-  Enter your password to take ownership of the slackbuild.
-
-  In such a case, one change ownership of the slackbuilds repository using the chown command. For example,
-
-  `sudo chown -R $USER $HOME/slackbuilds`
-
 * Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 
   The --dry-run option can be used to see which entries are going to be deleted. For example,
