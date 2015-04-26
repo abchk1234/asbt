@@ -390,12 +390,13 @@ build-package () {
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$path/$package.SlackBuild" || exit 1
 	# Check if outdir is present (if yes, built package is saved there)
+	# Build options are assumed to be set beforehand.
 	if [[ -z $outdir ]]; then
 		pause_for_input
-		sudo -i CWD="$path" $buildflags $OPTIONS /bin/sh "$path/$package.SlackBuild" || exit 1
+		sudo -i CWD="$path" $buildflags "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags $OPTIONS /bin/sh "$path/$package.SlackBuild" || exit 1
+		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
 	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
@@ -662,7 +663,7 @@ build|-B)
 	check-repo
 	# Check arguments
 	if [[ $# -gt 2 ]]; then
-		OPTIONS=$(echo "$*" | cut -d " " -f 3-) # Build options
+		OPTIONS=($(echo "$*" | cut -d " " -f 3-)) # Build options
 		# Save package name for later.
 		pname="$package"
 		# Try to check that the arguments specified do not specify multiple packages
