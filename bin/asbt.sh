@@ -249,7 +249,7 @@ setup () {
 get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) = x86_64 ]] && [[ $DOWNLOAD_x86_64 ]]; then
+	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:?} ]]; then
 		link=($DOWNLOAD_x86_64)
 		MD5=($MD5SUM_x86_64)
 	else
@@ -432,7 +432,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if echo "$ignore" | grep -q "$pkgn"; then
+	if echo "${ignore:?}" | grep -q "$pkgn"; then
 		return
 	fi
 
@@ -514,12 +514,13 @@ find|-f)
 	check-config
 	check-repo
 	echo "In slackbuilds repository:"
-	for i in $(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -printf "%P\n"); do
+	while IFS= read -r -d '' pkg
+	do
 		# Get version
-		source "$repodir/$i"/*.info 2> /dev/null
+		source "${pkg}"/*.info 2> /dev/null
 		# Display package and version
-		echo "$i($VERSION)"
-	done
+		echo "$pkg($VERSION)"
+	done < <(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -print0)
 	echo -e "\nInstalled:"
 	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
 	;;
