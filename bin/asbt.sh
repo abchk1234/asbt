@@ -257,12 +257,12 @@ get-source-data () {
 		MD5=($MD5SUM)
 	fi
 	# Since links can be multi line, so use a src array..
-	for linki in ${link[@]}; do
+	for linki in "${link[@]}"; do
 		src+=($(basename "$linki"))	# Name of source files
 	done
 	# Calculate md5sum of downloaded source
 	# Check for source in various locations
-	for srci in ${src[@]}; do
+	for srci in "${src[@]}"; do
 		if [[ -f "$srcdir/$srci" ]]; then
 			md5+=($(md5sum "$srcdir/$srci" | cut -f 1 -d " "))
 		elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
@@ -316,7 +316,7 @@ download-source () {
 	fi
 	# Check if downloaded src package(s) contains the package name or not
 	# Rename only if src item does not contain program name and is short
-	if [[ ! $(echo "$srci" | grep "$PRGNAM") ]] && [[ ${#srci} -le 18 ]]; then
+	if ! echo "$srci" | grep -q "$PRGNAM" && [[ ${#srci} -le 18 ]]; then
 		# Rename it and link it
 		echo "Renaming $srci"
 		mv -v "$srcdir/$srci" "$srcdir/$PRGNAM-$srci"
@@ -432,7 +432,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if [[ $(echo "$ignore" | grep "$pkgn") ]]; then
+	if echo "$ignore" | grep -q "$pkgn"; then
 		return
 	fi
 
