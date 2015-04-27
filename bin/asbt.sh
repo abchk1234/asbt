@@ -590,12 +590,22 @@ enlist|-e)
 	# Check arguments
 	if [[ $# -gt 3 ]]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
-		echo "asbt -e [--rev] <pkg>"
+		echo "asbt -e [--rev|--log|--git] <pkg>"
 		exit 1
 	fi
 	check-config
 	check-repo
-	if [[ $2 = --rev ]]; then
+	if [[ $2 = --log ]]; then
+		check-option "$3"
+		package="$3"
+		# Grep the required package from the Changelog
+		get-content "$repodir/ChangeLog.txt" | grep -w "$package" | less
+	elif [[ $2 = --git ]]; then
+		check-option "$3"
+		package="$3"
+		# Search the required package in the git logs.
+		git --git-dir="$gitdir" log --pretty=short --patch-with-stat --no-merges --grep="$package"
+	elif [[ $2 = --rev ]]; then
 		check-option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
@@ -610,11 +620,6 @@ enlist|-e)
 		# Together they a unique give list of packages which depend on specified package (reverse dependencies).
 		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
 		print_items "${items[@]}"
-	elif [[ $2 = --log ]]; then
-		check-option "$3"
-		package="$3"
-		# Grep the required package from the Changelog
-		get-content "$repodir/ChangeLog.txt" | grep -w "$package" | less
 	else
 		check-option "$2"
 		# Find files which contain specified keyword

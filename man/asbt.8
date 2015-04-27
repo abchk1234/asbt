@@ -44,9 +44,9 @@ Using the package path instead of the package name is also possible.
 [longlist,-L] <pkg>
 	List more details about the files inside the package folder.
 
-[enlist,-e] [--rev|--log] <pkg>
+[enlist,-e] [--rev|--log|--git] <pkg>
 	Enlist all packages which have given package in their .info file.
-	With --log suboption the package is grepped in Changelog.
+	With --log and --git suboptions the package is grepped in Changelog and git log respectively.
 
 [track,-t] <pkg>
 	Track the source and built package for specified package.

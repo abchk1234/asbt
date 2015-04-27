@@ -1,6 +1,7 @@
 1.7 (26/04/15)
 Use different method to execute slackbuild when building packages.
 Add -e --log option to enlist packages from Changelog.
+Add -e --git option to enlist packages from git log.
 
 1.6.2 (18/04/15)
 Improvements to -e option.
