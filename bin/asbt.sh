@@ -251,7 +251,7 @@ setup () {
 get-source-data () {
 	get-info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:?} ]]; then
+	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:-""} ]]; then
 		link=($DOWNLOAD_x86_64)
 		MD5=($MD5SUM_x86_64)
 	else
