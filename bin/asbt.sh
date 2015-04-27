@@ -604,7 +604,7 @@ enlist|-e)
 		check-option "$3"
 		package="$3"
 		# Search the required package in the git logs.
-		git --git-dir="$gitdir" log --pretty=short --patch-with-stat --no-merges --grep="$package"
+		git --git-dir="$gitdir" log --pretty=short --patch-with-stat --grep="$package"
 	elif [[ $2 = --rev ]]; then
 		check-option "$3"
 		package="$3"
