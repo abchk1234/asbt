@@ -165,12 +165,19 @@ $ asbt -e libiso
       (This option can take some time to complete)
 
 $ asbt -e --rev gtkmm
-/home/aaditya/slackbuilds/libraries/atkmm/atkmm.info
-/home/aaditya/slackbuilds/libraries/pangomm/pangomm.info
-/home/aaditya/slackbuilds/libraries/glibmm/glibmm.info
 /home/aaditya/slackbuilds/desktop/nitrogen/nitrogen.info
 /home/aaditya/slackbuilds/system/gparted/gparted.info
-/home/aaditya/slackbuilds/development/mm-common/mm-common.info
+
+
+12-c) Enlist package details from the Changelog
+$ asbt -e --log screenfetch
+desktop/screenfetch: Update changelog.
+desktop/screenfetch: Add source alternative.
+desktop/screenfetch: Updated for version 3.6.5.
+desktop/screenfetch: Updated for version 3.5.0.
+desktop/screenfetch: Update slack-desc.
+desktop/screenfetch: Change source URL.
+desktop/screenfetch: Updated for version 3.2.2.
 
 
 13) Get (download) the source

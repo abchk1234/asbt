@@ -1,6 +1,6 @@
 .\" Manpage for asbt.
 .\" Contact aaditya_gnulinux@zoho.com.
-.TH ASBT 8 "18 Apr 2015" "1.6" "asbt man page"
+.TH ASBT 8 "26 Apr 2015" "1.7" "asbt man page"
 .SH NAME
 asbt \- a tool to manage packages in your local slackbuilds repository
 .SH SYNOPSIS
@@ -44,8 +44,9 @@ Using the package path instead of the package name is also possible.
 [longlist,-L] <pkg>
 	List more details about the files inside the package folder.
 
-[enlist,-e] [--rev] <pkg>
-	Enlist all packages which have given package in their .info file
+[enlist,-e] [--rev|--log] <pkg>
+	Enlist all packages which have given package in their .info file.
+	With --log suboption the package is grepped in Changelog.
 
 [track,-t] <pkg>
 	Track the source and built package for specified package.

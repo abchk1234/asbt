@@ -610,6 +610,11 @@ enlist|-e)
 		# Together they a unique give list of packages which depend on specified package (reverse dependencies).
 		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
 		print_items "${items[@]}"
+	elif [[ $2 = --log ]]; then
+		check-option "$3"
+		package="$3"
+		# Grep the required package from the Changelog
+		get-content "$repodir/ChangeLog.txt" | grep -w "$package" | less
 	else
 		check-option "$2"
 		# Find files which contain specified keyword
@@ -848,12 +853,7 @@ tidy|-T)
 --changelog|-C)
 	check-config
 	check-repo
-	if [[ -f $repodir/ChangeLog.txt ]]; then
-		less "$repodir/ChangeLog.txt"
-	else
-		echo "$repodir/ChangeLog.txt N/A"
-		exit 1
-	fi
+	get-content "$repodir/ChangeLog.txt" | less
 	;;
 --help|-h|*)
 	check-config
