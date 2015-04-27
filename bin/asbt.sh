@@ -757,7 +757,6 @@ tidy|-T)
 		echo "asbt -T [--dry-run] <src> or asbt -T [--dry-run] <pkg>"
 		exit 1
 	fi
-
 	if [[ $2 = --dry-run ]]; then
 		flag=1
 		# Shift argument left so that cleanup is handled same whether dry-run is specified or not.
@@ -765,28 +764,35 @@ tidy|-T)
 	else
 		flag=0
 	fi
-
 	if [[ $2 = src ]]; then
 		check-src-dir
-		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		# We are assuming the format of the source as name-version.extension which could be incorrect
 		for i in $(find -L "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
+			rem=($(ls -td -1 "$srcdir/$i"* 2>/dev/null | tail -n +4))
 			if [[ $flag -eq 1 ]]; then
 				# Dry-run; only display packages to be deleted
-				ls -td -1 "$srcdir/$i"* | tail -n +4
+				print_items "${rem[@]}"
 			else
-				rm -vf "$(ls -td -1 "$srcdir/$i"* | tail -n +4)" 2>/dev/null
+				for pkg in "${rem[@]}"; do
+					rm -vf "$pkg"
+				done
 			fi
 		done
 	elif [[ $2 = pkg ]]; then
 		check-out-dir
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+			# Remove all but the 3 latest (by date) source packages
+			rem=($(ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4))
 			if [[ $flag -eq 1 ]]; then
 				# Dry-run
-				ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4
+				print_items "${rem[@]}"
 			else
-				rm -vf "$(ls -td -1 "$outdir/$i-"[0-9]* 2>/dev/null | tail -n +4)" 2>/dev/null
+				for pkg in "${rem[@]}"; do
+					rm -vf "$pkg"
+				done
 			fi
 		done
 	else
