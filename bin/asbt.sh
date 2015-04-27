@@ -41,6 +41,8 @@ buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 
 pause="yes" # Pause for input when using superuser priviliges.
 
+ignore=""  # Packages to ignore while checking updates.
+
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 
 altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
@@ -433,7 +435,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if echo "${ignore:?}" | grep -q "$pkgn"; then
+	if echo "$ignore" | grep -q "$pkgn"; then
 		return
 	fi
 
