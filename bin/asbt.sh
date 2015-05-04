@@ -65,7 +65,7 @@ check-input () {
 }
 
 # Check number of arguments
-check-option () {
+check_option () {
 	if [[ -z $1 ]]; then
 		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
 	fi
@@ -79,7 +79,7 @@ pause_for_input () {
 }
 
 # Check for the configuration file
-check-config () {
+check_config () {
 	if [[ -e $config ]]; then
 		source "$config"
 	fi
@@ -90,7 +90,7 @@ check-config () {
 }
 
 # Check the repo directory
-check-repo () {
+check_repo () {
 	if [[ ! -d $repodir ]] || [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 		echo "SlackBuild repository $repodir does not exist or is empty."
 		echo "To setup the slackbuilds repository 'asbt -S' can be used."
@@ -98,7 +98,7 @@ check-repo () {
 	fi
 }
 
-edit-config () {
+edit_config () {
 	if [[ ! -e $altconfig ]]; then
 		# Root priviliges required to edit global config file
 		SUDO="/usr/bin/sudo"
@@ -122,21 +122,17 @@ edit-config () {
 }
 
 # Check the src and output(package) directories
-check-src-dir () {
-	if [[ ! -d $srcdir ]]; then
-		echo "Source directory $srcdir does not exist."
-		exit 1
-	fi
-}
-check-out-dir () {
-	if [[ ! -d $outdir ]]; then
-		echo "Output directory $outdir does not exist."
+check_dir () {
+	# check_dir $dir
+	local dir=$1
+	if [[ ! -d $dir ]]; then
+		echo "Directory $dir does not exist."
 		exit 1
 	fi
 }
 
 # Clone git repository from slackbuilds.org (SBo)
-create-git-repo () {
+create_git_repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
 	read -e ch2
 	if [[ $ch2 = n ]] || [[ $ch2 = N ]]; then
@@ -154,7 +150,7 @@ create-git-repo () {
 }
 
 # Get the full path of a package
-get-path() {
+get_path() {
 	# Check if path to package is specified instead of package name
 	if [[ -d $package ]]; then
 		path=$(readlink -f "$package")
@@ -175,7 +171,7 @@ get-path() {
 	fi
 }
 
-get-info () {
+get_info () {
 	# Source the .info file to get the package details
 	if [[ -f "$path/$package.info" ]]; then
 		source "$path/$package.info"
@@ -186,7 +182,7 @@ get-info () {
 	fi
 }
 
-get-content () {
+get_content () {
 	if [[ -f "$1" ]]; then
 		# Return the content of the argument passed.
 		cat "$1"
@@ -233,23 +229,23 @@ setup () {
 		# Now create git repo from upstream
 		if [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 			echo "Slackbuild repository seems to be empty."
-			create-git-repo
+			create_git_repo
 		fi
 		# Re-read the config file and check repo
-		check-config
-		check-repo
+		check_config
+		check_repo
 	elif [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
 		echo "Slackbuild repository $repodir seems to be empty."
-		create-git-repo
+		create_git_repo
 	else
-		edit-config || exit 1
-		check-config
+		edit_config || exit 1
+		check_config
 	fi
 }
 
 # Get info about the source of the package
 get-source-data () {
-	get-info
+	get_info
 	# Check special cases where the package has a separate download for x86_64
 	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:-""} ]]; then
 		link=($DOWNLOAD_x86_64)
@@ -515,15 +511,15 @@ check_pause () {
 case "$1" in
 search|-s)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
+	check_option "$2"
+	check_config
+	check_repo
 	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n" | sort))
 	print_items "${items[@]}"
 	;;
 query|-q)
 	check-input "$#"
-	check-option "$2"
+	check_option "$2"
 	# Check if special options were specified
 	if [[ $2 = --all ]]; then
 		# Query all packages
@@ -540,9 +536,9 @@ query|-q)
 	;;
 find|-f)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
+	check_option "$2"
+	check_config
+	check_repo
 	echo "In slackbuilds repository:"
 	while IFS= read -r -d '' pkg
 	do
@@ -556,18 +552,18 @@ find|-f)
 	;;
 info|-i)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
-	get-content "$path/$package.info"
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
+	get_content "$path/$package.info"
 	;;
 readme|-r)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
 	[[ -f $path/README ]] && cat "$path/README"
 	echo ""
 	[[ -f $path/README.Slackware ]] && cat "$path/README.Slackware" && exit $?
@@ -575,10 +571,10 @@ readme|-r)
 	;;
 view|-v)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
 	if [ -e $editor ]; then
 		$editor "$path/$package.SlackBuild"
 	else
@@ -587,28 +583,28 @@ view|-v)
 	;;
 desc|-d)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
-	get-content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
+	get_content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
 	;;
 list|-l)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
 	# Echo path too so thats its easier to navigate if required
 	echo "($path)"
 	ls "$path"
 	;;
 longlist|-L)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
 	# Echo path too so thats its easier to navigate if required
 	echo "($path)"
 	ls -l "$path"
@@ -620,20 +616,20 @@ enlist|-e)
 		echo "asbt -e [--rev|--log|--git] <pkg>"
 		exit 1
 	fi
-	check-config
-	check-repo
+	check_config
+	check_repo
 	if [[ $2 = --log ]]; then
-		check-option "$3"
+		check_option "$3"
 		package="$3"
 		# Grep the required package from the Changelog
-		get-content "$repodir/ChangeLog.txt" | grep -w "$package" | less
+		get_content "$repodir/ChangeLog.txt" | grep -w "$package" | less
 	elif [[ $2 = --git ]]; then
-		check-option "$3"
+		check_option "$3"
 		package="$3"
 		# Search the required package in the git logs.
 		git --git-dir="$gitdir" log --pretty=short --patch-with-stat --grep="$package"
 	elif [[ $2 = --rev ]]; then
-		check-option "$3"
+		check_option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
 		from_sbo=($(query_installed 'SBo' | rev | cut -f 4- -d "-" | rev))
@@ -648,15 +644,15 @@ enlist|-e)
 		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
 		print_items "${items[@]}"
 	else
-		check-option "$2"
+		check_option "$2"
 		# Find files which contain specified keyword
 		find -L "$repodir" -type f -name "*.info" -exec grep -H -w "$package" {} \;
 	fi
 	;;
 track|-t)
 	check-input "$#"
-	check-option "$2"
-	check-config
+	check_option "$2"
+	check_config
 	echo "Source:"
 	find -L "$srcdir" -maxdepth 1 -type f -iname "$package*"
 	echo -e "\nBuilt:"
@@ -665,10 +661,10 @@ track|-t)
 	;;
 goto|-g)
 	check-input "$#"
-	check-option "$2"
-	check-config
-	check-repo
-	get-path
+	check_option "$2"
+	check_config
+	check_repo
+	get_path
 	if [[ $TERM = linux ]]; then
 		echo "Goto on console N/A"
 		exit 1
@@ -685,22 +681,22 @@ goto|-g)
 	fi
 	;;
 get|-G)
-	check-option "$2"
-	check-config
-	check-repo
+	check_option "$2"
+	check_config
+	check_repo
 	shift # to get rid of the -G option
 	# Run a loop for getting all the packages
 	for i in "$@"; do
 		package="$i"
 		echo
-		get-path
+		get_path
 		get-package "redownload"
 	done
 	;;
 build|-B)
-	check-option "$2"
-	check-config
-	check-repo
+	check_option "$2"
+	check_config
+	check_repo
 	# Check arguments
 	if [[ $# -gt 2 ]]; then
 		shift; shift # to get rid of -B and pkg
@@ -715,7 +711,7 @@ build|-B)
 		# Try to check that the arguments specified do not specify multiple packages
 		for i in "${OPTIONS[@]}"; do
 			package="$i"
-			# get-path
+			# get_path
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 			if [[ -d "$path" ]]; then
 				echo "Only one package can be built at a time."
@@ -727,12 +723,12 @@ build|-B)
 	else
 		OPTIONS=""
 	fi
-	get-path
+	get_path
 	build-package "rebuild"
 	;;
 install|-I|upgrade|-U)
-	check-option "$2"
-	check-config
+	check_option "$2"
+	check_config
 	shift # Get rid of -I
 	check_pause "$@" # whether to pause or not
 	for i in "$@"; do
@@ -744,7 +740,7 @@ install|-I|upgrade|-U)
 	done
 	;;
 remove|-R)
-	check-option "$2"
+	check_option "$2"
 	shift # Get red of -R
 	check_pause "$@" # whether to pause or not
 	for i in "$@"; do
@@ -756,9 +752,9 @@ remove|-R)
 	done
 	;;
 process|-P)
-	check-option "$2"
-	check-config
-	check-repo
+	check_option "$2"
+	check_config
+	check_repo
 	if [[ $2 = "--upgrade" ]] || [[ $2 = "-u" ]]; then
 		# Call the script itself with new parameters
 		for i in $("$0" -c | cut -f 1 -d " "); do
@@ -776,7 +772,7 @@ process|-P)
 		[[ $i = -n ]] && continue
 		package="$i"
 		echo 
-		get-path
+		get_path
 		echo -e "$BOLD" "Processing $package..." "$CLR"
 		get-package || continue
 		build-package || continue
@@ -785,7 +781,7 @@ process|-P)
 	;;
 details|-D)
 	check-input "$#"
-	check-option "$2"
+	check_option "$2"
 	if [[ $(ls "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
 		less /var/log/packages/"$package"-[0-9]*
 	else
@@ -794,7 +790,7 @@ details|-D)
 	fi
 	;;
 tidy|-T)
-	check-config
+	check_config
 	# Check arguments
 	if [[ $# -gt 3 ]]; then
 		echo "Invalid syntax. Correct syntax for this option is:"
@@ -809,7 +805,7 @@ tidy|-T)
 		flag=0
 	fi
 	if [[ $2 = src ]]; then
-		check-src-dir
+		check_dir "$srcdir"
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		# We are assuming the format of the source as name-version.extension which could be incorrect
 		for i in $(find -L "$srcdir" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
@@ -825,7 +821,7 @@ tidy|-T)
 			fi
 		done
 	elif [[ $2 = pkg ]]; then
-		check-out-dir
+		check_dir "$outdir"
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		for i in $(find -L "$outdir" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
@@ -845,7 +841,7 @@ tidy|-T)
 	fi
 	;;
 --update|-u)
-	check-config
+	check_config
 	if [[ -z $gitdir ]]; then
 		echo "Git directory not specified."
 		exit 1
@@ -862,8 +858,8 @@ tidy|-T)
 	;;
 --check|-c)
 	check-input "$#"
-	check-config
-	check-repo
+	check_config
+	check_repo
 	# Check if --all option was specified
 	if [[ $2 = all ]] || [[ $2 = --all ]]; then
 		# Ignore/unset the ignore variable
@@ -884,18 +880,18 @@ tidy|-T)
 	fi
 	;;
 --setup|-S)
-	check-config
+	check_config
 	setup
 	;;
 --version|-V)
         echo "asbt version $ver" ;;
 --changelog|-C)
-	check-config
-	check-repo
-	get-content "$repodir/ChangeLog.txt" | less
+	check_config
+	check_repo
+	get_content "$repodir/ChangeLog.txt" | less
 	;;
 --help|-h|*)
-	check-config
+	check_config
 	if [[ -d "$repodir" ]]; then
 		repo="$repodir"
 	else

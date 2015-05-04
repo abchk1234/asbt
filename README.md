@@ -186,7 +186,7 @@ instead of `asbt search '*xfce*'`
 
 * From version 1.4, pauses for input when using superuser privileges.
 
-  To override this behaviour `pause=no` can be used in the config.
+  To override this behaviour `PAUSE=no` can be used in the config.
 
   With some options like `-B`, `-I`, `-U`, `-R`, and `-P`, `-n` can be specified at the command line to disable pausing for input. For example,
 
