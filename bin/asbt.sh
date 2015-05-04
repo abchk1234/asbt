@@ -244,7 +244,7 @@ setup () {
 }
 
 # Get info about the source of the package
-get-source-data () {
+get_src_data () {
 	get_info
 	# Check special cases where the package has a separate download for x86_64
 	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:-""} ]]; then
@@ -273,7 +273,7 @@ get-source-data () {
 	done
 }
 
-check-source () {
+check_source () {
 	local srci=$1	# Source item passed as argument
 	local MD5=$2	# MD5 of src item
 	local md5i=$3	# Calculated md5sum
@@ -297,7 +297,7 @@ check-source () {
 	fi
 }
 
-download-source () {
+download_source () {
 	local srci=$1	# Source item passed as argument
 	local linki=$2	# Link of src item
 	# Check for unsupported url
@@ -326,15 +326,15 @@ download-source () {
 	fi
 }
 
-get-package () {
+get_package () {
 	local re=$1	# Whether to re-download or not passed as arg
-	get-source-data
+	get_src_data
 	for ((i=0; i<${#src[*]}; i++)); do
 		# Check source for each source item
-		check-source "${src[$i]}" "${MD5[$i]}" "${md5[$i]}"
+		check_source "${src[$i]}" "${MD5[$i]}" "${md5[$i]}"
 		if [[ $valid -ne 1 ]]; then
 			# Download the source
-			download-source "${src[$i]}" "${link[$i]}"
+			download_source "${src[$i]}" "${link[$i]}"
 		else
 			echo "Source: ${src[$i]} present and md5sum matched."
 			# Check if re-download arg was specified
@@ -342,7 +342,7 @@ get-package () {
 				echo -n "Re-download? [y/N]: "
 				read -e choice
 				if [[ $choice = y ]] || [[ $choice = Y ]]; then
-					download-source "${src[$i]}" "${link[$i]}"
+					download_source "${src[$i]}" "${link[$i]}"
 				fi
 			fi
 		fi
@@ -351,7 +351,7 @@ get-package () {
 	unset src md5
 }
 
-check-built-package () {
+check_built_pkg () {
 	# Source the .info file to get the package version
 	if [[ -f $path/$package.info ]]; then
 		source "$path/$package.info"
@@ -367,9 +367,9 @@ check-built-package () {
 	fi
 }
 
-build-package () {
+build_package () {
 	local rebuild=$1	# Whether to rebuild or not passed as argument
-	check-built-package
+	check_built_pkg
 	# Check if package was already built and if we dont need to rebuild
 	if [[ $built -eq 1 ]] && [[ -z "$rebuild" ]]; then
 		return 0
@@ -400,7 +400,7 @@ build-package () {
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"
 }
 
-install-package () {
+install_package () {
 	local pkg
 	local pkg_ver
 	# Check if package present
@@ -426,7 +426,7 @@ install-package () {
 	fi
 }
 
-check-new-pkg () {
+check_new_pkg () {
 	pkgn="$1" # Package name is first argument
 	pkgv="$2" # Package ver is second argument
 
@@ -690,7 +690,7 @@ get|-G)
 		package="$i"
 		echo
 		get_path
-		get-package "redownload"
+		get_package "redownload"
 	done
 	;;
 build|-B)
@@ -724,7 +724,7 @@ build|-B)
 		OPTIONS=""
 	fi
 	get_path
-	build-package "rebuild"
+	build_package "rebuild"
 	;;
 install|-I|upgrade|-U)
 	check_option "$2"
@@ -736,7 +736,7 @@ install|-I|upgrade|-U)
 		[[ $i = -n ]] && continue
 		package="$i"
 		echo
-		install-package
+		install_package
 	done
 	;;
 remove|-R)
@@ -774,9 +774,9 @@ process|-P)
 		echo 
 		get_path
 		echo -e "$BOLD" "Processing $package..." "$CLR"
-		get-package || continue
-		build-package || continue
-		install-package
+		get_package || continue
+		build_package || continue
+		install_package
 	done
 	;;
 details|-D)
@@ -868,14 +868,14 @@ tidy|-T)
 		for i in /var/log/packages/*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			check-new-pkg "$package" "$pkgver"
+			check_new_pkg "$package" "$pkgver"
 		done
 	else
 		# Only SBo packages
 		for i in /var/log/packages/*_SBo*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			check-new-pkg "$package" "$pkgver"
+			check_new_pkg "$package" "$pkgver"
 		done
 	fi
 	;;
