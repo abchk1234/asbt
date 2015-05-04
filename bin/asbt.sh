@@ -36,8 +36,8 @@ gitdir="$HOME/git/slackbuilds/.git" # Slackbuilds git repo directory.
 editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 #editor="/usr/bin/nano" # Alternate editor
 
-buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
-#buildflags="" # No buildflags by default
+BUILDFLAGS="MAKEFLAGS=-j2" # Build flags specified while building a package
+#BUILDFLAGS="" # No build flags
 
 PAUSE="yes" # Pause for input when using superuser priviliges.
 
@@ -395,10 +395,10 @@ build-package () {
 	# Build options are assumed to be set beforehand.
 	if [[ -z $outdir ]]; then
 		pause_for_input
-		sudo -i CWD="$path" $buildflags "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
+		sudo -i CWD="$path" $BUILDFLAGS "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$outdir" CWD="$path" $buildflags "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
+		sudo -i OUTPUT="$outdir" CWD="$path" $BUILDFLAGS "${OPTIONS[@]}" /bin/sh "$path/$package.SlackBuild" || exit 1
 	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$path/$package.SlackBuild"

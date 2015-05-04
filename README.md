@@ -67,7 +67,7 @@ The variables used are:
 5) editor="" 
  # Editor for viewing/editing slackbuilds.
 
-6) buildflags=""
+6) BUILDFLAGS=""
  # Common build flags specified while building packages.
 
 7) IGNORE=""
@@ -188,6 +188,6 @@ instead of `asbt search '*xfce*'`
 
   To override this behaviour `pause=no` can be used in the config.
 
-  With some options like -B, -I, -U, -R, and -P, -n argument can be used at the command line to disable pausing for input. For example,
+  With some options like `-B`, `-I`, `-U`, `-R`, and `-P`, `-n` can be specified at the command line to disable pausing for input. For example,
 
   `asbt -P screenfetch dosbox -n`
