@@ -39,9 +39,9 @@ editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 buildflags="MAKEFLAGS=-j2" # Build flags specified while building a package
 #buildflags="" # No buildflags by default
 
-pause="yes" # Pause for input when using superuser priviliges.
+PAUSE="yes" # Pause for input when using superuser priviliges.
 
-ignore=""  # Packages to ignore while checking updates.
+IGNORE=""  # Packages to ignore while checking updates.
 
 config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 
@@ -73,7 +73,7 @@ check-option () {
 
 pause_for_input () {
 	# Check for override
-	if [[ ! $pause = no ]]; then
+	if [[ ! $PAUSE = no ]]; then
 		echo -e "$BOLD" "Press enter to continue..." "$CLR"; read
 	fi
 }
@@ -101,7 +101,7 @@ check-repo () {
 edit-config () {
 	if [[ ! -e $altconfig ]]; then
 		# Root priviliges required to edit global config file
-		SUDO="sudo"
+		SUDO="/usr/bin/sudo"
 		echo "Enter your password to view or edit the configuration file $config"
 	else
 		# Root priviliges not required to edit config in $HOME folder
@@ -435,7 +435,7 @@ check-new-pkg () {
 	pkgv="$2" # Package ver is second argument
 
 	# Skip if package is in ignore list
-	if echo "$ignore" | grep -q "$pkgn"; then
+	if echo "$IGNORE" | grep -q "$pkgn"; then
 		return
 	fi
 
@@ -472,14 +472,41 @@ print_items () {
 	fi
 }
 
-query-installed () {
-	# query-installed $1
-	local pkg
-	local items
-	pkg=$1	# pkg to be searched for passed as first arg
+query_installed () {
+	# query_installed $1
+	local pkg=$1
 	# Get list of package items in /var/log/packages that match and print them
-	items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	print_items "${items[@]}"
+}
+
+remove_package () {
+	# remove_package $pkg
+	local pkg=$1
+	local rpkg
+	# Check if package is installed
+	if [[ $(ls "/var/log/packages/$pkg"-[0-9]* 2> /dev/null) ]]; then
+		rpkg=$(ls "/var/log/packages/$pkg"-[0-9]*)
+		echo "Removing $(echo "$rpkg" | cut -f 5 -d '/')"
+		pause_for_input
+		sudo /sbin/removepkg "$rpkg"
+	elif [[ $? -eq 1 ]]; then
+		echo "Package $pkg: N/A"
+		exit 1
+	else
+		echo "Unable to remove $pkg"
+		exit 1
+	fi
+}
+
+check_pause () {
+	# check_pause "$@"
+	for i in "$@"; do
+		if [[ $i = -n ]]; then
+			PAUSE=no
+			break
+		fi
+	done
 }
 
 # Program options
@@ -500,15 +527,15 @@ query|-q)
 	# Check if special options were specified
 	if [[ $2 = --all ]]; then
 		# Query all packages
-		query-installed '*'
+		query_installed '*'
 		echo -e "\nTotal: ${#items[@]}"
 	elif [[ $2 = --sbo ]]; then
 		# Query SBo packages
-		query-installed '_SBo'
+		query_installed '_SBo'
 		echo -e "\nTotal: ${#items[@]}"
 	else
 		# Query specified package
-		query-installed "$package"
+		query_installed "$package"
 	fi
 	;;
 find|-f)
@@ -609,7 +636,7 @@ enlist|-e)
 		check-option "$3"
 		package="$3"
 		# Get the list of packages from SBo installed on the system
-		from_sbo=($(query-installed 'SBo' | rev | cut -f 4- -d "-" | rev))
+		from_sbo=($(query_installed 'SBo' | rev | cut -f 4- -d "-" | rev))
 		# Represent them in a form in which they can be concurrently searched using grep
 		# The package we are searching for is removed from this list using sed
 		words=$(echo "${from_sbo[*]}" | tr ' ' '|' | sed "s/$package|//")
@@ -661,8 +688,9 @@ get|-G)
 	check-option "$2"
 	check-config
 	check-repo
+	shift # to get rid of the -G option
 	# Run a loop for getting all the packages
-	for i in $(echo "$*" | cut -f 2- -d " "); do
+	for i in "$@"; do
 		package="$i"
 		echo
 		get-path
@@ -675,13 +703,19 @@ build|-B)
 	check-repo
 	# Check arguments
 	if [[ $# -gt 2 ]]; then
-		OPTIONS=($(echo "$*" | cut -d " " -f 3-)) # Build options
+		shift; shift # to get rid of -B and pkg
+		check_pause "$@" # whether to pause or not
+		for i in "$@"; do
+			# Check for -n option
+			[[ $i = -n ]] && continue
+			OPTIONS+=($i)
+		done
 		# Save package name for later.
 		pname="$package"
 		# Try to check that the arguments specified do not specify multiple packages
-		for i in $(echo "$*" | cut -f 3- -d " "); do
+		for i in "${OPTIONS[@]}"; do
 			package="$i"
-			#get-path
+			# get-path
 			path=$(find -L "$repodir" -maxdepth 2 -type d -name "$package")
 			if [[ -d "$path" ]]; then
 				echo "Only one package can be built at a time."
@@ -699,7 +733,11 @@ build|-B)
 install|-I|upgrade|-U)
 	check-option "$2"
 	check-config
-	for i in $(echo "$*" | cut -f 2- -d " "); do
+	shift # Get rid of -I
+	check_pause "$@" # whether to pause or not
+	for i in "$@"; do
+		# Check for -n option
+		[[ $i = -n ]] && continue
 		package="$i"
 		echo
 		install-package
@@ -707,22 +745,14 @@ install|-I|upgrade|-U)
 	;;
 remove|-R)
 	check-option "$2"
-	for i in $(echo "$*" | cut -f 2- -d " "); do
+	shift # Get red of -R
+	check_pause "$@" # whether to pause or not
+	for i in "$@"; do
+		# Check for -n option
+		[[ $i = -n ]] && continue
 		package="$i"
 		echo
-		# Check if package is installed
-		if [[ $(ls "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
-			rpkg=$(ls "/var/log/packages/$package"-[0-9]*)
-			echo "Removing $(echo "$rpkg" | cut -f 5 -d '/')"
-			pause_for_input
-			sudo /sbin/removepkg "$rpkg"
-		elif [[ $? -eq 1 ]]; then
-			echo "Package $i: N/A"
-			exit 1
-		else
-			echo "Unable to remove $i"
-			exit 1
-		fi
+		remove_package "$package"
 	done
 	;;
 process|-P)
@@ -739,7 +769,11 @@ process|-P)
 		done
 		exit 0
 	fi
-	for i in $(echo "$*" | cut -f 2- -d " "); do
+	shift # to get rid of -P
+	check_pause "$@" # whether to pause or not
+	for i in "$@"; do
+		# Check for -n option
+		[[ $i = -n ]] && continue
 		package="$i"
 		echo 
 		get-path
@@ -833,7 +867,7 @@ tidy|-T)
 	# Check if --all option was specified
 	if [[ $2 = all ]] || [[ $2 = --all ]]; then
 		# Ignore/unset the ignore variable
-		unset ignore
+		unset IGNORE
 		# Check all installed packages
 		for i in /var/log/packages/*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)

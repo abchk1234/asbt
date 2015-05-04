@@ -70,10 +70,10 @@ The variables used are:
 6) buildflags=""
  # Common build flags specified while building packages.
 
-7) ignore=""
+7) IGNORE=""
  # Packages to ignore when checking for updates.
 
-8) pause="yes"
+8) PAUSE="yes"
  # Pause for input when using superuser priviliges.
 
 ~~~
@@ -188,3 +188,6 @@ instead of `asbt search '*xfce*'`
 
   To override this behaviour `pause=no` can be used in the config.
 
+  With some options like -B, -I, -U, -R, and -P, -n argument can be used at the command line to disable pausing for input. For example,
+
+  `asbt -P screenfetch dosbox -n`
