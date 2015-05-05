@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-ver="1.7 (dated: 26 Apr 2015)" # Version
+VER="1.7 (dated: 26 Apr 2015)" # Version
 
 # Variables used:
 
@@ -43,9 +43,9 @@ PAUSE="yes" # Pause for input when using superuser priviliges.
 
 IGNORE=""  # Packages to ignore while checking updates.
 
-config="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
+CONFIG="/etc/asbt/asbt.conf" # Config file which over-rides above defaults.
 
-altconfig="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
+ALTCONFIG="$HOME/.config/asbt.conf" # Alternate config file which overrides above config.
 
 #--------------------------------------------------------------------------------------#
 
@@ -58,7 +58,7 @@ BOLD="\e[1m"
 CLR="\e[0m"
 
 # Check the no of input parameters
-check-input () {
+check_input () {
 	if [[ $1 -gt 2 ]] ; then
 		echo "Invalid syntax. Type asbt -h for more info." && exit 1
 	fi
@@ -80,12 +80,12 @@ pause_for_input () {
 
 # Check for the configuration file
 check_config () {
-	if [[ -e $config ]]; then
-		source "$config"
+	if [[ -e $CONFIG ]]; then
+		source "$CONFIG"
 	fi
 	# Check for alternate config
-	if [[ -e $altconfig ]]; then
-		source "$altconfig"
+	if [[ -e $ALTCONFIG ]]; then
+		source "$ALTCONFIG"
 	fi
 }
 
@@ -99,24 +99,24 @@ check_repo () {
 }
 
 edit_config () {
-	if [[ ! -e $altconfig ]]; then
+	if [[ ! -e $ALTCONFIG ]]; then
 		# Root priviliges required to edit global config file
 		SUDO="/usr/bin/sudo"
-		echo "Enter your password to view or edit the configuration file $config"
+		echo "Enter your password to view or edit the configuration file $CONFIG"
 	else
 		# Root priviliges not required to edit config in $HOME folder
 		SUDO=""
-		config="$altconfig"
+		CONFIG="$ALTCONFIG"
 	fi
 
 	if [[ -e $editor ]]; then
-		$SUDO $editor "$config"
+		$SUDO $editor "$CONFIG"
 	elif [[ -e /usr/bin/nano ]]; then
-		$SUDO nano "$config"
+		$SUDO nano "$CONFIG"
 	elif [[ -e /usr/bin/vim ]]; then
-		$SUDO vim "$config"
+		$SUDO vim "$CONFIG"
 	else
-	       echo "Unable to find editor to edit the configuration file $config"
+	       echo "Unable to find editor to edit the configuration file $CONFIG"
 	       exit 1
 	fi
 }
@@ -221,10 +221,10 @@ setup () {
 			fi
 		fi
 		# Edit the config file to reflect above changes
-		if [[ -e $altconfig ]]; then
-			sed -i "s|repodir=.*|repodir=\"${repodir}\"|" "$altconfig"
+		if [[ -e $ALTCONFIG ]]; then
+			sed -i "s|repodir=.*|repodir=\"${repodir}\"|" "$ALTCONFIG"
 		else
-			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$config" >> "$altconfig"
+			sed "s|repodir=.*|repodir=\"${repodir}\"|" "$CONFIG" >> "$ALTCONFIG"
 		fi
 		# Now create git repo from upstream
 		if [[ $(find -L "$repodir" -maxdepth 1 | wc -w) -le 1 ]]; then
@@ -273,25 +273,26 @@ get_src_data () {
 	done
 }
 
+# Check if src is already present
 check_source () {
 	local srci=$1	# Source item passed as argument
-	local MD5=$2	# MD5 of src item
+	local md5s=$2	# md5 of src item
 	local md5i=$3	# Calculated md5sum
 	valid=0		# Guilty untill proven otherwise ;)
 	# Check if source has already been downloaded
 	if [[ -e $path/$srci ]]; then
 		# Check validity of downloaded source
-		if [[ $md5i = "$MD5" ]]; then
+		if [[ $md5i = "$md5s" ]]; then
 			valid=1
 		fi
 	elif [[ -f "$srcdir/$srci" ]]; then
 		# Check if source present but not linked
-		if [[ $md5i = "$MD5" ]]; then
+		if [[ $md5i = "$md5s" ]]; then
 			ln -svf "$srcdir/$srci" "$path" && valid=1
 		fi
 	elif [[ -f "$srcdir/$PRGNAM-$srci" ]]; then
 		# When src was renamed while saving
-		if [[ $md5i = "$MD5" ]]; then
+		if [[ $md5i = "$md5s" ]]; then
 			ln -svf "$srcdir/$PRGNAM-$srci" "$path/$srci" && valid=1
 		fi
 	fi
@@ -505,20 +506,176 @@ check_pause () {
 	done
 }
 
+search_pkg () {
+	# search_pkg $pkg
+	local pkg=$1
+	check_config
+	check_repo
+	local items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$pkg*" -printf "%P\n" | sort))
+	print_items "${items[@]}"
+}
+
+find_pkg () {
+	# find_pkg $pkg
+	local pkg=$1
+	check_config
+	check_repo
+	echo "In slackbuilds repository:"
+	while IFS= read -r -d '' pkgn; do
+		# Get version
+		source "${pkgn}"/*.info 2> /dev/null
+		# Display package and version
+		echo "$pkgn($VERSION)"
+	done < <(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$pkg*" -print0)
+	echo -e "\nInstalled:"
+	find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*_SBo" -printf "%f\n"
+}
+
+display_readme () {
+	# display_readme $pkg
+	local pkg=$1
+	check_config
+	check_repo
+	get_path
+	[[ -f $path/README ]] && cat "$path/README"
+	echo ""
+	[[ -f $path/README.Slackware ]] && cat "$path/README.Slackware" && exit $?
+	[[ -f $path/README.SLACKWARE ]] && cat "$path/README.SLACKWARE"
+}
+
+view_slackbuild () {
+	# view_slackbuild $pkg
+	local pkg=$1
+	check_config
+	check_repo
+	get_path
+	if [[ -e $editor ]]; then
+		"$editor" "$path/$pkg.SlackBuild"
+	else
+		less "$path/$pkg.Slackbuild"
+	fi
+}
+
+get_description () {
+	# get_description $pkg
+	local pkg=$1
+	check_config
+	check_repo
+	get_path
+	get_content "$path/slack-desc" | grep "$pkg" | cut -f 2- -d ":"
+}
+
+list_files () {
+	# list_files $pkg $2
+	local pkg=$1
+	check_config
+	check_repo
+	get_path
+	echo "($path)"
+	if [[ $2 ]]; then
+	       ls -l "$path"
+	else
+		ls "$path"
+	fi
+}
+
+track_files () {
+	# track_files $pkg
+	local pkg=$1
+	check_config
+	echo "Source:"
+	find -L "$srcdir" -maxdepth 1 -type f -iname "$pkg*"
+	echo -e "\nBuilt:"
+	find -L "$outdir" -maxdepth 1 -type f -iname "$pkg*"
+	find "/tmp" -maxdepth 1 -type f -iname "$pkg*"
+}
+
+goto_folder () {
+	# goto_folder
+	check_config
+	check_repo
+	get_path
+	if [[ $TERM = linux ]]; then
+		echo "Goto on console N/A"
+		exit 1
+	fi
+	if [[ -e /usr/bin/xfce4-terminal ]]; then
+		xfce4-terminal --working-directory="$path"
+	elif [[ -e /usr/bin/konsole ]]; then
+		konsole --workdir "$path"
+	elif [[ -e /usr/bin/xterm ]]; then
+		xterm -e 'cd "$path" && /bin/bash'
+	else
+		echo "Could not find a suitable terminal emulator, goto N/A"
+		exit 1
+	fi
+}
+
+get_details () {
+	# get_details $pkg
+	local pkg=$1
+	if [[ $(ls "/var/log/packages/$pkg"-[0-9]* 2> /dev/null) ]]; then
+		less /var/log/packages/"$pkg"-[0-9]*
+	else
+		echo "Details of package $pkg: N/A"
+		exit 1
+	fi
+}
+
+update_repo () {
+	# update_repo
+	check_config
+	if [[ -z $gitdir ]]; then
+		echo "Git directory not specified."
+		exit 1
+	fi
+	if [[ -d $gitdir ]]; then
+		echo "Performing git stash"
+		cd "$gitdir/.." && git stash
+		echo "Updating git repo $gitdir"
+		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
+	else
+		echo "Git directory $gitdir doesnt exist.."
+		exit 1
+	fi
+}
+
+display_help () {
+	check_config
+	if [[ -d "$repodir" ]]; then
+		repo="$repodir"
+	else
+		repo="N/A"
+	fi
+	cat << EOF
+Usage: asbt <option> [package]
+Options-
+	[search,-s]	[query,-q]	[find,-f]
+	[info,-i]	[readme,-r]	[desc,-d]
+	[view,-v]	[goto,-g]	[list,-l]
+	[track,-t]	[longlist,-L]	[enlist,-e]
+	[get,-G]	[build,-B]	[install,-I]
+	[upgrade,-U]	[remove,-R]	[process,-P]
+	[details,-D]	[tidy,-T]	[--update,-u]
+	[--check,-c]	[--help,-h]	[--changelog,-C]
+	[--version,-V]	[--setup,-S]
+
+Using repository: $repo
+For more info, see the man page and/or the README.
+EOF
+}
+
 # Program options
 # (Modular approach is used by calling functions for each task)
 
 case "$1" in
 search|-s)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	items=($(find -L "$repodir" -maxdepth 2 -mindepth 1 -type d -iname "*$package*" -printf "%P\n" | sort))
-	print_items "${items[@]}"
+	search_pkg "$package"
 	;;
 query|-q)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
 	# Check if special options were specified
 	if [[ $2 = --all ]]; then
@@ -535,23 +692,12 @@ query|-q)
 	fi
 	;;
 find|-f)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	echo "In slackbuilds repository:"
-	while IFS= read -r -d '' pkg
-	do
-		# Get version
-		source "${pkg}"/*.info 2> /dev/null
-		# Display package and version
-		echo "$pkg($VERSION)"
-	done < <(find -L "$repodir" -mindepth 2 -maxdepth 2 -type d -iname "*$package*" -print0)
-	echo -e "\nInstalled:"
-	find "/var/log/packages" -maxdepth 1 -type f -iname "*$package*_SBo" -printf "%f\n"
+	find_pkg "$package"
 	;;
 info|-i)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
 	check_config
 	check_repo
@@ -559,55 +705,29 @@ info|-i)
 	get_content "$path/$package.info"
 	;;
 readme|-r)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	[[ -f $path/README ]] && cat "$path/README"
-	echo ""
-	[[ -f $path/README.Slackware ]] && cat "$path/README.Slackware" && exit $?
-	[[ -f $path/README.SLACKWARE ]] && cat "$path/README.SLACKWARE"
+	display_readme "$package"
 	;;
 view|-v)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	if [ -e $editor ]; then
-		$editor "$path/$package.SlackBuild"
-	else
-		less "$path/$package.Slackbuild"
-	fi
+	view_slackbuild "$package"
 	;;
 desc|-d)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	get_content "$path/slack-desc" | grep "$package" | cut -f 2- -d ":"
+	get_description "$package"
 	;;
 list|-l)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	# Echo path too so thats its easier to navigate if required
-	echo "($path)"
-	ls "$path"
+	list_files "$package"
 	;;
 longlist|-L)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	# Echo path too so thats its easier to navigate if required
-	echo "($path)"
-	ls -l "$path"
+	list_files "$package" long
 	;;
 enlist|-e)
 	# Check arguments
@@ -650,35 +770,14 @@ enlist|-e)
 	fi
 	;;
 track|-t)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	echo "Source:"
-	find -L "$srcdir" -maxdepth 1 -type f -iname "$package*"
-	echo -e "\nBuilt:"
-	find -L "$outdir" -maxdepth 1 -type f -iname "$package*"
-	find "/tmp" -maxdepth 1 -type f -iname "$package*"
+	track_files "$package"
 	;;
 goto|-g)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	check_config
-	check_repo
-	get_path
-	if [[ $TERM = linux ]]; then
-		echo "Goto on console N/A"
-		exit 1
-	fi
-	if [[ -e /usr/bin/xfce4-terminal ]]; then
-        	xfce4-terminal --working-directory="$path"
-	elif [[ -e /usr/bin/konsole ]]; then
-		konsole --workdir "$path"
-	elif [[ -e /usr/bin/xterm ]]; then
-		xterm -e 'cd "$path" && /bin/bash'
-	else
-		echo "Could not find a suitable terminal emulator, goto N/A"
-		exit 1
-	fi
+	goto_folder
 	;;
 get|-G)
 	check_option "$2"
@@ -780,14 +879,9 @@ process|-P)
 	done
 	;;
 details|-D)
-	check-input "$#"
+	check_input $#
 	check_option "$2"
-	if [[ $(ls "/var/log/packages/$package"-[0-9]* 2> /dev/null) ]]; then
-		less /var/log/packages/"$package"-[0-9]*
-	else
-		echo "Details of package $package: N/A"
-		exit 1
-	fi
+	get_details "$package"
 	;;
 tidy|-T)
 	check_config
@@ -840,24 +934,9 @@ tidy|-T)
 		exit 1
 	fi
 	;;
---update|-u)
-	check_config
-	if [[ -z $gitdir ]]; then
-		echo "Git directory not specified."
-		exit 1
-	fi
-	if [[ -d $gitdir ]]; then
-		echo "Performing git stash"
-		cd "$gitdir/.." && git stash
-		echo "Updating git repo $gitdir"
-		git --git-dir="$gitdir" --work-tree="$gitdir/.." pull origin master || exit 1
-	else
-		echo "Git directory $gitdir doesnt exist.."
-		exit 1
-	fi
-	;;
+--update|-u) update_repo ;;
 --check|-c)
-	check-input "$#"
+	check_input $#
 	check_config
 	check_repo
 	# Check if --all option was specified
@@ -884,36 +963,13 @@ tidy|-T)
 	setup
 	;;
 --version|-V)
-        echo "asbt version $ver" ;;
+        echo "asbt version $VER" ;;
 --changelog|-C)
 	check_config
 	check_repo
 	get_content "$repodir/ChangeLog.txt" | less
 	;;
---help|-h|*)
-	check_config
-	if [[ -d "$repodir" ]]; then
-		repo="$repodir"
-	else
-		repo="N/A"
-	fi
-	cat << EOF
-Usage: asbt <option> [package]
-Options-
-	[search,-s]	[query,-q]	[find,-f]
-	[info,-i]	[readme,-r]	[desc,-d]
-	[view,-v]	[goto,-g]	[list,-l]
-	[track,-t]	[longlist,-L]	[enlist,-e]
-	[get,-G]	[build,-B]	[install,-I]
-	[upgrade,-U]	[remove,-R]	[process,-P]
-	[details,-D]	[tidy,-T]	[--update,-u]
-	[--check,-c]	[--help,-h]	[--changelog,-C]
-	[--version,-V]	[--setup,-S]
-
-Using repository: $repo
-For more info, see the man page and/or the README.
-EOF
-       ;;
+--help|-h|*) display_help ;;
 esac
 
 # Exit with exit status of last executed statement

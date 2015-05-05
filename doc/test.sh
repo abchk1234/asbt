@@ -6,7 +6,7 @@ BOLD="\e[1m"
 CLR="\e[0m"
 
 check_fail () {
-	if [ $? -eq 1 ]; then
+	if [[ $? -eq 1 ]]; then
 		echo -e $BOLD "Test passed." $CLR
 	else
 		echo -e $BOLD "Test failed." $CLR
@@ -14,7 +14,7 @@ check_fail () {
 }
 
 check_pass () {
-	if [ $? -eq 0 ]; then
+	if [[ $? -eq 0 ]]; then
 		echo -e $BOLD "Test passed." $CLR
 	else
 		echo -e $BOLD "Test failed." $CLR
@@ -26,7 +26,7 @@ echo "./bin/asbt.sh"
 ./bin/asbt.sh; check_pass; echo
 
 # Some common options
-options=('-s' '-q' '-i' '-r' '-d')
+options=('-s' '-q' '-i' '-r' '-d' '-l' '-L')
 for i in ${options[*]}; do
 	# Valid use cases
 	echo -e "Checking success...\n"
@@ -48,7 +48,7 @@ for i in ${options[*]}; do
 done
 
 # Using path instead of name
-options=('-i' '-r' '-d')
+options=('-i' '-r' '-d' '-G' '-B')
 for i in ${options[*]}; do
 	echo -e "Checking success...\n"
 
@@ -57,7 +57,7 @@ for i in ${options[*]}; do
 done
 
 # State changing operations
-options=('-G' '-B' '-U')
+options=('-R' '-I' '-U')
 for i in ${options[*]}; do
 	echo -e "Checking success...\n"
 
