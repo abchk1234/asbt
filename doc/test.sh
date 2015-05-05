@@ -57,8 +57,8 @@ for i in ${options[*]}; do
 done
 
 # State changing operations
-options=('-R' '-I' '-U')
-for i in ${options[*]}; do
+options=('-R' '-I' '-U' '-P -n')
+for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
 	echo "./bin/asbt.sh $i asbt"
