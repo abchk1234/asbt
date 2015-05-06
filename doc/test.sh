@@ -27,7 +27,7 @@ echo "./bin/asbt.sh"
 
 # Some common options
 options=('-s' '-q' '-i' '-r' '-d' '-l' '-L')
-for i in ${options[*]}; do
+for i in "${options[@]}"; do
 	# Valid use cases
 	echo -e "Checking success...\n"
 
@@ -49,12 +49,23 @@ done
 
 # Using path instead of name
 options=('-i' '-r' '-d' '-G' '-B')
-for i in ${options[*]}; do
+for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
 	echo "./bin/asbt.sh $i ~/builds/asbt/asbt"
 	./bin/asbt.sh $i ~/builds/asbt/asbt; check_pass; echo
 done
+
+# Misc options
+options=('-e' '-e --rev')
+for i in "${options[@]}"; do
+	echo -e "Checking success...\n"
+
+	echo "./bin/asbt.sh $i gtkmm"
+	./bin/asbt.sh $i gtkmm
+	check_pass; echo
+done
+
 
 # State changing operations
 options=('-R' '-I' '-U' '-P -n')

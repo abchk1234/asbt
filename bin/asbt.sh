@@ -678,6 +678,47 @@ display_info () {
 	get_content "$PKGPATH/$PACKAGE.info"
 }
 
+tidy_dir () {
+	# tidy_dir $dir $dry_run
+	local dir=$1
+	local dry_run=$2
+	if [[ $1 = src ]]; then
+		check_dir "$SRCDIR"
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
+		# We are assuming the format of the source as name-version.extension which could be incorrect
+		for i in $(find -L "$SRCDIR" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
+			# Remove all but the 3 latest (by date) source packages
+			local rem=($(ls -td -1 "$SRCDIR/$i"* 2>/dev/null | tail -n +4))
+			if [[ $dry_run -eq 1 ]]; then
+				# Dry-run; only display packages to be deleted
+				print_items "${rem[@]}"
+			else
+				for pkg in "${rem[@]}"; do
+					rm -vf "$pkg"
+				done
+			fi
+		done
+	elif [[ $1 = pkg ]]; then
+		check_dir "$PKGDIR"
+		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
+		for i in $(find -L "$PKGDIR" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
+			# Remove all but the 3 latest (by date) source packages
+			local rem=($(ls -td -1 "$PKGDIR/$i-"[0-9]* 2>/dev/null | tail -n +4))
+			if [[ $dry_run -eq 1 ]]; then
+				# Dry-run
+				print_items "${rem[@]}"
+			else
+				for pkg in "${rem[@]}"; do
+					rm -vf "$pkg"
+				done
+			fi
+		done
+	else
+		echo "Unrecognised option for tidy. See the man page for more info."
+		exit 1
+	fi
+}
+
 # Program options
 # (Modular approach is used by calling functions for each task)
 
@@ -750,14 +791,12 @@ enlist|-e)
 	check_repo
 	if [[ $2 = --log ]]; then
 		check_arg "$3"
-		package="$3"
 		# Grep the required package from the Changelog
-		get_content "$REPODIR/ChangeLog.txt" | grep -w "$package" | less
+		get_content "$REPODIR/ChangeLog.txt" | grep -w "$3" | less
 	elif [[ $2 = --git ]]; then
 		check_arg "$3"
-		package="$3"
 		# Search the required package in the git logs.
-		git --git-dir="$GITDIR" log --pretty=short --patch-with-stat --grep="$package"
+		git --git-dir="$GITDIR" log --pretty=short --patch-with-stat --grep="$3"
 	elif [[ $2 = --rev ]]; then
 		check_arg "$3"
 		package="$3"
@@ -776,7 +815,7 @@ enlist|-e)
 	else
 		check_arg "$2"
 		# Find files which contain specified keyword
-		find -L "$REPODIR" -type f -name "*.info" -exec grep -H -w "$package" {} \;
+		find -L "$REPODIR" -type f -name "*.info" -exec grep -H -w "$2" {} \;
 	fi
 	;;
 track|-t)
@@ -900,41 +939,7 @@ tidy|-T)
 	else
 		flag=0
 	fi
-	if [[ $2 = src ]]; then
-		check_dir "$SRCDIR"
-		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
-		# We are assuming the format of the source as name-version.extension which could be incorrect
-		for i in $(find -L "$SRCDIR" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
-			# Remove all but the 3 latest (by date) source packages
-			rem=($(ls -td -1 "$SRCDIR/$i"* 2>/dev/null | tail -n +4))
-			if [[ $flag -eq 1 ]]; then
-				# Dry-run; only display packages to be deleted
-				print_items "${rem[@]}"
-			else
-				for pkg in "${rem[@]}"; do
-					rm -vf "$pkg"
-				done
-			fi
-		done
-	elif [[ $2 = pkg ]]; then
-		check_dir "$PKGDIR"
-		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
-		for i in $(find -L "$PKGDIR" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
-			# Remove all but the 3 latest (by date) source packages
-			rem=($(ls -td -1 "$PKGDIR/$i-"[0-9]* 2>/dev/null | tail -n +4))
-			if [[ $flag -eq 1 ]]; then
-				# Dry-run
-				print_items "${rem[@]}"
-			else
-				for pkg in "${rem[@]}"; do
-					rm -vf "$pkg"
-				done
-			fi
-		done
-	else
-		echo "Unrecognised option for tidy. See the man page for more info."
-		exit 1
-	fi
+	tidy_dir $2 $flag
 	;;
 --update|-u) update_repo ;;
 --check|-c)
