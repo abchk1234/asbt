@@ -833,12 +833,19 @@ get|-G)
 	check_config
 	check_repo
 	shift # to get rid of the -G option
+	check_options "$@" # whether to pause or not
 	# Run a loop for getting all the packages
 	for i in "$@"; do
+		# Check for -n option
+		[[ $i = -n ]] && continue
 		PACKAGE=$i
 		echo
 		get_path
-		get_package "redownload"
+		if [[ $PAUSE = no ]]; then
+			get_package
+		else
+			get_package "redownload"
+		fi
 	done
 	;;
 build|-B)
