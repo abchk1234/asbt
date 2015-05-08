@@ -224,7 +224,7 @@ setup () {
 	       		echo -n "Press y use it, or n to change [Y/n]: "
 			read -e ch1
 			if [[ $ch1 = n ]] || [[ $ch1 = N ]]; then
-				echo "Enter PKGPATH of existing directory to use, or PKGPATH of new dirctory to create: "
+				echo "Enter path of existing directory to use, or path of new dirctory to create: "
 				read -e repopath
 				if [[ -d $repopath ]]; then
 					REPODIR="$repopath"
@@ -946,7 +946,7 @@ tidy|-T)
 	else
 		flag=0
 	fi
-	tidy_dir $2 $flag
+	tidy_dir "$2" $flag
 	;;
 --update|-u) update_repo ;;
 --check|-c)
