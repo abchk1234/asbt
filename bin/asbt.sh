@@ -33,8 +33,8 @@ PKGDIR="$HOME/pkg" # Where the built package will be placed.
 GITDIR="$HOME/git/slackbuilds/.git" # Slackbuilds git repo directory.
 #GITDIR="/home/$USER/slackbuilds/.git" # Alternate git repo directory.
 
-editor="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
-#editor="/usr/bin/nano" # Alternate editor
+EDITOR="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
+#EDITOR="/usr/bin/nano" # Alternate editor.
 
 BUILDFLAGS="MAKEFLAGS=-j2" # Build flags specified while building a package
 #BUILDFLAGS="" # No build flags
@@ -120,14 +120,14 @@ edit_config () {
 		CONFIG="$ALTCONFIG"
 	fi
 
-	if [[ -e $editor ]]; then
-		$SUDO $editor "$CONFIG"
+	if [[ $(type $EDITOR) ]]; then
+		$SUDO $EDITOR "$CONFIG"
 	elif [[ -e /usr/bin/nano ]]; then
 		$SUDO nano "$CONFIG"
 	elif [[ -e /usr/bin/vim ]]; then
 		$SUDO vim "$CONFIG"
 	else
-	       echo "Unable to find editor to edit the configuration file $CONFIG"
+	       echo "Unable to find $EDITOR to edit the configuration file $CONFIG"
 	       exit 1
 	fi
 }
@@ -558,8 +558,8 @@ view_slackbuild () {
 	check_config
 	check_repo
 	get_path
-	if [[ -e $editor ]]; then
-		"$editor" "$PKGPATH/$PACKAGE.SlackBuild"
+	if [[ $(type $EDITOR) ]]; then
+		"$EDITOR" "$PKGPATH/$PACKAGE.SlackBuild"
 	else
 		less "$PKGPATH/$PACKAGE.Slackbuild"
 	fi

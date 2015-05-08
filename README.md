@@ -50,21 +50,21 @@ This ensures demarcation between informational activites like searching or viewi
 The variables used are:
 
 ~~~
-1) repodir=""
+1) REPODIR=""
  # Repository for slackbuilds.
 
-2) srcdir=""
+2) SRCDIR=""
  # Where the downloaded source packages are to be placed.
  # Leave it blank for saving it in the same directory as the slackbuild.
 
-3) outdir=""
+3) PKGDIR=""
  # Where the build package will be placed. 
  # Leave it blank for putting it in /tmp.
 
-4) gitdir=""
+4) GITDIR=""
  # Directory where the slackbuilds git repository is present.
 
-5) editor="" 
+5) EDITOR=""
  # Editor for viewing/editing slackbuilds.
 
 6) BUILDFLAGS=""
