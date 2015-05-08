@@ -2,6 +2,7 @@
 Use different method to execute slackbuild when building packages.
 Add -e --log,--git options to enlist packages from Changelog and git log.
 Allow overriding pause for input using -n for certain options.
+Refactor to use global variables in CAPS.
 
 1.6.2 (18/04/15)
 Improvements to -e option.

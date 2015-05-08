@@ -188,6 +188,8 @@ instead of `asbt search '*xfce*'`
 
   To override this behaviour `PAUSE=no` can be used in the config.
 
-  With some options like `-B`, `-I`, `-U`, `-R`, and `-P`, `-n` can be specified at the command line to disable pausing for input. For example,
+  With some options like `-G`, `-B`, `-I`, `-U`, `-R`, and `-P`, `-n` can be specified at the command line to disable pausing for input. For example,
 
   `asbt -P screenfetch dosbox -n`
+
+* In version 1.7, some variables were capitalized to make it clear which ones are global in the code; users would need to adapt their config files to the changes.
