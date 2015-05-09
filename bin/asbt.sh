@@ -213,6 +213,7 @@ get_content () {
 # Setup function
 setup () {
 	local repopath
+	local ch
 	if [[ ! -d $REPODIR ]]; then
 		echo "Slackbuild repository $REPODIR not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
@@ -481,6 +482,7 @@ check_new_pkg () {
 
 # Print the items in specified array
 print_items () {
+	local item
 	if [[ -z $@ ]]; then
 		# No items found
 		return 1
@@ -493,7 +495,7 @@ print_items () {
 }
 
 query_installed () {
-	# query_installed $1
+	# query_installed $pkg
 	local pkg=$1
 	# Get list of package items in /var/log/packages that match and print them
 	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
@@ -629,7 +631,6 @@ get_details () {
 }
 
 update_repo () {
-	# update_repo
 	check_config
 	if [[ -z $GITDIR ]]; then
 		echo "Git directory not specified."
