@@ -57,7 +57,7 @@ for i in "${options[@]}"; do
 done
 
 # Misc options
-options=('-e' '-e --rev')
+options=('-e' '-e --rev' '-S')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 

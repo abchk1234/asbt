@@ -2,14 +2,14 @@
 .\" Contact aaditya_gnulinux@zoho.com.
 .TH ASBT 8 "26 Apr 2015" "1.7" "asbt man page"
 .SH NAME
-asbt \- a tool to manage packages in your local slackbuilds repository
+asbt \- a tool to manage packages in a local slackbuilds repository.
 .SH SYNOPSIS
 asbt <option> [package]
 .SH DESCRIPTION
-asbt acts like a package manager for your local copy of slackbuilds,
+asbt is a tool for managing packages in your local copy of slackbuilds,
 which can be obtained from http://slackbuilds.org (SBo).
 
-It supports searching for packages in the repository, viewing details about packages, installing or removing them, and other options.
+It supports searching for packages in the repository, viewing details about the packages, installing or removing them, and other options.
 
 Using the package path instead of the package name is also possible.
 .SH OPTIONS
@@ -132,7 +132,7 @@ Samples for these variables are present in the script itself.
 These can be overrided by specifying the options provided
 in the configuration file "/etc/asbt/asbt.conf".
 .fi
-.SH RETURN VALUES (Not completely strict)
+.SH RETURN VALUES (not completely strict)
 .nf
 0 : Performed intended operation. 
 1 : Failed to perform intended operation.
