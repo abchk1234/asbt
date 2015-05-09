@@ -59,7 +59,7 @@ The variables used are:
 
 3) PKGDIR=""
  # Where the build package will be placed. 
- # Leave it blank for putting it in /tmp.
+ # Leave it blank to use the slackbuild default (generally /tmp).
 
 4) GITDIR=""
  # Directory where the slackbuilds git repository is present.
@@ -114,7 +114,6 @@ asbt -v dosbox  # view / edit slackbuild
 asbt -G dosbox  # get (download) dosbox (source)
 asbt -B dosbox  # build package for dosbox
 asbt -I dosbox  # install built package
-asbt -I dosbox-0.74  # install specified version of built package
 asbt -D dosbox  # view details about installed package dosbox
 asbt -q dosbox  # query whether dosbox is installed
 asbt -q --sbo  # query all SBo intalled packages
