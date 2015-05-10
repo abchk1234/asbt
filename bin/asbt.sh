@@ -903,18 +903,22 @@ process|-P)
 	check_arg "$2"
 	check_config
 	check_repo
+	check_options "$@" # whether to pause or not
 	if [[ $2 = "--upgrade" ]] || [[ $2 = "-u" ]]; then
-		# Call the script itself with new parameters
-		for i in $("$0" -c | cut -f 1 -d " "); do
-			# The above command checks for outdated packages
-			if [[ -n "$i" ]]; then
-				"$0" -P "$i"
+		# Get list of packages that need to be updated
+		for pkg in $("$0" -c | cut -f 1 -d " "); do
+			# Check for empty output, ie, no pkg needs to updated
+			if [[ $pkg ]]; then
+				if [[ $PAUSE = no ]]; then
+					"$0" -P "$pkg" -n
+				else
+					"$0" -P "$pkg"
+				fi
 			fi
 		done
 		exit 0
 	fi
 	shift # to get rid of -P
-	check_options "$@" # whether to pause or not
 	for i in "$@"; do
 		# Check for -n option
 		[[ $i = -n ]] && continue
