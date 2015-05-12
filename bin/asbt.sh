@@ -500,6 +500,8 @@ query_installed () {
 	# Get list of package items in /var/log/packages that match and print them
 	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	print_items "${items[@]}"
+	# Set count
+	COUNT=${#items[@]}
 }
 
 remove_package () {
@@ -736,11 +738,11 @@ query|-q)
 	if [[ $2 = --all ]]; then
 		# Query all packages
 		query_installed '*'
-		echo -e "\nTotal: ${#items[@]}"
+		echo -e "\nTotal: $COUNT"
 	elif [[ $2 = --sbo ]]; then
 		# Query SBo packages
 		query_installed '_SBo'
-		echo -e "\nTotal: ${#items[@]}"
+		echo -e "\nTotal: $COUNT"
 	else
 		# Query specified package
 		query_installed "$2"
@@ -909,6 +911,7 @@ process|-P)
 		for pkg in $("$0" -c | cut -f 1 -d " "); do
 			# Check for empty output, ie, no pkg needs to updated
 			if [[ $pkg ]]; then
+				# Call the script itself with new parameters
 				if [[ $PAUSE = no ]]; then
 					"$0" -P "$pkg" -n
 				else
