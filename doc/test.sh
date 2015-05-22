@@ -1,6 +1,8 @@
 #!/bin/bash
 # Some test cases for asbt
 
+set -e
+
 # Colors
 BOLD="\e[1m"
 CLR="\e[0m"
@@ -75,3 +77,9 @@ for i in "${options[@]}"; do
 	echo "./bin/asbt.sh $i asbt"
 	./bin/asbt.sh $i asbt; check_pass; echo
 done
+
+# makefike test
+cd ..
+make install DESTDIR=./test
+
+echo "$BOLD" "Done." "$CLR"

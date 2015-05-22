@@ -1,3 +1,8 @@
+1.7.1 (22/05/15)
+Fix -n invocation with -P -u.
+Fix item count with -q option.
+Try to do better package detection with tidy option.
+
 1.7 (26/04/15)
 Use different method to execute slackbuild when building packages.
 Add -e --log,--git options to enlist packages from Changelog and git log.
