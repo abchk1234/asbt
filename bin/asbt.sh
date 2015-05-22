@@ -691,7 +691,7 @@ tidy_dir () {
 		# We are assuming the format of the source as name-version.extension which could be incorrect
 		for i in $(find -L "$SRCDIR" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
-			local rem=($(ls -td -1 "$SRCDIR/$i"* 2>/dev/null | tail -n +4))
+			local rem=($(ls -td -1 "$SRCDIR/$i"-[0-9]* "$SRCDIR/$i"-v[0-9]* 2>/dev/null | tail -n +4))
 			if [[ $dry_run -eq 1 ]]; then
 				# Dry-run; only display packages to be deleted
 				print_items "${rem[@]}"
@@ -706,7 +706,7 @@ tidy_dir () {
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		for i in $(find -L "$PKGDIR" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
-			local rem=($(ls -td -1 "$PKGDIR/$i-"[0-9]* 2>/dev/null | tail -n +4))
+			local rem=($(ls -td -1 "$PKGDIR/$i"-[0-9]* 2>/dev/null | tail -n +4))
 			if [[ $dry_run -eq 1 ]]; then
 				# Dry-run
 				print_items "${rem[@]}"
