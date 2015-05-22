@@ -614,7 +614,7 @@ goto_folder () {
 	elif [[ -e /usr/bin/konsole ]]; then
 		konsole --workdir "$PKGPATH"
 	elif [[ -e /usr/bin/xterm ]]; then
-		xterm -e 'cd "$PKGPATH" && /bin/bash'
+		xterm -e "cd $PKGPATH && /bin/bash"
 	else
 		echo "Could not find a suitable terminal emulator, goto N/A"
 		exit 1
