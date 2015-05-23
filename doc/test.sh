@@ -6,20 +6,22 @@
 # Colors
 BOLD="\e[1m"
 CLR="\e[0m"
+GREEN="\e[1;32m"
+RED="\e[1;31m"
 
 check_fail () {
 	if [[ $? -eq 1 ]]; then
-		echo -e $BOLD "Test passed." $CLR
+		echo -e "$BOLD" "$GREEN" "Test passed." "$CLR"
 	else
-		echo -e $BOLD "Test failed." $CLR
+		echo -e "$BOLD" "$RED" "Test failed." "$CLR"
 	fi
 }
 
 check_pass () {
 	if [[ $? -eq 0 ]]; then
-		echo -e $BOLD "Test passed." $CLR
+		echo -e "$BOLD" "$GREEN" "Test passed." $CLR
 	else
-		echo -e $BOLD "Test failed." $CLR
+		echo -e "$BOLD" "$RED" "Test failed." $CLR
 	fi
 }
 
@@ -59,7 +61,7 @@ options=('-i' '-r' '-d' '-G' '-B')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
-	var="./bin/asbt.sh $i ~/builds/asbt/asbt"
+	var="./bin/asbt.sh $i $HOME/builds/MINE/asbt/asbt"
 	echo "$var"
 	$var; check_pass; echo
 done
