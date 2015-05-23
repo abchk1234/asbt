@@ -1,7 +1,7 @@
 #!/bin/bash
 # Some test cases for asbt
 
-set -e
+#set -e
 
 # Colors
 BOLD="\e[1m"
@@ -24,8 +24,9 @@ check_pass () {
 }
 
 # Help
-echo "./bin/asbt.sh"
-./bin/asbt.sh; check_pass; echo
+var='./bin/asbt.sh -h'
+echo "$var"
+$var; check_pass; echo
 
 # Some common options
 options=('-s' '-q' '-i' '-r' '-d' '-l' '-L')
@@ -33,20 +34,24 @@ for i in "${options[@]}"; do
 	# Valid use cases
 	echo -e "Checking success...\n"
 
-	echo "./bin/asbt.sh $i asbt"
-	./bin/asbt.sh $i asbt; check_pass; echo
+	var="./bin/asbt.sh $i asbt"
+	echo "$var"
+	$var; check_pass; echo
 
 	# Invalid use cases
 	echo -e "Checking failure...\n"
 
-	echo "./bin/asbt.sh $i"
-	./bin/asbt.sh $i; check_fail; echo
+	var="./bin/asbt.sh $i"
+	echo "$var"
+	$var; check_fail; echo
 
-	echo "./bin/asbt.sh $i asbtasbt"
-	./bin/asbt.sh $i asbtasbt; check_fail; echo
+	var="./bin/asbt.sh $i asbtasbt"
+	echo "$var"
+	$var; check_fail; echo
 
-	echo "./bin/asbt.sh $i asbt asbt"
-	./bin/asbt.sh $i asbt asbt; check_fail; echo
+	var="./bin/asbt.sh $i asbt asbt"
+	echo "$var"
+	$var; check_fail; echo
 done
 
 # Using path instead of name
@@ -54,8 +59,9 @@ options=('-i' '-r' '-d' '-G' '-B')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
-	echo "./bin/asbt.sh $i ~/builds/asbt/asbt"
-	./bin/asbt.sh $i ~/builds/asbt/asbt; check_pass; echo
+	var="./bin/asbt.sh $i ~/builds/asbt/asbt"
+	echo "$var"
+	$var; check_pass; echo
 done
 
 # Misc options
@@ -63,9 +69,9 @@ options=('-e' '-e --rev' '-S')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
-	echo "./bin/asbt.sh $i gtkmm"
-	./bin/asbt.sh $i gtkmm
-	check_pass; echo
+	var="./bin/asbt.sh $i gtkmm"
+	echo "$var"
+	$var; check_pass; echo
 done
 
 
@@ -74,8 +80,9 @@ options=('-R' '-I' '-U' '-P -n')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
-	echo "./bin/asbt.sh $i asbt"
-	./bin/asbt.sh $i asbt; check_pass; echo
+	var="./bin/asbt.sh $i asbt"
+	echo "$var"
+	$var; check_pass; echo
 done
 
 # makefike test

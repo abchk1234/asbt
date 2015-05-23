@@ -499,9 +499,9 @@ query_installed () {
 	local pkg=$1
 	# Get list of package items in /var/log/packages that match and print them
 	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
-	print_items "${items[@]}"
 	# Set count
 	COUNT=${#items[@]}
+	print_items "${items[@]}"
 }
 
 remove_package () {
