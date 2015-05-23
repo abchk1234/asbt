@@ -78,7 +78,7 @@ done
 
 
 # State changing operations
-options=('-R' '-I' '-U' '-P -n')
+options=('-R' '-U' '-P -n')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
@@ -88,7 +88,7 @@ for i in "${options[@]}"; do
 done
 
 # makefike test
-cd ..
 make install DESTDIR=./test
+check_pass; echo
 
-echo "$BOLD" "Done." "$CLR"
+echo -e "$BOLD" "Done." "$CLR"
