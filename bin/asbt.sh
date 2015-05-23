@@ -528,7 +528,7 @@ search_pkg () {
 	local pkg=$1
 	check_config
 	check_repo
-	local items=($(find -L "$REPODIR" -maxdepth 2 -mindepth 1 -type d -iname "*$pkg*" -printf "%P\n" | sort))
+	local items=($(find -L "$REPODIR" -maxdepth 2 -mindepth 2 -type d -iname "*$pkg*" -printf "%P\n" | sort))
 	print_items "${items[@]}"
 }
 
@@ -991,7 +991,11 @@ tidy|-T)
 	check_repo
 	get_content "$REPODIR/ChangeLog.txt" | less
 	;;
---help|-h|*) display_help ;;
+--help|-h) display_help ;;
+*)
+	display_help
+	exit 1
+	;;
 esac
 
 # Exit with exit status of last executed statement
