@@ -9,18 +9,26 @@ CLR="\e[0m"
 GREEN="\e[1;32m"
 RED="\e[1;31m"
 
+# Keeping count
+PASS=0
+FAIL=0
+
 check_fail () {
 	if [[ $? -eq 1 ]]; then
+		let PASS=$PASS+1
 		echo -e "$BOLD" "$GREEN" "Test passed." "$CLR"
 	else
+		let FAIL=$FAIL+1
 		echo -e "$BOLD" "$RED" "Test failed." "$CLR"
 	fi
 }
 
 check_pass () {
 	if [[ $? -eq 0 ]]; then
+		let PASS=$PASS+1
 		echo -e "$BOLD" "$GREEN" "Test passed." $CLR
 	else
+		let FAIL=$FAIL+1
 		echo -e "$BOLD" "$RED" "Test failed." $CLR
 	fi
 }
@@ -91,4 +99,8 @@ done
 make install DESTDIR=./test
 check_pass; echo
 
+echo
+echo -e "$BOLD" "Passed:" "$GREEN" "$PASS" "$CLR"
+echo -e "$BOLD" "Failed:" "$RED" "$FAIL" "$CLR"
+echo
 echo -e "$BOLD" "Done." "$CLR"
