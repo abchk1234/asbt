@@ -26,10 +26,10 @@ check_fail () {
 check_pass () {
 	if [[ $? -eq 0 ]]; then
 		let PASS=$PASS+1
-		echo -e "$BOLD" "$GREEN" "Test passed." $CLR
+		echo -e "$BOLD" "$GREEN" "Test passed." "$CLR"
 	else
 		let FAIL=$FAIL+1
-		echo -e "$BOLD" "$RED" "Test failed." $CLR
+		echo -e "$BOLD" "$RED" "Test failed." "$CLR"
 	fi
 }
 
@@ -39,7 +39,7 @@ echo "$var"
 $var; check_pass; echo
 
 # Some common options
-options=('-s' '-q' '-i' '-r' '-d' '-l' '-L')
+options=('-s' '-q' '-i' '-r' '-d' '-l' '-L' '-v' '-g')
 for i in "${options[@]}"; do
 	# Valid use cases
 	echo -e "Checking success...\n"
@@ -75,7 +75,7 @@ for i in "${options[@]}"; do
 done
 
 # Misc options
-options=('-e' '-e --rev' '-S')
+options=('-e' '-e --rev' '-S' '-u' '-c')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
@@ -83,7 +83,6 @@ for i in "${options[@]}"; do
 	echo "$var"
 	$var; check_pass; echo
 done
-
 
 # State changing operations
 options=('-R' '-U' '-P -n')
