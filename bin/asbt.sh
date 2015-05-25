@@ -39,7 +39,7 @@ EDITOR="/usr/bin/vim" # Editor for viewing/editing slackbuilds.
 BUILDFLAGS="MAKEFLAGS=-j2" # Build flags specified while building a package
 #BUILDFLAGS="" # No build flags
 
-PAUSE="yes" # Pause for input when using superuser priviliges.
+PAUSE="yes" # Pause for input when using superuser privileges.
 
 IGNORE=""  # Packages to ignore while checking updates.
 
@@ -111,11 +111,11 @@ check_repo () {
 
 edit_config () {
 	if [[ ! -e $ALTCONFIG ]]; then
-		# Root priviliges required to edit global config file
+		# Root privileges required to edit global config file
 		SUDO="/usr/bin/sudo"
 		echo "Enter your password to view or edit the configuration file $CONFIG"
 	else
-		# Root priviliges not required to edit config in $HOME folder
+		# Root privileges not required to edit config in $HOME folder
 		SUDO=""
 		CONFIG="$ALTCONFIG"
 	fi
@@ -298,7 +298,7 @@ check_source () {
 	local srci=$1	# Source item passed as argument
 	local md5s=$2	# md5 of src item
 	local md5i=$3	# Calculated md5sum
-	VALID=0		# Guilty untill proven otherwise ;)
+	VALID=0		# Guilty until proven otherwise ;)
 	# Check if source has already been downloaded
 	if [[ -e $PKGPATH/$srci ]]; then
 		# Check validity of downloaded source
