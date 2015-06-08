@@ -166,7 +166,7 @@ get_path() {
 	if [[ -d $PACKAGE ]]; then
 		PKGPATH=$(readlink -f "$PACKAGE")
 		# Get the name of the package
-		PACKAGE=$(find "$PKGPATH" -maxdepth 1 -type f -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
+		PACKAGE=$(find -L "$PKGPATH" -maxdepth 1 -type f -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
 		if [[ -z $PACKAGE ]]; then
 			echo "asbt: Unable to process $PKGPATH; SlackBuild not found."
 			exit 1
