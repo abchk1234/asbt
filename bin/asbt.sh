@@ -155,7 +155,7 @@ create_git_repo () {
 		if [[ ! -d $REPODIR ]]; then
 			# Again try to clone the git repo
 			cd "$REPODIR/.." || exit 1
-			git clone git://slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
+			git clone --depth=15 git://slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
 		fi
 	fi
 }
