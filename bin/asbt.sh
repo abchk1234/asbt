@@ -215,7 +215,7 @@ setup () {
 	local repopath
 	local ch
 	if [[ ! -d $REPODIR ]]; then
-		echo "Slackbuild repository $REPODIR not present."
+		echo "Slackbuild repository not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
 		read -e ch
 		if [[ $ch = n ]] || [[ $ch = N ]]; then
@@ -241,8 +241,8 @@ setup () {
 			fi
 		fi
 		# Edit the config file to reflect above changes
-		if [[ -e $ALTCONFIG ]]; then
-			sed -i "s|REPODIR=.*|REPODIR=\"${REPODIR}\"|" "$ALTCONFIG"
+		if [[ -e $ALTCONFIG ]] && grep -q REPODIR "$ALTCONFIG"; then
+			sed "s|REPODIR=.*|REPODIR=\"${REPODIR}\"|" -i "$ALTCONFIG"
 		else
 			sed "s|REPODIR=.*|REPODIR=\"${REPODIR}\"|" "$CONFIG" >> "$ALTCONFIG"
 		fi
