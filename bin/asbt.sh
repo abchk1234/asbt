@@ -332,18 +332,18 @@ download_source () {
 		wget --tries=5 --directory-prefix="$PKGPATH" -N "$linki" || exit 1
 	else
 		wget --tries=5 --directory-prefix="$SRCDIR" -N "$linki" || exit 1
-	fi
-	# Check if downloaded src package(s) contains the package name or not
-	# Rename only if src item does not contain program name and is short
-	if ! echo "$srci" | grep -q "$PRGNAM" && [[ ${#srci} -le 18 ]]; then
-		# Rename it and link it
-		echo "Renaming $srci"
-		mv -v "$SRCDIR/$srci" "$SRCDIR/$PRGNAM-$srci"
-		ln -sf "$SRCDIR/$PRGNAM-$srci" "$PKGPATH/$srci" || exit 1
-		echo  # Give a line break
-	else
-		# Only linking required
-		ln -sf "$SRCDIR/$srci" "$PKGPATH" || exit 1
+		# Check if downloaded src package(s) contains the package name or not
+		# Rename only if src item does not contain program name and is short
+		if ! echo "$srci" | grep -q "$PRGNAM" && [[ ${#srci} -le 18 ]]; then
+			# Rename it and link it
+			echo "Renaming $srci"
+			mv -v "$SRCDIR/$srci" "$SRCDIR/$PRGNAM-$srci"
+			ln -sf "$SRCDIR/$PRGNAM-$srci" "$PKGPATH/$srci" || exit 1
+			echo  # Give a line break
+		else
+			# Only linking required
+			ln -sf "$SRCDIR/$srci" "$PKGPATH" || exit 1
+		fi
 	fi
 }
 
