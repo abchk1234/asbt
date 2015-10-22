@@ -1,3 +1,10 @@
+1.7.2 (22/10/15)
+Only rename source if downloaded to SRCDIR (thx to DinizBortolotto for the
+report).
+A depth limited git clone is done when setting up slackbuilds repo.
+More stringent check for whether specified argument is a package directory or
+a package.
+
 1.7.1 (22/05/15)
 Fix -n invocation with -P -u.
 Fix item count with -q option.

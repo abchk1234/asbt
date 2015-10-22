@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-VER="1.7.1 (dated: 22 May 2015)" # Version
+VER="1.7.2 (dated: 22 Oct 2015)" # Version
 
 # Variables used:
 

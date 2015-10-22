@@ -1,5 +1,5 @@
 NAME = asbt
-VER = 1.7.1
+VER = 1.7.2
 install = /usr/bin/install
 rm = /usr/bin/rm
 shell = /bin/bash
@@ -28,4 +28,3 @@ uninstall:
 	$(rm) $(DESTDIR)$(MANDIR)/$(NAME).1
 	$(rm) -r $(DESTDIR)$(CONDIR)
 	$(rm) -r $(DESTDIR)$(DOCDIR)
-
