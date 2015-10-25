@@ -137,9 +137,9 @@ check_dir () {
 	# check_dir $dir
 	local dir=$1
 	if [[ ! -d $dir ]]; then
-		echo "Directory $dir does not exist."
-		exit 1
+		return 1
 	fi
+	return 0
 }
 
 # Clone git repository from slackbuilds.org (SBo)
@@ -686,7 +686,10 @@ tidy_dir () {
 	local dir=$1
 	local dry_run=$2
 	if [[ $1 = src ]]; then
-		check_dir "$SRCDIR"
+		if ! check_dir "$SRCDIR"; then
+			echo "Source directory $SRCDIR does not exist!"
+			exit 1
+		fi
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		# We are assuming the format of the source as name-version.extension which could be incorrect
 		for i in $(find -L "$SRCDIR" -maxdepth 1 -type f -printf "%f\n" | rev | cut -d "-" -f 2- | rev | sort -u); do
@@ -702,7 +705,10 @@ tidy_dir () {
 			fi
 		done
 	elif [[ $1 = pkg ]]; then
-		check_dir "$PKGDIR"
+		if ! check_dir "$PKGDIR"; then
+			echo "Package directory $PKGDIR does not exist!"
+			exit 1
+		fi
 		# Now find the names of the packages (irrespective of the version) and sort it and remove non-unique entries.
 		for i in $(find -L "$PKGDIR" -maxdepth 1 -type f -name "*.t?z" -printf "%f\n" | rev | cut -d "-" -f 4- | rev | sort -u); do
 			# Remove all but the 3 latest (by date) source packages
