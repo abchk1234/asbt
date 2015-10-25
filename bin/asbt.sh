@@ -163,7 +163,7 @@ create_git_repo () {
 # Get the full path of the package
 get_path() {
 	# Check if path to package is specified instead of package name
-	if [[ -d $PACKAGE ]] && echo "$PACKAGE" | grep -q "/"; then
+	if [[ -d $PACKAGE ]] && echo "$PACKAGE" | grep -e "/" -e "." -q; then
 		PKGPATH=$(readlink -f "$PACKAGE")
 		# Get the name of the package
 		PACKAGE=$(find -L "$PKGPATH" -maxdepth 1 -type f -name "*.SlackBuild" -printf "%P\n" | cut -f 1 -d ".")
