@@ -12,9 +12,6 @@
 # without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
 VER="1.7.2 (dated: 22 Oct 2015)" # Version
@@ -60,14 +57,14 @@ CLR="\e[0m"
 # Check number of arguments
 check_input () {
 	if [[ $1 -gt 2 ]] ; then
-		echo "Invalid syntax. Type asbt -h for more info." && exit 1
+		echo "Invalid syntax. Type asbt -h for more info."; exit 1
 	fi
 }
 
 # Check if argument empty
 check_arg () {
 	if [[ -z $1 ]]; then
-		echo "Additional parameter required for this option. Type asbt -h for more info." && exit 1
+		echo "Additional parameter required for this option. Type asbt -h for more info."; exit 1
 	fi
 }
 
@@ -85,18 +82,18 @@ check_options () {
 pause_for_input () {
 	# Check for override
 	if [[ ! $PAUSE = no ]]; then
-		echo -e "$BOLD" "Press enter to continue..." "$CLR"; read
+		echo -e "$BOLD" "Press enter to continue..." "$CLR"; read -r
 	fi
 }
 
 # Check for the configuration file
 check_config () {
 	if [[ -e $CONFIG ]]; then
-		source "$CONFIG"
+		. "$CONFIG"
 	fi
 	# Check for alternate config
 	if [[ -e $ALTCONFIG ]]; then
-		source "$ALTCONFIG"
+		. "$ALTCONFIG"
 	fi
 }
 
@@ -145,7 +142,7 @@ check_dir () {
 # Clone git repository from slackbuilds.org (SBo)
 create_git_repo () {
 	echo -n "Clone the Slackbuild repository from www.slackbuilds.org? [Y/n]: "
-	read -e ch2
+	read -r -e ch2
 	if [[ $ch2 = n ]] || [[ $ch2 = N ]]; then
 		exit 1
 	else
@@ -190,7 +187,7 @@ get_path() {
 get_info () {
 	# Source the .info file to get the package details
 	if [[ -f "$PKGPATH/$PACKAGE.info" ]]; then
-		source "$PKGPATH/$PACKAGE.info"
+		. "$PKGPATH/$PACKAGE.info"
 		echo "asbt: $PKGPATH/$PACKAGE.info sourced."
 	else
 		echo "asbt: $PACKAGE.info in $PKGPATH N/A"
@@ -217,16 +214,16 @@ setup () {
 	if [[ ! -d $REPODIR ]]; then
 		echo "Slackbuild repository not present."
 	       	echo -n "Press y to set it up, or n to exit [Y/n]: "
-		read -e ch
+		read -r -e ch
 		if [[ $ch = n ]] || [[ $ch = N ]]; then
 			exit 1
 		else
 			echo "Selected Slackbuilds directory: $REPODIR"
 	       		echo -n "Press y use it, or n to change [Y/n]: "
-			read -e ch1
+			read -r -e ch1
 			if [[ $ch1 = n ]] || [[ $ch1 = N ]]; then
 				echo "Enter path of existing directory to use, or path of new dirctory to create: "
-				read -e repopath
+				read -r -e repopath
 				if [[ -d $repopath ]]; then
 					REPODIR="$repopath"
 				else
@@ -362,7 +359,7 @@ get_package () {
 			# Check if re-download arg was specified
 			if [[ -n "$re" ]]; then
 				echo -n "Re-download? [y/N]: "
-				read -e choice
+				read -r -e choice
 				if [[ $choice = y ]] || [[ $choice = Y ]]; then
 					download_source "${SRC[$i]}" "${LINK[$i]}"
 				fi
@@ -376,7 +373,7 @@ get_package () {
 check_built_pkg () {
 	# Source the .info file to get the package version
 	if [[ -f $PKGPATH/$PACKAGE.info ]]; then
-		source "$PKGPATH/$PACKAGE.info"
+		. "$PKGPATH/$PACKAGE.info"
 	else
 		VERSION=""
 	fi
@@ -430,8 +427,9 @@ install_package () {
 	local pkgf # full pkg name as specified in /var/log/packages
 	local pkgver # version of current package if available
 	# Check if package present
-	if [[ $(ls "$PKGDIR/$pkg"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$pkg"-[0-9]*.t?z 2> /dev/null) ]]; then
-		pkgpath=$(ls -t "/tmp/$pkg"-[0-9]*.t?z "$PKGDIR/$pkg"-[0-9]*.t?z 2> /dev/null | head -n 1)
+	# Some packages can have a unique version like v19_20140130 (portaudio)
+	if [[ $(ls "$PKGDIR/$pkg"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/$pkg"-[0-9]*.t?z 2> /dev/null) ]] || [[ $(ls "${PKGDIR}/${pkg}-${VERSION}"-*.t?z 2> /dev/null) ]] || [[ $(ls "/tmp/${pkg}-${VERSION}"-*.t?z 2> /dev/null) ]]; then
+		pkgpath=$(ls -t "/tmp/$pkg"-[0-9]*.t?z "/tmp/${pkg}-${VERSION}"-*.t?z "$PKGDIR/$pkg"-[0-9]*.t?z "${PKGDIR}/${pkg}-${VERSION}"-*.t?z 2> /dev/null | head -n 1)
 		# Check if package is installed
 		if [[ $(ls -t "/var/log/packages/$pkg"-[0-9]* 2> /dev/null) ]]; then
 			# Get version of installed package
@@ -540,7 +538,7 @@ find_pkg () {
 	echo "In slackbuilds repository:"
 	while IFS= read -r -d '' pkgn; do
 		# Get version
-		source "${pkgn}"/*.info 2> /dev/null
+		. "${pkgn}"/*.info 2> /dev/null
 		# Display package and version
 		echo "$pkgn($VERSION)"
 	done < <(find -L "$REPODIR" -mindepth 2 -maxdepth 2 -type d -iname "*$pkg*" -print0)
