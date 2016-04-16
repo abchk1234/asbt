@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.7.2 (dated: 22 Oct 2015)" # Version
+VER="1.8.0 (dated: 16 Apr 2016)" # Version
 
 # Variables used:
 
@@ -407,14 +407,17 @@ build_package () {
 	fi
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+	# Eval buildflags for the pkg from config file
+	local pkg_with_uds=$(echo "$PACKAGE" | sed 's/-/_/g')
+	eval "BUILD_CONF_OPTS=\${BUILD_${pkg_with_uds}}"
 	# Check if pkgdir is present (if yes, built package is saved there)
 	# Build options are assumed to be set beforehand.
 	if [[ -z $PKGDIR ]]; then
 		pause_for_input
-		sudo -i CWD="$PKGPATH" $BUILDFLAGS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
 	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$PKGPATH/$PACKAGE.SlackBuild"

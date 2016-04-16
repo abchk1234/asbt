@@ -75,11 +75,21 @@ for i in "${options[@]}"; do
 done
 
 # Misc options
-options=('-e' '-e --rev' '-S' '-u' '-c')
+options=('-e' '-e --rev')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
-	var="./bin/asbt.sh $i gtkmm"
+	var="./bin/asbt.sh $i gst-libav"
+	echo "$var"
+	$var; check_pass; echo
+done
+
+# Misc options 2
+options=('-S' '-u' '-c')
+for i in "${options[@]}"; do
+	echo -e "Checking success...\n"
+
+	var="./bin/asbt.sh $i"
 	echo "$var"
 	$var; check_pass; echo
 done
