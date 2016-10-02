@@ -192,3 +192,7 @@ instead of `asbt search '*xfce*'`
   `asbt -P screenfetch dosbox -n`
 
 * In version 1.7, some variables were capitalized to make it clear which ones are global in the code; users would need to adapt their config files to the changes.
+
+* [hoorex](https://github.com/cwilling/hoorex) is a tool to get information about the dependencies of a package in the repository, and can be used alongside asbt. For example,
+
+  `asbt -P $(hoorex -r mousepad)`
