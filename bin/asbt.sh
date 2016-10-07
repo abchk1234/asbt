@@ -643,6 +643,7 @@ update_repo () {
 		echo "Performing git stash"
 		cd "$GITDIR/.." && git stash
 		echo "Updating git repo $GITDIR"
+		git --git-dir="$GITDIR" --work-tree="$GITDIR/.." checkout master || exit 1
 		git --git-dir="$GITDIR" --work-tree="$GITDIR/.." pull origin master || exit 1
 	else
 		echo "Git directory $GITDIR doesnt exist.."
