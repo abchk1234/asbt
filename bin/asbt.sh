@@ -987,6 +987,10 @@ tidy|-T)
 			check_new_pkg "$package" "$pkgver"
 		done
 	fi
+	# Note ignored packages too
+	if [ ! -z "${IGNORE}" ]; then
+		echo -e "\nIgnored: ${IGNORE}"
+	fi
 	;;
 --setup|-S)
 	check_config
