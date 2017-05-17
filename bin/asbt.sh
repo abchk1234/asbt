@@ -147,12 +147,12 @@ create_git_repo () {
 		exit 1
 	else
 		# A workaround has to be applied to clone the git directory as the basename of the repodir
-		cd "$REPODIR/.." && rmdir --ignore-fail-on-non-empty "$(basename "$REPODIR")" && git clone git://slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
+		cd "$REPODIR/.." && rmdir --ignore-fail-on-non-empty "$(basename "$REPODIR")" && git clone git://git.slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
 		# Now check if the git repo was cloned successfully or the directory was just removed
 		if [[ ! -d $REPODIR ]]; then
 			# Again try to clone the git repo
 			cd "$REPODIR/.." || exit 1
-			git clone --depth=15 git://slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
+			git clone --depth=15 git://git.slackbuilds.org/slackbuilds.git "$(basename "$REPODIR")"
 		fi
 	fi
 }
