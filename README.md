@@ -85,7 +85,7 @@ These can be overrided by specifying the options provided in the configuration f
 # Installation
 
 Via SBo,
-http://slackbuilds.org/repository/14.1/system/asbt/
+http://slackbuilds.org/repository/14.2/system/asbt/
 
 Or, (as root)
 `make install`
