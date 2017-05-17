@@ -1,3 +1,8 @@
+1.8.1 (17/05/17)
+Print ignored packages when checking updates.
+Updated SBo git URL.
+Added information about hoorex in the README.
+
 1.8.0 (16/04/16)
 Added build configuration for individual packages in the configuration file.
 
