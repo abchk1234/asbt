@@ -453,13 +453,16 @@ install_package () {
 	fi
 }
 
+# check_new_pkg PKG_NAME PKG_VER
+# returns 0 if new version found, else 1
 check_new_pkg () {
 	local pkgn="$1" # Package name is first argument
 	local pkgv="$2" # Package ver is second argument
+	local print_changes=0
 
 	# Skip if package is in ignore list
 	if echo "$IGNORE" | grep -q "$pkgn"; then
-		return
+		print_changes=1
 	fi
 
 	# Make an exception for virtualbox-kernel package
@@ -477,14 +480,19 @@ check_new_pkg () {
 	fi
 
 	if [[ ! $pkgv = "$VERSION" ]]; then
-		printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+		if [ "${print_changes}" -eq 0 ]; then
+			printf "%-20s %10s -> %-10s\n" "$pkgn" "$pkgv" "$VERSION"
+		fi
+		return 0
 	fi
+
+	return 1
 }
 
 # Print the items in specified array
 print_items () {
 	local item
-	if [[ -z $@ ]]; then
+	if [[ -z $* ]]; then
 		# No items found
 		return 1
 	else
@@ -981,15 +989,26 @@ tidy|-T)
 		done
 	else
 		# Only SBo packages
+		# keep track of any changed packages
+		pkg_changed=()
 		for i in /var/log/packages/*_SBo*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
 			check_new_pkg "$package" "$pkgver"
+			if [ $? -eq 0 ]; then
+				pkg_changed+=("$package")
+			fi
 		done
-	fi
-	# Note ignored packages too
-	if [ ! -z "${IGNORE}" ]; then
-		echo -e "\nIgnored: ${IGNORE}"
+		# calculate ignored packages that changed
+		pkg_ignored=()
+		for pkg in "${pkg_changed[@]}"; do
+			if echo "${IGNORE}" | grep -q "${pkg}"; then
+				pkg_ignored+=("${pkg}")
+			fi
+		done
+		if [ ! -z "${pkg_ignored[*]}" ]; then
+			echo -e "\nIgnored: ${pkg_ignored[*]}"
+		fi
 	fi
 	;;
 --setup|-S)
