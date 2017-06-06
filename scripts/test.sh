@@ -141,8 +141,11 @@ echo
 echo -e "$BOLD" "Done." "$CLR"
 
 # exit based on failed cases
-if [ $FAIL -eq 0 ]; then
-	exit 0
-else
-	exit 1
-fi
+#if [ $FAIL -eq 0 ]; then
+#	exit 0
+#else
+#	exit 1
+#fi
+
+# just exit
+exit $?
