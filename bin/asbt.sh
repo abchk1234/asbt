@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.8.0 (dated: 16 Apr 2016)" # Version
+VER="1.8.1 (dated: 17 May 2017)" # Version
 
 # Variables used:
 

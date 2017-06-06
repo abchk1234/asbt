@@ -1,0 +1,10 @@
+language: bash
+
+#before_install: true
+
+#install: true
+
+#before_script: true
+
+script:
+        - doc/test.sh
