@@ -8,4 +8,4 @@ before_script:
         - scripts/setup_slackbuilds_repo.sh
 
 script:
-        - scripts/test.sh
+        - scripts/test.sh na
