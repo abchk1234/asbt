@@ -12,6 +12,6 @@ cd "${INITIAL_LOC}"
 
 # setup config
 mkdir -p $HOME/.config
-cp aadityabagga/asbt/conf/asbt.conf $HOME/.config/asbt.conf
+cp conf/asbt.conf $HOME/.config/asbt.conf
 
 exit $?
