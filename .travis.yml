@@ -5,7 +5,10 @@ language: bash
 #install: true
 
 before_script:
-        - scripts/setup_slackbuilds_repo.sh
+        - scripts/setup_test_environment.sh
 
 script:
         - scripts/test.sh na
+
+notifications:
+        email: false
