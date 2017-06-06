@@ -4,7 +4,8 @@ language: bash
 
 #install: true
 
-#before_script: true
+before_script:
+        - scripts/setup_slackbuilds_repo.sh
 
 script:
-        - doc/test.sh
+        - scripts/test.sh

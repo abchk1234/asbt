@@ -33,13 +33,21 @@ check_pass () {
 	fi
 }
 
+# Mode: interactive (default) or non interactive
+MODE_INTERACTIVE=0
+
+# Check cmd line args
+if [ "$1" = 'na' ]; then
+	MODE_INTERACTIVE=1
+fi
+
 # Help
 var='./bin/asbt.sh -h'
 echo "$var"
 $var; check_pass; echo
 
 # Some common options
-options=('-s' '-q' '-i' '-r' '-d' '-l' '-L' '-v' '-g')
+options=('-s' '-q' '-i' '-r' '-d' '-l' '-L' '-i' '-r')
 for i in "${options[@]}"; do
 	# Valid use cases
 	echo -e "Checking success...\n"
@@ -64,28 +72,44 @@ for i in "${options[@]}"; do
 	$var; check_fail; echo
 done
 
-# Using path instead of name
-options=('-i' '-r' '-d' '-G' '-B')
-for i in "${options[@]}"; do
-	echo -e "Checking success...\n"
+# some special ops
+if [ ${MODE_INTERACTIVE} -eq 0 ]; then
+	options=('-g' '-v' '-S')
+	for i in "${options[@]}"; do
+		echo -e "Checking success...\n"
 
-	var="./bin/asbt.sh $i $HOME/builds/MINE/asbt/asbt"
-	echo "$var"
-	$var; check_pass; echo
-done
+		var="./bin/asbt.sh $i asbt"
+		echo "$var"
+		$var; check_pass; echo
+	done
+fi
+
+# Using path instead of name
+if [ ${MODE_INTERACTIVE} -eq 0 ]; then
+	options=('-d' '-G' '-B')
+	for i in "${options[@]}"; do
+		echo -e "Checking success...\n"
+
+		var="./bin/asbt.sh $i $HOME/builds/MINE/asbt/asbt"
+		echo "$var"
+		$var; check_pass; echo
+	done
+fi
 
 # Misc options
-options=('-e' '-e --rev')
-for i in "${options[@]}"; do
-	echo -e "Checking success...\n"
+if [ ${MODE_INTERACTIVE} -eq 0 ]; then
+	options=('-e' '-e --rev')
+	for i in "${options[@]}"; do
+		echo -e "Checking success...\n"
 
-	var="./bin/asbt.sh $i gst-libav"
-	echo "$var"
-	$var; check_pass; echo
-done
+		var="./bin/asbt.sh $i gst-libav"
+		echo "$var"
+		$var; check_pass; echo
+	done
+fi
 
 # Misc options 2
-options=('-S' '-u' '-c')
+options=('-u' '-c')
 for i in "${options[@]}"; do
 	echo -e "Checking success...\n"
 
@@ -95,14 +119,16 @@ for i in "${options[@]}"; do
 done
 
 # State changing operations
-options=('-R' '-U' '-P -n')
-for i in "${options[@]}"; do
-	echo -e "Checking success...\n"
+if [ ${MODE_INTERACTIVE} -eq 0 ]; then
+	options=('-R' '-U' '-P -n')
+	for i in "${options[@]}"; do
+		echo -e "Checking success...\n"
 
-	var="./bin/asbt.sh $i asbt"
-	echo "$var"
-	$var; check_pass; echo
-done
+		var="./bin/asbt.sh $i asbt"
+		echo "$var"
+		$var; check_pass; echo
+	done
+fi
 
 # makefike test
 make install DESTDIR=./test
@@ -113,3 +139,10 @@ echo -e "$BOLD" "Passed:" "$GREEN" "$PASS" "$CLR"
 echo -e "$BOLD" "Failed:" "$RED" "$FAIL" "$CLR"
 echo
 echo -e "$BOLD" "Done." "$CLR"
+
+# exit based on failed cases
+if [ $FAIL -eq 0 ]; then
+	exit 0
+else
+	exit 1
+fi
