@@ -1,5 +1,6 @@
 1.9.0 (08/06/17)
 Try to fix incomplete / incorrect download handling.
+Added non interactive mode to test script.
 
 1.8.1 (17/05/17)
 Print ignored packages when checking updates.
