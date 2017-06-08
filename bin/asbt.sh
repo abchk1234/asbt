@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.8.1 (dated: 17 May 2017)" # Version
+VER="1.9.0 (dated: 8 June 2017)" # Version
 
 # Variables used:
 
@@ -273,19 +273,19 @@ get_src_data () {
 	fi
 	# Since links can be multi line, so use a src array..
 	for linki in "${LINK[@]}"; do
-		SRC+=($(basename "$linki"))	# Name of source files
+		SRC+=("$(basename "$linki")")	# Name of source files
 	done
 	# Calculate md5sum of downloaded source
 	# Check for source in various locations
 	for srci in "${SRC[@]}"; do
 		if [[ -f "$SRCDIR/$srci" ]]; then
-			MD5+=($(md5sum "$SRCDIR/$srci" | cut -f 1 -d " "))
+			MD5+=("$(md5sum "$SRCDIR/$srci" | cut -f 1 -d " ")")
 		elif [[ -f "$SRCDIR/$PRGNAM-$srci" ]]; then
-			MD5+=($(md5sum "$SRCDIR/$PRGNAM-$srci" | cut -f 1 -d " "))
+			MD5+=("$(md5sum "$SRCDIR/$PRGNAM-$srci" | cut -f 1 -d " ")")
 		elif [[ -e "$PKGPATH/$srci" ]]; then
-			MD5+=($(md5sum "$PKGPATH/$srci" | cut -f 1 -d " "))
+			MD5+=("$(md5sum "$PKGPATH/$srci" | cut -f 1 -d " ")")
 		elif [[ -e "$PKGPATH/$PRGNAM-$srci" ]]; then
-			MD5+=($(md5sum "$PKGPATH/$PRGNAM-$srci" | cut -f 1 -d " "))
+			MD5+=("$(md5sum "$PKGPATH/$PRGNAM-$srci" | cut -f 1 -d " ")")
 		fi
 	done
 }
@@ -318,17 +318,24 @@ check_source () {
 download_source () {
 	local srci=$1	# Source item passed as argument
 	local linki=$2	# Link of src item
+	local dopts=$3  # any download options
 	# Check for unsupported url
 	if [[ $linki = UNSUPPORTED ]] || [[ $linki = UNTESTED ]]; then
 		echo "Unsupported source in info file"
 		exit 1
 	fi
+	# check for download options
+	local wget_opts="-N"
+	if [[ $dopts = overwrite ]]; then
+		# https://stackoverflow.com/questions/30418188/how-to-force-wget-to-overwrite-an-existing-file-ignoring-timestamp
+		wget_opts="--backups=1"
+	fi
 	echo "Downloading $srci"
 	# Check if srcdir is specified (if yes, download is saved there)
 	if [[ -z $SRCDIR ]]; then
-		wget --tries=5 --directory-prefix="$PKGPATH" -N "$linki" || exit 1
+		wget --tries=5 --directory-prefix="$PKGPATH" "${wget_opts}" "$linki" || exit 1
 	else
-		wget --tries=5 --directory-prefix="$SRCDIR" -N "$linki" || exit 1
+		wget --tries=5 --directory-prefix="$SRCDIR" "${wget_opts}" "$linki" || exit 1
 		# Check if downloaded src package(s) contains the package name or not
 		# Rename only if src item does not contain program name and is short
 		if ! echo "$srci" | grep -q "$PRGNAM" && [[ ${#srci} -le 18 ]]; then
@@ -354,6 +361,11 @@ get_package () {
 		if [[ $VALID -ne 1 ]]; then
 			# Download the source
 			download_source "${SRC[$i]}" "${LINK[$i]}"
+			# Check the source again, because wget -N does not seem to verify
+			check_source "${SRC[$i]}" "${MD5S[$i]}" "${MD5[$i]}"
+			if [[ $VALID -ne 1 ]]; then
+				download_source "${SRC[$i]}" "${LINK[$i]}" 'overwrite'
+			fi
 		else
 			echo "Source: ${SRC[$i]} present and md5sum matched."
 			# Check if re-download arg was specified
@@ -361,7 +373,7 @@ get_package () {
 				echo -n "Re-download? [y/N]: "
 				read -r -e choice
 				if [[ $choice = y ]] || [[ $choice = Y ]]; then
-					download_source "${SRC[$i]}" "${LINK[$i]}"
+					download_source "${SRC[$i]}" "${LINK[$i]}" 'overwrite'
 				fi
 			fi
 		fi
@@ -408,7 +420,8 @@ build_package () {
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
 	# Eval buildflags for the pkg from config file
-	local pkg_with_uds=$(echo "$PACKAGE" | sed 's/-/_/g')
+	local pkg_with_uds
+	pkg_with_uds=$(echo "$PACKAGE" | sed 's/-/_/g')
 	eval "BUILD_CONF_OPTS=\${BUILD_${pkg_with_uds}}"
 	# Check if pkgdir is present (if yes, built package is saved there)
 	# Build options are assumed to be set beforehand.
@@ -492,7 +505,7 @@ check_new_pkg () {
 # Print the items in specified array
 print_items () {
 	local item
-	if [[ -z $* ]]; then
+	if [[ -z "$*" ]]; then
 		# No items found
 		return 1
 	else
@@ -994,8 +1007,7 @@ tidy|-T)
 		for i in /var/log/packages/*_SBo*; do
 			package=$(basename "$i" | rev | cut -d "-" -f 4- | rev)
 			pkgver=$(basename "$i" | rev | cut -d "-" -f 3 | rev)
-			check_new_pkg "$package" "$pkgver"
-			if [ $? -eq 0 ]; then
+			if check_new_pkg "$package" "$pkgver"; then
 				pkg_changed+=("$package")
 			fi
 		done
