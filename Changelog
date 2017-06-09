@@ -1,3 +1,7 @@
+1.9.1 (10/06/17)
+Bugfix: Remove incorrect check which returns always returns false.
+Side effect: Using same wget flags in each case.
+
 1.9.0 (08/06/17)
 Try to fix incomplete / incorrect download handling.
 Added non interactive mode to test script.

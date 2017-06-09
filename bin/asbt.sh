@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.9.0 (dated: 8 June 2017)" # Version
+VER="1.9.1 (dated: 10 June 2017)" # Version
 
 # Variables used:
 
@@ -360,12 +360,7 @@ get_package () {
 		check_source "${SRC[$i]}" "${MD5S[$i]}" "${MD5[$i]}"
 		if [[ $VALID -ne 1 ]]; then
 			# Download the source
-			download_source "${SRC[$i]}" "${LINK[$i]}"
-			# Check the source again, because wget -N does not seem to verify
-			check_source "${SRC[$i]}" "${MD5S[$i]}" "${MD5[$i]}"
-			if [[ $VALID -ne 1 ]]; then
-				download_source "${SRC[$i]}" "${LINK[$i]}" 'overwrite'
-			fi
+			download_source "${SRC[$i]}" "${LINK[$i]}" 'overwrite'
 		else
 			echo "Source: ${SRC[$i]} present and md5sum matched."
 			# Check if re-download arg was specified
