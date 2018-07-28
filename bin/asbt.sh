@@ -515,7 +515,7 @@ query_installed () {
 	# query_installed $pkg
 	local pkg=$1
 	# Get list of package items in /var/log/packages that match and print them
-	local items=($(find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	local items=($(find -L "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
 	# Set count
 	COUNT=${#items[@]}
 	print_items "${items[@]}"
@@ -562,7 +562,7 @@ find_pkg () {
 		echo "$pkgn($VERSION)"
 	done < <(find -L "$REPODIR" -mindepth 2 -maxdepth 2 -type d -iname "*$pkg*" -print0)
 	echo -e "\nInstalled:"
-	find "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*_SBo" -printf "%f\n"
+	find -L "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*_SBo" -printf "%f\n"
 }
 
 display_readme () {
