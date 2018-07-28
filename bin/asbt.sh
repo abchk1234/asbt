@@ -1,7 +1,7 @@
 #!/bin/bash
 # asbt: A tool to manage packages in a local slackbuilds repository.
 ##
-# Copyright (C) 2014-2015 Aaditya Bagga <aaditya_gnulinux@zoho.com>
+# Copyright (C) 2014-2018 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.9.1 (dated: 10 June 2017)" # Version
+VER="1.9.2 (dated: 28 July 2018)" # Version
 
 # Variables used:
 
@@ -444,7 +444,7 @@ install_package () {
 		# Check if package is installed
 		if [[ $(ls -t "/var/log/packages/$pkg"-[0-9]* 2> /dev/null) ]]; then
 			# Get version of installed package
-			pkgf=$(find "/var/log/packages" -maxdepth 1 -type f -name "$pkg-[0-9]*" -printf "%f\n")
+			pkgf=$(find -L "/var/log/packages" -maxdepth 1 -type f -name "$pkg-[0-9]*" -printf "%f\n")
 			pkgver=$(basename "$pkgf" | rev | cut -f 3 -d "-" | rev)
 			# Upgrade the package
 			echo -e "Upgrading $pkg($pkgver) using: \n$pkgpath\n"

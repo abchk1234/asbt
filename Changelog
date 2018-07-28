@@ -1,3 +1,6 @@
+1.9.2 (28/07/18)
+Update: Support Slackware current 14.2+ where /var/log/packages is a symlink.
+
 1.9.1 (10/06/17)
 Bugfix: Remove incorrect check which returns always returns false.
 Side effect: Using same wget flags in each case.
