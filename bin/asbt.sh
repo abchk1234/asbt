@@ -1,7 +1,7 @@
 #!/bin/bash
 # asbt: A tool to manage packages in a local slackbuilds repository.
 ##
-# Copyright (C) 2014-2018 Aaditya Bagga <aaditya_gnulinux@zoho.com>
+# Copyright (C) 2014-2019 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="1.9.2 (dated: 28 July 2018)" # Version
+VER="2.0.0 (dated: 10 Sep 2019)" # Version
 
 # Variables used:
 
@@ -414,6 +414,13 @@ build_package () {
 	fi
 	# Fix CWD to include path to package
 	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+	# and make it executable
+	local script_was_executable="no"
+	if [ ! -x "$PKGPATH/$PACKAGE.SlackBuild" ]; then
+		chmod +x "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+	else
+		script_was_executable="yes"
+	fi
 	# Eval buildflags for the pkg from config file
 	local pkg_with_uds
 	pkg_with_uds=$(echo "$PACKAGE" | sed 's/-/_/g')
@@ -422,13 +429,14 @@ build_package () {
 	# Build options are assumed to be set beforehand.
 	if [[ -z $PKGDIR ]]; then
 		pause_for_input
-		sudo -i CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" /bin/sh "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
 	fi
 	# After building revert the slackbuild to original state
 	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$PKGPATH/$PACKAGE.SlackBuild"
+	[ "$script_was_executable" = no ] && chmod -x "$PKGPATH/$PACKAGE.SlackBuild"
 }
 
 install_package () {

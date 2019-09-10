@@ -90,7 +90,7 @@ if [ ${MODE_INTERACTIVE} -eq 0 ]; then
 	for i in "${options[@]}"; do
 		echo -e "Checking success...\n"
 
-		var="./bin/asbt.sh $i $HOME/builds/MINE/asbt/asbt"
+		var="./bin/asbt.sh $i $HOME/builds/asbt/asbt"
 		echo "$var"
 		$var; check_pass; echo
 	done

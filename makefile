@@ -1,5 +1,5 @@
 NAME = asbt
-VER = 1.9.2
+VER = 2.0.0
 install = /usr/bin/install
 rm = /usr/bin/rm
 shell = /bin/bash
@@ -26,5 +26,4 @@ install:
 uninstall: 
 	$(rm) $(DESTDIR)$(BINDIR)/$(NAME)
 	$(rm) $(DESTDIR)$(MANDIR)/$(NAME).1
-	$(rm) -r $(DESTDIR)$(CONDIR)
 	$(rm) -r $(DESTDIR)$(DOCDIR)

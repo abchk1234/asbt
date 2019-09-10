@@ -1,3 +1,6 @@
+2.0.0 (10/09/19)
+Update: execute slackbuild instead of running it via /bin/sh.
+
 1.9.2 (28/07/18)
 Update: Support Slackware current 14.2+ where /var/log/packages is a symlink.
 
