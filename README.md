@@ -1,3 +1,4 @@
+# A Slackware Build Tool (asbt)
 
 asbt is a tool for managing packages in your local copy of slackbuilds,
 which can be obtained from http://slackbuilds.org/ (SBo), 
@@ -155,13 +156,14 @@ instead of `asbt search '*xfce*'`
 
   `asbt -B webkitgtk MAKEFLAGS=-j1`
 
-* asbt modifies the CWD=$(pwd) line in a slackbuild to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
-  This change is reverted after building the package.
+* asbt copies the original slackbuild with a .asbt extension and modifies it before building.
+  The CWD=$(pwd) line is changed to CWD=${CWD:-$(pwd)} so that it can build from any location by specifying the build location.
+  The edited copy is deleted after building the package.
 
-  But if for some reason the build process was interrupted/failed, or any changes were manually made to the files, then the slackbuild would be changed, and git may complain about this change when updating the git repo.
-	
-  To work around this issue, first the current git state is stashed with git stash save, and then the repo is updated.
-  To know more about git stash, read the git-stash man page.
+  But if for some reason the build process was interrupted/failed, the edited copy will need to be manually removed.
+
+* To preserve any user changes to the slackbuilds repo, first the current git state is stashed with git stash save, and subsequently the repo is updated.
+  To know more about git stash, try the git-stash man page.
 
 * Using the -T (tidy) option, one can clean one's src or pkg directories of old items. It retains the latest 3 entries by date.
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # asbt: A tool to manage packages in a local slackbuilds repository.
 ##
-# Copyright (C) 2014-2019 Aaditya Bagga <aaditya_gnulinux@zoho.com>
+# Copyright (C) 2014-2020 Aaditya Bagga <aaditya_gnulinux@zoho.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="2.0.0 (dated: 10 Sep 2019)" # Version
+VER="2.1.0 (dated: 01 Feb 2020)" # Version
 
 # Variables used:
 
@@ -412,15 +412,28 @@ build_package () {
 	else
 		echo "Building $PACKAGE"
 	fi
+	# Make a copy of the slackbuild to modify as needed
+	cp -v "$PKGPATH/$PACKAGE.SlackBuild" "$PKGPATH/$PACKAGE.SlackBuild.asbt"
 	# Fix CWD to include path to package
-	sed -i 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+	sed 's/CWD=$(pwd)/CWD=${CWD:-$(pwd)}/' -i "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
+	# add support for aarch64
+	# taken from https://gitlab.com/sndwvs/slarm64_build_kit/blob/master/aarch64_build_kit.sh
+	sed -n '/^if \[ \"$ARCH\" = \"\(i.86\)\" \]/{:a;N;/fi$/!ba;N;s/.*\n/case \"\$ARCH\" in\
+     i?86\) SLKCFLAGS=\"-O2 -march=i586 -mtune=i686\"\
+           LIBDIRSUFFIX=\"\"\
+           ;;\
+   x86_64\) SLKCFLAGS=\"-O2 -fPIC\"\
+           LIBDIRSUFFIX=\"64\"\
+           ;;\
+  aarch64\) SLKCFLAGS=\"-O2\"\
+           LIBDIRSUFFIX=\"64\"\
+           ;;\
+        \*\) SLKCFLAGS=\"-O2\"\
+           LIBDIRSUFFIX=\"\"\
+           ;;\
+esac\n/};p' -i "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
 	# and make it executable
-	local script_was_executable="no"
-	if [ ! -x "$PKGPATH/$PACKAGE.SlackBuild" ]; then
-		chmod +x "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
-	else
-		script_was_executable="yes"
-	fi
+	chmod +x "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
 	# Eval buildflags for the pkg from config file
 	local pkg_with_uds
 	pkg_with_uds=$(echo "$PACKAGE" | sed 's/-/_/g')
@@ -429,14 +442,13 @@ build_package () {
 	# Build options are assumed to be set beforehand.
 	if [[ -z $PKGDIR ]]; then
 		pause_for_input
-		sudo -i CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
 	else
 		pause_for_input
-		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild" || exit 1
+		sudo -i OUTPUT="$PKGDIR" CWD="$PKGPATH" $BUILDFLAGS $BUILD_CONF_OPTS "${OPTIONS[@]}" "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
 	fi
-	# After building revert the slackbuild to original state
-	sed -i 's/CWD=${CWD:-$(pwd)}/CWD=$(pwd)/' "$PKGPATH/$PACKAGE.SlackBuild"
-	[ "$script_was_executable" = no ] && chmod -x "$PKGPATH/$PACKAGE.SlackBuild"
+	# After building remove the edited slackbuild
+	rm "$PKGPATH/$PACKAGE.SlackBuild.asbt" || exit 1
 }
 
 install_package () {
