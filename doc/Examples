@@ -151,23 +151,40 @@ Built:
 12) Enlist the packages which have the package name in their info file
     (This option can take some time to complete)
 
-$ asbt -e libiso
-/home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:PRGNAM="libisofs"
-/home/aaditya/slackbuilds/libraries/libisofs/libisofs.info:DOWNLOAD="http://files.libburnia-project.org/releases/libisofs-1.3.8.tar.gz"
-/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:PRGNAM="libisoburn"
-/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:DOWNLOAD="http://files.libburnia-project.org/releases/libisoburn-1.3.8.tar.gz"
-/home/aaditya/slackbuilds/libraries/libisoburn/libisoburn.info:REQUIRES="libburn libisofs"
-/home/aaditya/slackbuilds/system/xfburn/xfburn.info:REQUIRES="libburn libisofs"
+$ asbt -e imlib2
+/home/aaditya/git/slackbuilds/network/w3m/w3m.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/audio/Pd-extended/Pd-extended.info:REQUIRES="dssi imlib2 lame libquicktime speex lua"
+/home/aaditya/git/slackbuilds/graphics/feh/feh.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/graphics/sxiv/sxiv.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/graphics/qiv/qiv.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/graphics/xfishtank/xfishtank.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/graphics/maim/maim.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/graphics/freewrl/freewrl.info:REQUIRES="imlib2 OpenAL freealut"
+/home/aaditya/git/slackbuilds/desktop/buttonmaker/buttonmaker.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/mh5000/mh5000.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/wmalauncher/wmalauncher.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/PyPanel/PyPanel.info:REQUIRES="imlib2 python-xlib"
+/home/aaditya/git/slackbuilds/desktop/mhsetroot/mhsetroot.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/wmimagedock/wmimagedock.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/wmslideshow/wmslideshow.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/e16/e16.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/xlunch/xlunch.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/tint2/tint2.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/wbar/wbar.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/XDecorations/XDecorations.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/hsetroot/hsetroot.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/desktop/idesk/idesk.info:REQUIRES="imlib2"
+/home/aaditya/git/slackbuilds/system/Eterm/Eterm.info:REQUIRES="imlib2 libast"
+/home/aaditya/git/slackbuilds/system/conky/conky.info:REQUIRES="tolua++ imlib2"
+/home/aaditya/git/slackbuilds/libraries/giblib/giblib.info:REQUIRES="imlib2"
 
 
 12-b) Enlist reverse dependencies for a package, ie
       List all installed SBo packages which depend on given package
       (This option can take some time to complete)
 
-$ asbt -e --rev gtkmm
-/home/aaditya/slackbuilds/desktop/nitrogen/nitrogen.info
-/home/aaditya/slackbuilds/system/gparted/gparted.info
-
+$ asbt -e --rev imlib2
+(Can be empty if no package found)
 
 12-c) Enlist package details from the Changelog
 $ asbt -e --log screenfetch
