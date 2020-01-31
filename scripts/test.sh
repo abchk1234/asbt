@@ -102,7 +102,7 @@ if [ ${MODE_INTERACTIVE} -eq 0 ]; then
 	for i in "${options[@]}"; do
 		echo -e "Checking success...\n"
 
-		var="./bin/asbt.sh $i gst-libav"
+		var="./bin/asbt.sh $i imlib2"
 		echo "$var"
 		$var; check_pass; echo
 	done

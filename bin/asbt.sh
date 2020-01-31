@@ -857,12 +857,16 @@ enlist|-e)
 		# The next pipe greps for installed packages on the output of previous pipe,
 		# ie, it checks for packages that contain the specified package in their info file, and are installed.
 		# Together they a unique give list of packages which depend on specified package (reverse dependencies).
-		items=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
-		print_items "${items[@]}"
+		item_paths=($($0 -e "$package" | grep REQUIRES | cut -f 1 -d ":" | grep -E -w "$words" | uniq))
+		item_list=()
+		for item_path in "${item_paths[@]}"; do
+			item_list+=( $(basename "$item_path" .info) )
+		done
+		print_items "${item_list[@]}"
 	else
 		check_arg "$2"
-		# Find files which contain specified keyword
-		find -L "$REPODIR" -type f -name "*.info" -exec grep -H -w "$2" {} \;
+		# Find files which contain specified keyword. Exclude info file of the keyword itself.
+		find -L "$REPODIR" -type f -name "*.info" ! -name "$2.info" -exec grep -H -w "$2" {} \;
 	fi
 	;;
 track|-t)
