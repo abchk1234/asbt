@@ -661,12 +661,21 @@ goto_folder () {
 get_details () {
 	# get_details $pkg
 	local pkg=$1
-	if [[ $(ls "/var/log/packages/$pkg"-[0-9]* 2> /dev/null) ]]; then
-		less /var/log/packages/"$pkg"-[0-9]*
-	else
-		echo "Details of package $pkg: N/A"
-		exit 1
-	fi
+	local items=($(find -L "/var/log/packages" -maxdepth 1 -type f -iname "*$pkg*" -printf "%f\n" | sort))
+	# Ideally there should only be a single entry corresponding to a package
+	case ${#items[@]} in
+		0 )
+			echo "Details of package $pkg: N/A"
+			exit 1
+			;;
+		1 )
+			less /var/log/packages/*"$pkg"*
+			;;
+		* )
+			echo "Multiple packages found! Please refine package name."
+			exit 1
+			;;
+	esac
 }
 
 update_repo () {
