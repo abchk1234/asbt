@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="2.1.0 (dated: 01 Feb 2020)" # Version
+VER="2.1.1 (dated: 01 Feb 2020)" # Version
 
 # Variables used:
 
