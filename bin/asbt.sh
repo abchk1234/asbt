@@ -14,7 +14,7 @@
 # See the GNU General Public License for more details.
 ##
 
-VER="2.1.1 (dated: 01 Feb 2020)" # Version
+VER="2.1.2 (dated: 19 Mar 2020)" # Version
 
 # Variables used:
 
@@ -264,7 +264,7 @@ setup () {
 get_src_data () {
 	get_info
 	# Check special cases where the package has a separate download for x86_64
-	if [[ $(uname -m) = x86_64 ]] && [[ ${DOWNLOAD_x86_64:-""} ]]; then
+	if [[ $(uname -m) = x86_64 || $(uname -m) = aarch64 ]] && [[ ${DOWNLOAD_x86_64:-""} ]]; then
 		LINK=($DOWNLOAD_x86_64)
 		MD5S=($MD5SUM_x86_64)
 	else
